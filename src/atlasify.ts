@@ -8,12 +8,12 @@ import * as utils from "../lib/utils";
 
 /**
  * Options class for composor and maxrects-packer
- * 
+ *
  * @property {boolean} options.square use square size (default is true)
  * @property {boolean} options.pot use power of 2 sizing (default is true)
  * @property {boolean} options.square use square size (default is false)
  * @property {boolean} options.allowRotation allow rotation wihile packing (default is false)
- * 
+ *
  * @export
  * @interface Option
  * @export
@@ -44,7 +44,7 @@ export class Options implements IOption {
     ) { }
 }
 
-export class Composer {
+export class Atlasify {
 
     constructor (public options: Options) {
         this.imageFilePaths = [];

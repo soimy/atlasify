@@ -33,7 +33,7 @@ export declare class Options implements IOption {
      */
     constructor(name?: string, width?: number, height?: number, padding?: number);
 }
-export declare class Composer {
+export declare class Atlasify {
     options: Options;
     constructor(options: Options);
     load(paths: string[]): void;

@@ -1,5 +1,5 @@
 {
-  "name": "atlasify-cli",
+  "name": "atlasify",
   "version": "0.1.0",
   "description": "CLI and core module for atlasify texture packer using maxrects-packer & Jimp",
   "main": "lib/core.js",
@@ -8,13 +8,13 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm ./test/*.png",
-    "cli-test": "cd ./test && node --inspect-brk=9229 ../lib/cli.js -astr -p 2 -m 1024,1024 ./atlas",
+    "cli-test": "cd ./test && node --inspect-brk=9229 ../lib/cli.js -astr -p 5 -m 1024,1024 ./atlas",
     "test": "mocha --reporter spec",
     "cover": "node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec --timeout 30000 test/*"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://soimy@github.com/soimy/atlasify-cli.git"
+    "url": "git+https://soimy@github.com/soimy/atlasify.git"
   },
   "keywords": [
     "atlas",
@@ -30,13 +30,14 @@
   "author": "YM Shen <soimy@163.com> (http://github.com/soimy)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/soimy/atlasify-cli/issues"
+    "url": "https://github.com/soimy/atlasify/issues"
   },
-  "homepage": "https://github.com/soimy/atlasify-cli#readme",
+  "homepage": "https://github.com/soimy/atlasify#readme",
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.6",
+    "@types/mustache": "^0.8.32",
     "@types/node": "^11.11.3",
     "ascii-table": "0.0.9",
     "chai": "^4.2.0",
@@ -52,6 +53,7 @@
     "commander": "^2.20.0",
     "jimp": "^0.6.4",
     "js2xmlparser": "^4.0.0",
-    "maxrects-packer": "^2.0.3"
+    "maxrects-packer": "^2.0.3",
+    "mustache": "^3.0.1"
   }
 }

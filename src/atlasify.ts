@@ -3,8 +3,8 @@ import { Rectangle } from "maxrects-packer/lib/geom/Rectangle";
 import { IBin, Bin } from "maxrects-packer/lib/abstract_bin";
 import Jimp from "jimp";
 import path from "path";
-import fs from "fs";
-import * as utils from "../lib/utils";
+import { Vec2 } from "./geom/Vec2";
+import { Rect } from "./geom/Rect";
 
 /**
  * Options class for composor and maxrects-packer
@@ -27,6 +27,7 @@ export class Options implements IOption {
     public square: boolean = false;
     public allowRotation: boolean = false;
     public trimAlpha: boolean = false; // TODO
+    public extrudeEdge: number = 0; // TODO
 
    /**
     * Creates an instance of Options.
@@ -46,18 +47,28 @@ export class Options implements IOption {
 
 export class Atlasify {
 
+   /**
+    * Creates an instance of Atlasify.
+    * @param {Options} options Atlasify Options class
+    * @memberof Atlasify
+    */
     constructor (public options: Options) {
         this.imageFilePaths = [];
         this.rects = [];
         this.packer = new MaxRectsPacker(options.width, options.height, options.padding, options);
     }
 
+   /**
+    * Load arrays of pathalike images url and do packing
+    * @param {string[]} paths pathalike urls
+    * @memberof Atlasify
+    */
     public load (paths: string[]): void {
         this.imageFilePaths = paths;
         const loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
                 .then(image => {
-                    const rect = new Rectangle(0, 0, image.bitmap.width, image.bitmap.height);
+                    const rect: Rect = new Rect(path.basename(img), 0, 0, image.bitmap.width, image.bitmap.height);
                     rect.data = image;
                     this.rects.push(rect);
                 })

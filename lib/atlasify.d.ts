@@ -23,6 +23,7 @@ export declare class Options implements IOption {
     square: boolean;
     allowRotation: boolean;
     trimAlpha: boolean;
+    extrudeEdge: number;
     /**
      * Creates an instance of Options.
      * @param {string} [name='sprite'] output filename of atlas/spreadsheet (default is 'sprite.png')

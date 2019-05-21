@@ -7,43 +7,11 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Mocha Tests",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "-u",
-                "bdd",
-                "--timeout",
-                "10000",
-                "--colors",
-                "${workspaceFolder}/test"
-            ],
-            "preLaunchTask": "build",
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "TS:Mocha Tests",
-            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "--compilers",
-                "ts:ts-node/register",
-                "--timeout",
-                "10000",
-                "--colors",
-                "${workspaceRoot}/test/*.spec.ts"
-                // "${workspaceRoot}/test/maxrects_bin.spec.js"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
             "name": "Launch via NPM",
             "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run-script",
-                "cli-test"
+                "cli"
             ],
             "port": 9229,
             "protocol": "inspector"

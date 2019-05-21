@@ -36,7 +36,17 @@ export declare class Options implements IOption {
 }
 export declare class Atlasify {
     options: Options;
+    /**
+     * Creates an instance of Atlasify.
+     * @param {Options} options Atlasify Options class
+     * @memberof Atlasify
+     */
     constructor(options: Options);
+    /**
+     * Load arrays of pathalike images url and do packing
+     * @param {string[]} paths pathalike urls
+     * @memberof Atlasify
+     */
     load(paths: string[]): void;
     private imageFilePaths;
     private rects;

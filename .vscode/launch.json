@@ -13,6 +13,7 @@
                 "run-script",
                 "cli"
             ],
+            "preLaunchTask": "build",
             "port": 9229,
             "protocol": "inspector"
         }

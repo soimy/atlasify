@@ -2,7 +2,7 @@ import { Rectangle } from "maxrects-packer/lib/geom/Rectangle";
 import { Vec2 } from "./Vec2";
 import Jimp from "jimp";
 
-export class Rect extends Rectangle {
+export class Sheet extends Rectangle {
 
     public sourceFrame: Rectangle;
     public anchor: Vec2;

@@ -4,7 +4,7 @@ import { IBin, Bin } from "maxrects-packer/lib/abstract_bin";
 import Jimp from "jimp";
 import path from "path";
 import { Vec2 } from "./geom/Vec2";
-import { Rect } from "./geom/Rect";
+import { Sheet } from "./geom/Sheet";
 
 /**
  * Options class for composor and maxrects-packer
@@ -68,9 +68,9 @@ export class Atlasify {
         const loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
                 .then(image => {
-                    const rect: Rect = new Rect(path.basename(img), 0, 0, image.bitmap.width, image.bitmap.height);
-                    rect.data = image;
-                    this.rects.push(rect);
+                    const sheet: Sheet = new Sheet(path.basename(img), 0, 0, image.bitmap.width, image.bitmap.height);
+                    sheet.data = image;
+                    this.rects.push(sheet);
                 })
                 .catch(err => {
                     console.error("File read error : " + err);
@@ -101,6 +101,6 @@ export class Atlasify {
     }
 
     private imageFilePaths: string[];
-    private rects: Rectangle[];
+    private rects: Sheet[];
     private packer: MaxRectsPacker;
 }

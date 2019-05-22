@@ -55,7 +55,7 @@ export class Atlasify {
     constructor (public options: Options) {
         this.imageFilePaths = [];
         this.rects = [];
-        this.packer = new MaxRectsPacker(options.width, options.height, options.padding, options);
+        this.packer = new MaxRectsPacker<Sheet>(options.width, options.height, options.padding, options);
     }
 
    /**

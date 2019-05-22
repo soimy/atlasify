@@ -24,4 +24,13 @@ export class Sheet extends Rectangle {
         this.nineSliceFrame = new Rectangle(0, 0, width, height);
         this.data = new Jimp(width, height);
     }
+
+    public trimAlpha (): void {
+        // TODO
+        this.trimmed = true;
+    }
+
+    public rotate (): void {
+        this.rot = true;
+    }
 }

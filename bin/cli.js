@@ -2,13 +2,12 @@
 
 const pjson = require('../package.json');
 const commander = require('commander');
-const Jimp = require('jimp');
 const fs = require('fs');
 const path = require('path');
 const utils = require('./utils');
-const atlasify = require('./atlasify').Atlasify;
-const option = require('./atlasify').Options;
-const ext = ["jpg", "JPG", "jpeg", "JPEG", "png", "PNG"];
+const atlasify = require('../lib/atlasify').Atlasify;
+const option = require('../lib/atlasify').Options;
+const ext = ["jpg", "jpeg", "png"];
 
 let imageFiles = [];
 
@@ -38,7 +37,7 @@ cli
                 inputFiles.push(filePath);
         });
         for (let inputFile of inputFiles) {
-            const extname = path.extname(inputFile).slice(1);
+            const extname = path.extname(inputFile).slice(1).toLowerCase();
             if (fs.existsSync(inputFile) && ext.includes(extname)) {
                 console.log("+" + extname + " : " + inputFile);
                 imageFiles.push(inputFile);

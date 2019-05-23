@@ -4,6 +4,7 @@ import Jimp from "jimp";
 
 export class Sheet extends Rectangle {
 
+    public name: string = "";
     public sourceFrame: Rectangle;
     public anchor: Vec2;
     public nineSliceFrame: Rectangle;
@@ -11,11 +12,10 @@ export class Sheet extends Rectangle {
     public data: Jimp;
 
     constructor (
-        public name: string,
-        public x: number,
-        public y: number,
-        public width: number,
-        public height: number,
+        public width: number = 0,
+        public height: number = 0,
+        public x: number = 0,
+        public y: number = 0,
         public rot: boolean = false
     ) {
         super();

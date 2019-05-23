@@ -5,6 +5,7 @@ import Jimp from "jimp";
 import path from "path";
 import { Vec2 } from "./geom/Vec2";
 import { Sheet } from "./geom/Sheet";
+import fs from "fs";
 
 /**
  * Options class for composor and maxrects-packer
@@ -68,8 +69,9 @@ export class Atlasify {
         const loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
                 .then(image => {
-                    const sheet: Sheet = new Sheet(path.basename(img), 0, 0, image.bitmap.width, image.bitmap.height);
+                    const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
                     sheet.data = image;
+                    sheet.name = path.basename(img);
                     this.rects.push(sheet);
                 })
                 .catch(err => {
@@ -78,12 +80,13 @@ export class Atlasify {
         });
         Promise.all(loader)
             .then(() => {
+                const ext: string = path.extname(this.options.name);
+                const basename: string = path.basename(this.options.name, ext);
+                const fillColor: number = (ext === ".png" || ext === ".PNG") ? 0x00000000 : 0x000000ff;
+
                 this.packer.addArray(this.rects);
                 this.packer.bins.forEach((bin: Bin, index: number) => {
-                    const ext: string = path.extname(this.options.name);
-                    const basename: string = path.basename(this.options.name, ext);
                     const binName: string = this.packer.bins.length > 1 ? `${basename}.${index}${ext}` : `${basename}${ext}`;
-                    const fillColor: number = (ext === ".png" || ext === ".PNG") ? 0x00000000 : 0x000000ff;
                     const image = new Jimp(bin.width, bin.height, fillColor);
                     bin.rects.forEach(rect => {
                         const buffer: Jimp = rect.data;
@@ -94,6 +97,7 @@ export class Atlasify {
                         console.log('Wrote atlas image : ' + binName);
                     });
                 });
+                // fs.writeFileSync(`${basename}.json`, JSON.stringify(this.packer));
             })
             .catch(err => {
                 console.error("File load error : " + err);

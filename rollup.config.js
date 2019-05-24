@@ -18,7 +18,7 @@ const config = [
         // NOTE: The first output is your transpiled typescript
         output: [{
             file: pkg.main, 
-            name: "atlasify",
+            name: "Atlasify",
             format: "umd",
             sourcemap: true
         }, 
@@ -27,7 +27,7 @@ const config = [
             format: "es",
             sourcemap: true 
         }],
-        external: [],
+        external: ['jimp'],
         plugins: [
             json(),
             builtins(),
@@ -47,7 +47,7 @@ const config = [
         // NOTE: The second output is your bundled `.d.ts` file
         output: [{ file: "dist/atlasify-core.d.ts", format: "es" }],
 
-        plugins: [dts()],
+        plugins: [ dts() ],
     },
 ];
 

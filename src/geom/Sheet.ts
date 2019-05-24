@@ -1,4 +1,4 @@
-import { Rectangle } from "maxrects-packer/lib/geom/Rectangle";
+import { Rectangle } from "maxrects-packer";
 import { Vec2 } from "./Vec2";
 import Jimp from "jimp";
 

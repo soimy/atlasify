@@ -1,11 +1,7 @@
 import { MaxRectsPacker, IOption } from "maxrects-packer";
-import { Rectangle } from "maxrects-packer/lib/geom/Rectangle";
-import { IBin, Bin } from "maxrects-packer/lib/abstract_bin";
 import Jimp from "jimp";
 import path from "path";
-import { Vec2 } from "./geom/Vec2";
 import { Sheet } from "./geom/Sheet";
-import fs from "fs";
 
 /**
  * Options class for composor and maxrects-packer
@@ -85,7 +81,7 @@ export class Atlasify {
                 const fillColor: number = (ext === ".png" || ext === ".PNG") ? 0x00000000 : 0x000000ff;
 
                 this.packer.addArray(this.rects);
-                this.packer.bins.forEach((bin: Bin, index: number) => {
+                this.packer.bins.forEach((bin, index: number) => {
                     const binName: string = this.packer.bins.length > 1 ? `${basename}.${index}${ext}` : `${basename}${ext}`;
                     const image = new Jimp(bin.width, bin.height, fillColor);
                     bin.rects.forEach(rect => {

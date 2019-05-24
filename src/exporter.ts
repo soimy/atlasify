@@ -1,5 +1,3 @@
 import {} from "mustache";
 
-export class Exporter {
-    
-}
+export class Exporter { }

@@ -18,7 +18,7 @@ export class Vec2 extends Vec2Const {
     public static EPSILON: number = 0.0000001;
     public static EPSILONSQR: number = Vec2.EPSILON * Vec2.EPSILON;
 
-    public static createRandomDir(): Vec2 {
+    public static createRandomDir (): Vec2 {
         const rads: number = Math.random() * Math.PI * 2;
         return new Vec2(Math.cos(rads), Math.sin(rads));
     }
@@ -26,7 +26,7 @@ export class Vec2 extends Vec2Const {
     /**
      * Helpers
      */
-    public static swap(a: Vec2, b: Vec2): void {
+    public static swap (a: Vec2, b: Vec2): void {
         const x: number = a._x;
         const y: number = a._y;
         a._x = b._x;
@@ -35,27 +35,27 @@ export class Vec2 extends Vec2Const {
         b._y = y;
     }
 
-    constructor(x: number = 0, y: number = 0) { super(x, y); }
+    constructor (x: number = 0, y: number = 0) { super(x, y); }
 
     /**
      * Copy / assignment
      */
-    public set x(x: number) { this._x = x; }
-    public get x(): number { return this._x; }
-    public set y(y: number) { this._y = y; }
-    public get y(): number { return this._y; }
+    public set x (x: number) { this._x = x; }
+    public get x (): number { return this._x; }
+    public set y (y: number) { this._y = y; }
+    public get y (): number { return this._y; }
 
-    public copy(pos: Vec2Const): Vec2 {
+    public copy (pos: Vec2Const): Vec2 {
         this._x = pos._x;
         this._y = pos._y;
         return this;
     }
-    public copyXY(x: number, y: number): Vec2 {
+    public copyXY (x: number, y: number): Vec2 {
         this._x = x;
         this._y = y;
         return this;
     }
-    public zero(): Vec2 {
+    public zero (): Vec2 {
         this._x = 0;
         this._y = 0;
         return this;
@@ -64,12 +64,12 @@ export class Vec2 extends Vec2Const {
     /**
      * Add
      */
-    public addSelf(pos: Vec2Const): Vec2 {
+    public addSelf (pos: Vec2Const): Vec2 {
         this._x += pos._x;
         this._y += pos._y;
         return this;
     }
-    public addXYSelf(x: number, y: number): Vec2 {
+    public addXYSelf (x: number, y: number): Vec2 {
         this._x += x;
         this._y += y;
         return this;
@@ -78,12 +78,12 @@ export class Vec2 extends Vec2Const {
     /**
      * Sub
      */
-    public subSelf(pos: Vec2Const): Vec2 {
+    public subSelf (pos: Vec2Const): Vec2 {
         this._x -= pos._x;
         this._y -= pos._y;
         return this;
     }
-    public subXYSelf(x: number, y: number): Vec2 {
+    public subXYSelf (x: number, y: number): Vec2 {
         this._x -= x;
         this._y -= y;
         return this;
@@ -92,12 +92,12 @@ export class Vec2 extends Vec2Const {
     /**
      * Mul
      */
-    public mulSelf(vec: Vec2Const): Vec2 {
+    public mulSelf (vec: Vec2Const): Vec2 {
         this._x *= vec._x;
         this._y *= vec._y;
         return this;
     }
-    public mulXYSelf(x: number, y: number): Vec2 {
+    public mulXYSelf (x: number, y: number): Vec2 {
         this._x *= x;
         this._y *= y;
         return this;
@@ -106,12 +106,12 @@ export class Vec2 extends Vec2Const {
     /**
      * Div
      */
-    public divSelf(vec: Vec2Const): Vec2 {
+    public divSelf (vec: Vec2Const): Vec2 {
         this._x /= vec._x;
         this._y /= vec._y;
         return this;
     }
-    public divXYSelf(x: number, y: number): Vec2 {
+    public divXYSelf (x: number, y: number): Vec2 {
         this._x /= x;
         this._y /= y;
         return this;
@@ -120,13 +120,13 @@ export class Vec2 extends Vec2Const {
     /**
      * Scale
      */
-    public scaleSelf(s: number): Vec2 {
+    public scaleSelf (s: number): Vec2 {
         this._x *= s;
         this._y *= s;
         return this;
     }
 
-    public rescaleSelf(newLength: number): Vec2 {
+    public rescaleSelf (newLength: number): Vec2 {
         const nf: number = newLength / Math.sqrt(this._x * this._x + this._y * this._y);
         this._x *= nf;
         this._y *= nf;
@@ -136,7 +136,7 @@ export class Vec2 extends Vec2Const {
     /**
      * Normalize
      */
-    public normalizeSelf(): Vec2 {
+    public normalizeSelf (): Vec2 {
         const nf: number = 1 / Math.sqrt(this._x * this._x + this._y * this._y);
         this._x *= nf;
         this._y *= nf;
@@ -146,7 +146,7 @@ export class Vec2 extends Vec2Const {
     /**
      * Rotate
      */
-    public rotateSelf(rads: number): Vec2 {
+    public rotateSelf (rads: number): Vec2 {
         const s: number = Math.sin(rads);
         const c: number = Math.cos(rads);
         const xr: number = this._x * c - this._y * s;
@@ -154,19 +154,19 @@ export class Vec2 extends Vec2Const {
         this._x = xr;
         return this;
     }
-    public normalRightSelf(): Vec2 {
+    public normalRightSelf (): Vec2 {
         const xr: number = this._x;
         this._x = -this._y;
         this._y = xr;
         return this;
     }
-    public normalLeftSelf(): Vec2 {
+    public normalLeftSelf (): Vec2 {
         const xr: number = this._x;
         this._x = this._y;
         this._y = -xr;
         return this;
     }
-    public negateSelf(): Vec2 {
+    public negateSelf (): Vec2 {
         this._x = -this._x;
         this._y = -this._y;
         return this;
@@ -175,7 +175,7 @@ export class Vec2 extends Vec2Const {
     /**
      * Spinor
      */
-    public rotateSpinorSelf(vec: Vec2Const): Vec2 {
+    public rotateSpinorSelf (vec: Vec2Const): Vec2 {
         const xr: number = this._x * vec._x - this._y * vec._y;
         this._y = this._x * vec._y + this._y * vec._x;
         this._x = xr;
@@ -185,7 +185,7 @@ export class Vec2 extends Vec2Const {
     /**
      * lerp
      */
-    public lerpSelf(to: Vec2Const, t: number): Vec2 {
+    public lerpSelf (to: Vec2Const, t: number): Vec2 {
         this._x = this._x + t * (to._x - this._x);
         this._y = this._y + t * (to._y - this._y);
         return this;

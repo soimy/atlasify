@@ -18,6 +18,7 @@ export declare class Options implements IOption {
     width: number;
     height: number;
     padding: number;
+    type: string;
     smart: boolean;
     pot: boolean;
     square: boolean;
@@ -32,7 +33,7 @@ export declare class Options implements IOption {
      * @param {number} [padding=0] padding between images (Default: 0)
      * @memberof Options
      */
-    constructor(name?: string, width?: number, height?: number, padding?: number);
+    constructor(name?: string, width?: number, height?: number, padding?: number, type?: string);
 }
 export declare class Atlasify {
     options: Options;

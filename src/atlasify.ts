@@ -5,6 +5,8 @@ import fs from "fs";
 import { Sheet } from "./geom/Sheet";
 import { Exporter } from "./exporter";
 
+let appInfo = require('../package.json');
+
 /**
  * Options class for composor and maxrects-packer
  *
@@ -40,7 +42,8 @@ export class Options implements IOption {
         public name: string = 'sprite',
         public width: number = 2048,
         public height: number = 2048,
-        public padding: number = 0
+        public padding: number = 0,
+        public type: string = "JsonHash"
     ) { }
 }
 
@@ -64,6 +67,7 @@ export class Atlasify {
     */
     public load (paths: string[]): void {
         this.imageFilePaths = paths;
+        Exporter.setExportFormat(this.options.type);
         const loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
                 .then(image => {
@@ -86,6 +90,8 @@ export class Atlasify {
                 this.packer.bins.forEach((bin, index: number) => {
                     const binName: string = this.packer.bins.length > 1 ? `${basename}.${index}${ext}` : `${basename}${ext}`;
                     const image = new Jimp(bin.width, bin.height, fillColor);
+                    // Add tag to the last sheet to control mustache trailing comma
+                    bin.rects[bin.rects.length - 1].last = true;
                     bin.rects.forEach(rect => {
                         const buffer: Jimp = rect.data;
                         if (rect.rot) buffer.rotate(90);
@@ -94,8 +100,17 @@ export class Atlasify {
                     image.write(binName, () => {
                         console.log('Wrote atlas image : ' + binName);
                     });
-                    fs.writeFileSync(`${basename}.json`, Exporter.compile(bin));
-                    console.log('Wrote spritesheet : ' + binName);
+                    const view: ITemplateView = {
+                        imageName: binName,
+                        width: bin.width,
+                        height: bin.height,
+                        format: "RGBA8888",
+                        scale: 1,
+                        rects: bin.rects as Sheet[],
+                        appInfo: appInfo
+                    }
+                    fs.writeFileSync(`${basename}.json`, Exporter.compile(view));
+                    console.log('Wrote spritesheet : ' + basename + "." + Exporter.getExtension());
                 });
             })
             .catch(err => {
@@ -106,4 +121,20 @@ export class Atlasify {
     private imageFilePaths: string[];
     private rects: Sheet[];
     private packer: MaxRectsPacker;
+}
+
+interface ITemplateView {
+    imageName: string;
+    width: number;
+    height: number;
+    format: string;
+    scale: number;
+    rects: Sheet[];
+    appInfo: any;
+    base64Data?: IBase64Data;
+}
+
+interface IBase64Data {
+    prefix: string;
+    data: string;
 }

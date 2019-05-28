@@ -1,19 +1,18 @@
 import Mustache from "mustache";
 import { join } from "path";
 import { existsSync, readFileSync } from "fs";
-import { Bin } from "maxrects-packer";
 
 let list = require('../templates/list.json');
 
 export class Exporter {
-    static template: string;
 
     public static setExportFormat (name: string): boolean {
         name = name.toLowerCase();
         let templatePath: string = name;
         for (let t of list) {
             if (t.type.toLowerCase() === name) {
-                templatePath = join(__dirname, t.template);
+                templatePath = join(__dirname, "../templates", t.template);
+                this.ext = t.fileExt;
                 break;
             }
         }
@@ -25,12 +24,18 @@ export class Exporter {
         return true;
     }
 
-    public static compile (bin: Bin): string {
-        if (!this.template) {
-            // Apply default template if not set by setExportFormat
-            this.template = readFileSync(join(__dirname,'JsonHash')).toString();
-        }
-        return Mustache.render(this.template, bin);
+    public static getExtension(): string {
+        return this.ext;
     }
 
+    public static compile (view: any): string {
+        if (!this.template) {
+            // Apply default template if not set by setExportFormat
+            this.template = readFileSync(join(__dirname, "../templates", "JsonHash")).toString();
+        }
+        return Mustache.render(this.template, view);
+    }
+
+    private static template: string;
+    private static ext: string;
 }

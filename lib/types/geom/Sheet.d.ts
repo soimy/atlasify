@@ -8,12 +8,15 @@ export declare class Sheet extends Rectangle {
     y: number;
     rot: boolean;
     name: string;
+    frame: Rectangle;
     sourceFrame: Rectangle;
     anchor: Vec2;
     nineSliceFrame: Rectangle;
     trimmed: boolean;
     data: Jimp;
+    last: boolean;
     constructor(width?: number, height?: number, x?: number, y?: number, rot?: boolean);
     trimAlpha(): void;
+    extrude(border: number): void;
     rotate(): void;
 }

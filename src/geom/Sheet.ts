@@ -11,6 +11,7 @@ export class Sheet extends Rectangle {
     public nineSliceFrame: Rectangle;
     public trimmed: boolean = false;
     public data: Jimp;
+    public last: boolean = false; // For controlling mustache trailing comma
 
     constructor (
         public width: number = 0,

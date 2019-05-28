@@ -2,40 +2,21 @@
   "frames": {
     {{#rects}}
     "{{{name}}}": {
-      "frame": {
-        "x": {{x}},
-        "y": {{y}},
-        "w": {{width}},
-        "h": {{height}}
-      },
+      "frame": { "x": {{x}}, "y": {{y}}, "w": {{width}}, "h": {{height}} },
       "rotated": {{rot}},
       "trimmed": {{trimmed}},
-      "spriteSourceSize": {
-        "x": {{sourceFrame.x}},
-        "w": {{sourceFrame.width}},
-        "h": {{sourceFrame.height}}
-        "y": {{sourceFrame.y}},
-      },
-      "sourceSize": {
-        "w": {{frame.width}},
-        "h": {{frame.height}}
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
+      "spriteSourceSize": { "x": {{sourceFrame.x}}, "y": {{sourceFrame.y}}, "w": {{sourceFrame.width}}, "h": {{sourceFrame.height}} },
+      "sourceSize": { "w": {{frame.width}}, "h": {{frame.height}} },
+      "pivot": { "x": {{anchor.x}}, "y": {{anchor.y}} }
     }{{^last}},{{/last}}
     {{/rects}}
   },
   "meta": {
-    "app": "{{{appInfo.url}}}",
+    "app": "{{{appInfo.name}}}",
     "version": "{{appInfo.version}}",
-    "image": "{{^config.base64Export}}{{config.imageName}}{{/config.base64Export}}{{#config.base64Export}}{{{config.base64Prefix}}}{{{config.imageData}}}{{/config.base64Export}}",
-    "format": "{{config.format}}",
-    "size": {
-      "w": {{config.imageWidth}},
-      "h": {{config.imageHeight}}
-    },
-    "scale": {{config.scale}}
+    "image": "{{^base64Data}}{{imageName}}{{/base64Data}}{{#base64Data}}{{{prefix}}}{{{data}}}{{/base64Data}}",
+    "format": "{{format}}",
+    "size": { "w": {{width}}, "h": {{height}} },
+    "scale": {{scale}}
   }
 }

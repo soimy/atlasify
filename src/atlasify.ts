@@ -1,7 +1,9 @@
 import { MaxRectsPacker, IOption } from "maxrects-packer";
 import Jimp from "jimp";
 import path from "path";
+import fs from "fs";
 import { Sheet } from "./geom/Sheet";
+import { Exporter } from "./exporter";
 
 /**
  * Options class for composor and maxrects-packer
@@ -92,8 +94,9 @@ export class Atlasify {
                     image.write(binName, () => {
                         console.log('Wrote atlas image : ' + binName);
                     });
+                    fs.writeFileSync(`${basename}.json`, Exporter.compile(bin));
+                    console.log('Wrote spritesheet : ' + binName);
                 });
-                // fs.writeFileSync(`${basename}.json`, JSON.stringify(this.packer));
             })
             .catch(err => {
                 console.error("File load error : " + err);

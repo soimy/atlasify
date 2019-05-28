@@ -3,22 +3,22 @@
     {{#rects}}
     "{{{name}}}": {
       "frame": {
-        "x": {{frame.x}},
-        "y": {{frame.y}},
-        "w": {{frame.w}},
-        "h": {{frame.h}}
+        "x": {{x}},
+        "y": {{y}},
+        "w": {{width}},
+        "h": {{height}}
       },
-      "rotated": {{rotated}},
+      "rotated": {{rot}},
       "trimmed": {{trimmed}},
       "spriteSourceSize": {
-        "x": {{spriteSourceSize.x}},
-        "y": {{spriteSourceSize.y}},
-        "w": {{spriteSourceSize.w}},
-        "h": {{spriteSourceSize.h}}
+        "x": {{sourceFrame.x}},
+        "w": {{sourceFrame.width}},
+        "h": {{sourceFrame.height}}
+        "y": {{sourceFrame.y}},
       },
       "sourceSize": {
-        "w": {{sourceSize.w}},
-        "h": {{sourceSize.h}}
+        "w": {{frame.width}},
+        "h": {{frame.height}}
       },
       "pivot": {
         "x": 0.5,

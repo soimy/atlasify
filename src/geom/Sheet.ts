@@ -5,6 +5,7 @@ import Jimp from "jimp";
 export class Sheet extends Rectangle {
 
     public name: string = "";
+    public frame: Rectangle;
     public sourceFrame: Rectangle;
     public anchor: Vec2;
     public nineSliceFrame: Rectangle;
@@ -19,15 +20,20 @@ export class Sheet extends Rectangle {
         public rot: boolean = false
     ) {
         super();
-        this.sourceFrame = new Rectangle(0, 0, width, height);
+        this.frame = new Rectangle(width, height);
+        this.sourceFrame = new Rectangle(width, height);
         this.anchor = new Vec2(width / 2, height / 2);
-        this.nineSliceFrame = new Rectangle(0, 0, width, height);
+        this.nineSliceFrame = new Rectangle(width, height);
         this.data = new Jimp(width, height);
     }
 
     public trimAlpha (): void {
         // TODO
         this.trimmed = true;
+    }
+
+    public extrude (border: number): void {
+        // TODO
     }
 
     public rotate (): void {

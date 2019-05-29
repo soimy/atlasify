@@ -40,4 +40,13 @@ export class Sheet extends Rectangle {
     public rotate (): void {
         this.rot = true;
     }
+
+    private scanline (position: number, horizonal: boolean = true, callback: ScanlineCallback) {
+        let x = 0;
+        let y = 0;
+
+    }
+
 }
+
+type ScanlineCallback = (r: number, g: number, b: number, a: number) => any;

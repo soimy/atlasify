@@ -47,6 +47,22 @@ export class Options implements IOption {
     ) { }
 }
 
+export interface ITemplateView {
+    imageName: string;
+    width: number;
+    height: number;
+    format: string;
+    scale: number;
+    rects: Sheet[];
+    appInfo: any;
+    base64Data?: IBase64Data;
+}
+
+export interface IBase64Data {
+    prefix: string;
+    data: string;
+}
+
 export class Atlasify {
 
    /**
@@ -67,7 +83,8 @@ export class Atlasify {
     */
     public load (paths: string[]): void {
         this.imageFilePaths = paths;
-        Exporter.setExportFormat(this.options.type);
+        const output = new Exporter();
+        output.setExportFormat(this.options.type);
         const loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
                 .then(image => {
@@ -108,9 +125,9 @@ export class Atlasify {
                         scale: 1,
                         rects: bin.rects as Sheet[],
                         appInfo: appInfo
-                    }
-                    fs.writeFileSync(`${basename}.json`, Exporter.compile(view));
-                    console.log('Wrote spritesheet : ' + basename + "." + Exporter.getExtension());
+                    };
+                    fs.writeFileSync(`${basename}.json`, output.compile(view));
+                    console.log('Wrote spritesheet : ' + basename + "." + output.getExtension());
                 });
             })
             .catch(err => {
@@ -121,20 +138,4 @@ export class Atlasify {
     private imageFilePaths: string[];
     private rects: Sheet[];
     private packer: MaxRectsPacker;
-}
-
-interface ITemplateView {
-    imageName: string;
-    width: number;
-    height: number;
-    format: string;
-    scale: number;
-    rects: Sheet[];
-    appInfo: any;
-    base64Data?: IBase64Data;
-}
-
-interface IBase64Data {
-    prefix: string;
-    data: string;
 }

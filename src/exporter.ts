@@ -6,7 +6,7 @@ let list = require('../templates/list.json');
 
 export class Exporter {
 
-    public static setExportFormat (name: string): boolean {
+    public setExportFormat (name: string): boolean {
         name = name.toLowerCase();
         let templatePath: string = name;
         for (let t of list) {
@@ -24,11 +24,11 @@ export class Exporter {
         return true;
     }
 
-    public static getExtension(): string {
+    public getExtension (): string {
         return this.ext;
     }
 
-    public static compile (view: any): string {
+    public compile (view: any): string {
         if (!this.template) {
             // Apply default template if not set by setExportFormat
             this.template = readFileSync(join(__dirname, "../templates", "JsonHash")).toString();
@@ -36,6 +36,6 @@ export class Exporter {
         return Mustache.render(this.template, view);
     }
 
-    private static template: string;
-    private static ext: string;
+    private template: string = "";
+    private ext: string = "json";
 }

@@ -1,7 +1,7 @@
 export declare class Exporter {
-    static setExportFormat(name: string): boolean;
-    static getExtension(): string;
-    static compile(view: any): string;
-    private static template;
-    private static ext;
+    setExportFormat(name: string): boolean;
+    getExtension(): string;
+    compile(view: any): string;
+    private template;
+    private ext;
 }

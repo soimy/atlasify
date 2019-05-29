@@ -104,14 +104,6 @@
       "sourceSize": { "w": 104, "h": 171 },
       "pivot": { "x": 52, "y": 85.5 }
     },
-    "k-leaf.png": {
-      "frame": { "x": 0, "y": 896, "w": 168, "h": 98 },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": { "x": 0, "y": 0, "w": 168, "h": 98 },
-      "sourceSize": { "w": 168, "h": 98 },
-      "pivot": { "x": 84, "y": 49 }
-    },
     "p-insecticides.png": {
       "frame": { "x": 212, "y": 471, "w": 97, "h": 168 },
       "rotated": false,
@@ -119,6 +111,14 @@
       "spriteSourceSize": { "x": 0, "y": 0, "w": 97, "h": 168 },
       "sourceSize": { "w": 97, "h": 168 },
       "pivot": { "x": 48.5, "y": 84 }
+    },
+    "k-leaf.png": {
+      "frame": { "x": 0, "y": 896, "w": 168, "h": 98 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 168, "h": 98 },
+      "sourceSize": { "w": 168, "h": 98 },
+      "pivot": { "x": 84, "y": 49 }
     },
     "r-cloth.png": {
       "frame": { "x": 314, "y": 471, "w": 162, "h": 167 },
@@ -192,24 +192,24 @@
       "sourceSize": { "w": 140, "h": 138 },
       "pivot": { "x": 70, "y": 69 }
     },
-    "k-food.png": {
-      "frame": { "x": 545, "y": 583, "w": 139, "h": 117 },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": { "x": 0, "y": 0, "w": 139, "h": 117 },
-      "sourceSize": { "w": 139, "h": 117 },
-      "pivot": { "x": 69.5, "y": 58.5 }
-    },
     "r-metal.png": {
-      "frame": { "x": 626, "y": 440, "w": 139, "h": 129 },
+      "frame": { "x": 545, "y": 583, "w": 139, "h": 129 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 139, "h": 129 },
       "sourceSize": { "w": 139, "h": 129 },
       "pivot": { "x": 69.5, "y": 64.5 }
     },
+    "k-food.png": {
+      "frame": { "x": 626, "y": 440, "w": 139, "h": 117 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 139, "h": 117 },
+      "sourceSize": { "w": 139, "h": 117 },
+      "pivot": { "x": 69.5, "y": 58.5 }
+    },
     "r-plastic.png": {
-      "frame": { "x": 545, "y": 705, "w": 84, "h": 137 },
+      "frame": { "x": 545, "y": 717, "w": 84, "h": 137 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 84, "h": 137 },
@@ -217,7 +217,7 @@
       "pivot": { "x": 42, "y": 68.5 }
     },
     "exclam.png": {
-      "frame": { "x": 634, "y": 705, "w": 128, "h": 128 },
+      "frame": { "x": 634, "y": 717, "w": 128, "h": 128 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 128 },
@@ -225,7 +225,7 @@
       "pivot": { "x": 64, "y": 64 }
     },
     "flat.png": {
-      "frame": { "x": 690, "y": 838, "w": 128, "h": 128 },
+      "frame": { "x": 689, "y": 562, "w": 128, "h": 128 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 128 },
@@ -233,7 +233,7 @@
       "pivot": { "x": 64, "y": 64 }
     },
     "frame.png": {
-      "frame": { "x": 767, "y": 574, "w": 128, "h": 128 },
+      "frame": { "x": 690, "y": 850, "w": 128, "h": 128 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 128 },
@@ -241,7 +241,7 @@
       "pivot": { "x": 64, "y": 64 }
     },
     "r-milk.png": {
-      "frame": { "x": 823, "y": 707, "w": 105, "h": 128 },
+      "frame": { "x": 767, "y": 695, "w": 105, "h": 128 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 105, "h": 128 },
@@ -249,7 +249,7 @@
       "pivot": { "x": 52.5, "y": 64 }
     },
     "star.png": {
-      "frame": { "x": 823, "y": 840, "w": 128, "h": 128 },
+      "frame": { "x": 823, "y": 828, "w": 128, "h": 128 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 128, "h": 128 },
@@ -290,7 +290,7 @@
     }
   },
   "meta": {
-    "app": "atlasify",
+    "app": "atlasify https://github.com/soimy/atlasify#readme",
     "version": "0.1.0",
     "image": "sprite.png",
     "format": "RGBA8888",

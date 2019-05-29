@@ -1,4 +1,5 @@
 import { IOption } from "maxrects-packer";
+import { Sheet } from "./geom/Sheet";
 /**
  * Options class for composor and maxrects-packer
  *
@@ -34,6 +35,20 @@ export declare class Options implements IOption {
      * @memberof Options
      */
     constructor(name?: string, width?: number, height?: number, padding?: number, type?: string);
+}
+export interface ITemplateView {
+    imageName: string;
+    width: number;
+    height: number;
+    format: string;
+    scale: number;
+    rects: Sheet[];
+    appInfo: any;
+    base64Data?: IBase64Data;
+}
+export interface IBase64Data {
+    prefix: string;
+    data: string;
 }
 export declare class Atlasify {
     options: Options;

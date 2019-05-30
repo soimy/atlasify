@@ -111,9 +111,10 @@ export class Atlasify {
                     // Add tag to the last sheet to control mustache trailing comma
                     bin.rects[bin.rects.length - 1].last = true;
                     bin.rects.forEach(rect => {
-                        const buffer: Jimp = rect.data;
-                        if (rect.rot) buffer.rotate(90);
-                        image.composite(buffer, rect.x, rect.y);
+                        const sheet = rect as Sheet;
+                        const buffer: Jimp = sheet.data;
+                        if (sheet.rot) buffer.rotate(90);
+                        image.blit(buffer, sheet.x, sheet.y, sheet.frame.x, sheet.frame.y, sheet.frame.width, sheet.frame.height);
                     });
                     image.write(binName, () => {
                         console.log('Wrote atlas image : ' + binName);

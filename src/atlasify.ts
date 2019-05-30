@@ -27,7 +27,7 @@ export class Options implements IOption {
     public pot: boolean = true;
     public square: boolean = false;
     public allowRotation: boolean = false;
-    public trimAlpha: boolean = false; // TODO
+    public trimAlpha: boolean = false;
     public extrudeEdge: number = 0; // TODO
 
    /**
@@ -91,6 +91,7 @@ export class Atlasify {
                     const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
                     sheet.data = image;
                     sheet.name = path.basename(img);
+                    if (this.options.trimAlpha) sheet.trimAlpha();
                     this.rects.push(sheet);
                 })
                 .catch(err => {

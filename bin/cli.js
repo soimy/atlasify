@@ -23,6 +23,7 @@ cli
     .option('-t, --pot', 'atlas size shall be power of 2 (Default: true)', true)
     .option('-s, --square', 'atlas size shall be square (Default: false)', false)
     .option('-r, --rot', 'allow 90-degree rotation while packing (Default: false)', false)
+    .option('    --trim', 'remove surrounding transparent pixels (Default: false)', false)
     
     cli
     .command("*")
@@ -65,6 +66,7 @@ opt.autoSize = utils.valueQueue([opt.autoSize, true]);
 opt.pot = utils.valueQueue([opt.pot, true]);
 opt.square = utils.valueQueue([opt.square, false]);
 opt.rot = utils.valueQueue([opt.rot, false]);
+opt.trim = utils.valueQueue([opt.trim, false]);
 
 //
 // Load images into Rectangle objects
@@ -75,6 +77,7 @@ atlasifyOptions.smart = opt.autoSize;
 atlasifyOptions.pot = opt.pot;
 atlasifyOptions.square = opt.square;
 atlasifyOptions.allowRotation = opt.rot;
+atlasifyOptions.trimAlpha = opt.trim;
 
 //
 // Display options

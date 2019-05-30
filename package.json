@@ -10,7 +10,7 @@
     "clean": "rimraf ./lib && rimraf ./dist && rimraf ./test/*.png",
     "build": "tsc",
     "build:clean": "npm run clean && npm run build",
-    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js -ast -p 5 -m 1024,1024 ./atlas && open ./sprite.png"
+    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js -ast -p 5 -m 1024,1024 --trim ./atlas && open ./sprite.png"
   },
   "repository": {
     "type": "git",

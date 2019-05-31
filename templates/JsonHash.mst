@@ -2,7 +2,7 @@
   "frames": {
     {{#rects}}
     "{{{name}}}": {
-      "frame": { "x": {{x}}, "y": {{y}}, "w": {{width}}, "h": {{height}} },
+      "frame": { "x": {{frame.x}}, "y": {{frame.y}}, "w": {{frame.width}}, "h": {{frame.height}} },
       "rotated": {{rot}},
       "trimmed": {{trimmed}},
       "spriteSourceSize": { "x": {{sourceFrame.x}}, "y": {{sourceFrame.y}}, "w": {{sourceFrame.width}}, "h": {{sourceFrame.height}} },

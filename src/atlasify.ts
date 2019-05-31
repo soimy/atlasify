@@ -28,7 +28,7 @@ export class Options implements IOption {
     public square: boolean = false;
     public allowRotation: boolean = false;
     public trimAlpha: boolean = false;
-    public extrudeEdge: number = 0; // TODO
+    public extrude: number = 0;
     public debug: boolean = false;
 
    /**
@@ -92,7 +92,12 @@ export class Atlasify {
                     const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
                     sheet.data = image;
                     sheet.name = path.basename(img);
-                    if (this.options.trimAlpha) sheet.trimAlpha();
+                    if (this.options.extrude > 0) {
+                        sheet.trimAlpha(); // need to trim before extrude
+                        sheet.extrude(this.options.extrude);
+                    } else if (this.options.trimAlpha) {
+                        sheet.trimAlpha();
+                    }
                     this.rects.push(sheet);
                 })
                 .catch(err => {
@@ -119,14 +124,13 @@ export class Atlasify {
                             const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this.debugColor);
                             image.blit(debugFrame, sheet.x + sheet.frame.x, sheet.y + sheet.frame.y);
                         }
-                        image.blit(buffer, sheet.x, sheet.y,
-                            sheet.sourceFrame.x - sheet.frame.x,
-                            sheet.sourceFrame.y - sheet.frame.y,
-                            sheet.frame.width, sheet.frame.height);
+                        image.blit(buffer, sheet.x, sheet.y);
                     });
                     image.write(binName, () => {
                         console.log('Wrote atlas image : ' + binName);
                     });
+
+                    // prepare spritesheet data
                     const view: ITemplateView = {
                         imageName: binName,
                         width: bin.width,
@@ -136,6 +140,10 @@ export class Atlasify {
                         rects: bin.rects as Sheet[],
                         appInfo: appInfo
                     };
+                    for (let sheet of view.rects) {
+                        sheet.frame.x += sheet.x;
+                        sheet.frame.y += sheet.y;
+                    }
                     fs.writeFileSync(`${basename}.json`, output.compile(view));
                     console.log('Wrote spritesheet : ' + basename + "." + output.getExtension());
                 });

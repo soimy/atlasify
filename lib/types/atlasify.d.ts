@@ -25,7 +25,7 @@ export declare class Options implements IOption {
     square: boolean;
     allowRotation: boolean;
     trimAlpha: boolean;
-    extrudeEdge: number;
+    extrude: number;
     debug: boolean;
     /**
      * Creates an instance of Options.

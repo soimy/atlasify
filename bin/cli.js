@@ -24,6 +24,7 @@ cli
     .option('-s, --square', 'atlas size shall be square (Default: false)', false)
     .option('-r, --rot', 'allow 90-degree rotation while packing (Default: false)', false)
     .option('    --trim', 'remove surrounding transparent pixels (Default: false)', false)
+    .option('    --extrude <n>', 'extrude edge pixels (Default: 0)', 0)
     .option('    --debug', 'draw debug gizmo on atlas (Default: false)', false)
     
     cli
@@ -81,6 +82,7 @@ atlasifyOptions.square = opt.square;
 atlasifyOptions.allowRotation = opt.rot;
 atlasifyOptions.trimAlpha = opt.trim;
 atlasifyOptions.debug = opt.debug;
+atlasifyOptions.extrude = opt.extrude;
 
 //
 // Display options

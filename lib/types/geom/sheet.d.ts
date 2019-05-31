@@ -69,10 +69,34 @@ export declare class Sheet extends Rectangle {
      * @memberof Sheet
      */
     last: boolean;
+    /**
+     * Creates an instance of Sheet extends `MaxrectsPacker.Rectangle`
+     *
+     * @param {number} [width=0] width of sheet
+     * @param {number} [height=0] height of sheet
+     * @param {number} [x=0] position x of sheet
+     * @param {number} [y=0] position y of sheet
+     * @param {boolean} [rot=false] whether sheet is rotated
+     * @memberof Sheet
+     */
     constructor(width?: number, height?: number, x?: number, y?: number, rot?: boolean);
-    trimAlpha(): void;
+    /**
+     * Crop surrounding transparent pixels
+     *
+     * @param {number} [tolerance=0] treat alpha less than this as transparent
+     * @returns {void}
+     * @memberof Sheet
+     */
+    trimAlpha(tolerance?: number): void;
+    /**
+     * Extrude edge pixels. Should `trimAlpha` first
+     *
+     * @param {number} border extrude pixels
+     * @memberof Sheet
+     */
     extrude(border: number): void;
     rotate(): void;
+    private _border;
     private alphaScanner;
     private getChannelIndex;
 }

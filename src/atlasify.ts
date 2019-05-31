@@ -2,7 +2,7 @@ import { MaxRectsPacker, IOption } from "maxrects-packer";
 import Jimp from "jimp";
 import path from "path";
 import fs from "fs";
-import { Sheet } from "./geom/Sheet";
+import { Sheet } from "./geom/sheet";
 import { Exporter } from "./exporter";
 
 let appInfo = require('../package.json');

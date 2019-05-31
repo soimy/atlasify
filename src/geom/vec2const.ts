@@ -16,7 +16,7 @@
  *
  * License: Use it as you wish and if you like it - link back!
  */
-import { Vec2 } from "./Vec2";
+import { Vec2 } from "./vec2";
 
 export class Vec2Const {
     public static lawOfCosAngle (a: number, b: number, c: number): number {

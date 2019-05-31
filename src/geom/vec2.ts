@@ -1,4 +1,4 @@
-import { Vec2Const } from "./Vec2Const";
+import { Vec2Const } from "./vec2const";
 
 /**
  * A 2d Vector class to that is mutable.

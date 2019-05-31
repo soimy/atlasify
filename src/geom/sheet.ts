@@ -1,5 +1,5 @@
 import { Rectangle } from "maxrects-packer";
-import { Vec2 } from "./Vec2";
+import { Vec2 } from "./vec2";
 import Jimp from "jimp";
 
 export class Sheet extends Rectangle {

@@ -125,7 +125,7 @@ export class Sheet extends Rectangle {
         let progress = 0;
         let position = 0;
         while (progress < boundary) {
-            position = forward ? progress : boundary - progress;
+            position = forward ? progress : boundary - progress - 1;
             if (scanline(position, horizontal)) break;
             progress ++;
         }

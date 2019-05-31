@@ -29,6 +29,7 @@ export class Options implements IOption {
     public allowRotation: boolean = false;
     public trimAlpha: boolean = false;
     public extrudeEdge: number = 0; // TODO
+    public debug: boolean = false;
 
    /**
     * Creates an instance of Options.
@@ -114,6 +115,10 @@ export class Atlasify {
                         const sheet = rect as Sheet;
                         const buffer: Jimp = sheet.data;
                         if (sheet.rot) buffer.rotate(90);
+                        if (this.options.debug) {
+                            const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this.debugColor);
+                            image.blit(debugFrame, sheet.x, sheet.y);
+                        }
                         image.blit(buffer, sheet.x, sheet.y, sheet.frame.x, sheet.frame.y, sheet.frame.width, sheet.frame.height);
                     });
                     image.write(binName, () => {
@@ -140,4 +145,5 @@ export class Atlasify {
     private imageFilePaths: string[];
     private rects: Sheet[];
     private packer: MaxRectsPacker;
+    private debugColor: number = 0xff000088;
 }

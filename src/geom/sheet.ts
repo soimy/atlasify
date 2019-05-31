@@ -6,8 +6,11 @@ export class Sheet extends Rectangle {
 
     /**
      * sprite name, normally filename before packing
+     *
      * if `Atlasify.Options.basenameOnly = true` there will be no extension.
+     *
      * if `Atlasify.Options.appendPath = true` name will include relative path.
+     * 
      * @type {string}
      * @memberof Sheet
      */
@@ -15,6 +18,7 @@ export class Sheet extends Rectangle {
 
     /**
      * frame rectangle to be rendered to final atlas
+     * 
      * @type {Rectangle}
      * @memberof Sheet
      */
@@ -22,6 +26,9 @@ export class Sheet extends Rectangle {
 
     /**
      * orignal source rectangle
+     *
+     * `x` and `y` refer to the negative offset from the frame rectangle
+     * 
      * @type {Rectangle}
      * @memberof Sheet
      */
@@ -29,6 +36,7 @@ export class Sheet extends Rectangle {
 
     /**
      * anchor/pivot point
+     * 
      * @type {Vec2}
      * @memberof Sheet
      */
@@ -36,6 +44,7 @@ export class Sheet extends Rectangle {
 
     /**
      * 9-sliced center rectangle
+     * 
      * @type {Rectangle}
      * @memberof Sheet
      */
@@ -43,6 +52,7 @@ export class Sheet extends Rectangle {
 
     /**
      * alpha trimmed
+     * 
      * @type {boolean}
      * @memberof Sheet
      */
@@ -50,6 +60,7 @@ export class Sheet extends Rectangle {
 
     /**
      * image data object
+     * 
      * @type {Jimp}
      * @memberof Sheet
      */
@@ -57,6 +68,7 @@ export class Sheet extends Rectangle {
 
     /**
      * for controlling mustache template trailing comma, don't touch
+     * 
      * @type {boolean}
      * @memberof Sheet
      */
@@ -82,8 +94,8 @@ export class Sheet extends Rectangle {
         let top = this.alphaScanner();
         if (top === this.data.bitmap.height) {// blank image
             this.trimmed = true;
-            this.frame.x = 0;
-            this.frame.y = 0;
+            this.sourceFrame.x = 0;
+            this.sourceFrame.y = 0;
             this.frame.width = this.width = 1;
             this.frame.height = this.height = 1;
         } else {
@@ -92,8 +104,8 @@ export class Sheet extends Rectangle {
             let right = this.alphaScanner(false, false);
             if (left || top || right || bottom) {
                 this.trimmed = true;
-                this.frame.x = left;
-                this.frame.y = top;
+                this.sourceFrame.x = left;
+                this.sourceFrame.y = top;
                 this.frame.width = this.width = this.data.bitmap.width - right - left;
                 this.frame.height = this.height = this.data.bitmap.height - bottom - top;
             }

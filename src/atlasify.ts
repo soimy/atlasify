@@ -117,9 +117,12 @@ export class Atlasify {
                         if (sheet.rot) buffer.rotate(90);
                         if (this.options.debug) {
                             const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this.debugColor);
-                            image.blit(debugFrame, sheet.x, sheet.y);
+                            image.blit(debugFrame, sheet.x + sheet.frame.x, sheet.y + sheet.frame.y);
                         }
-                        image.blit(buffer, sheet.x, sheet.y, sheet.frame.x, sheet.frame.y, sheet.frame.width, sheet.frame.height);
+                        image.blit(buffer, sheet.x, sheet.y,
+                            sheet.sourceFrame.x - sheet.frame.x,
+                            sheet.sourceFrame.y - sheet.frame.y,
+                            sheet.frame.width, sheet.frame.height);
                     });
                     image.write(binName, () => {
                         console.log('Wrote atlas image : ' + binName);

@@ -52,6 +52,9 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
+# rollup caches
+.rpt2_cache
+
 # Yarn Integrity file
 .yarn-integrity
 

@@ -2,13 +2,11 @@
 
 const pjson = require('../package.json');
 const commander = require('commander');
-const Jimp = require('jimp');
 const fs = require('fs');
 const path = require('path');
 const utils = require('./utils');
-const atlasify = require('./atlasify').Atlasify;
-const option = require('./atlasify').Options;
-const ext = ["jpg", "JPG", "jpeg", "JPEG", "png", "PNG"];
+const core = require('../lib/atlasify');
+const ext = ["jpg", "jpeg", "png"];
 
 let imageFiles = [];
 
@@ -25,6 +23,9 @@ cli
     .option('-t, --pot', 'atlas size shall be power of 2 (Default: true)', true)
     .option('-s, --square', 'atlas size shall be square (Default: false)', false)
     .option('-r, --rot', 'allow 90-degree rotation while packing (Default: false)', false)
+    .option('    --trim', 'remove surrounding transparent pixels (Default: false)', false)
+    .option('    --extrude <n>', 'extrude edge pixels (Default: 0)', 0)
+    .option('    --debug', 'draw debug gizmo on atlas (Default: false)', false)
     
     cli
     .command("*")
@@ -38,7 +39,7 @@ cli
                 inputFiles.push(filePath);
         });
         for (let inputFile of inputFiles) {
-            const extname = path.extname(inputFile).slice(1);
+            const extname = path.extname(inputFile).slice(1).toLowerCase();
             if (fs.existsSync(inputFile) && ext.includes(extname)) {
                 console.log("+" + extname + " : " + inputFile);
                 imageFiles.push(inputFile);
@@ -67,16 +68,21 @@ opt.autoSize = utils.valueQueue([opt.autoSize, true]);
 opt.pot = utils.valueQueue([opt.pot, true]);
 opt.square = utils.valueQueue([opt.square, false]);
 opt.rot = utils.valueQueue([opt.rot, false]);
+opt.trim = utils.valueQueue([opt.trim, false]);
+opt.debug = utils.valueQueue([opt.debug, false]);
 
 //
 // Load images into Rectangle objects
 //
-const atlasifyOptions = new option(opt.output, opt.size[0], opt.size[1], opt.padding);
+const atlasifyOptions = new core.Options(opt.output, opt.size[0], opt.size[1], opt.padding);
 atlasifyOptions.name = opt.output;
 atlasifyOptions.smart = opt.autoSize;
 atlasifyOptions.pot = opt.pot;
 atlasifyOptions.square = opt.square;
 atlasifyOptions.allowRotation = opt.rot;
+atlasifyOptions.trimAlpha = opt.extrude > 0 ? true : opt.trim;
+atlasifyOptions.debug = opt.debug;
+atlasifyOptions.extrude = opt.extrude;
 
 //
 // Display options
@@ -90,5 +96,19 @@ keys.forEach(key => {
 });
 console.log("========================================");
 
-const atlas = new atlasify(atlasifyOptions);
-atlas.load(imageFiles);
+const atlas = new core.Atlasify(atlasifyOptions);
+atlas.load(imageFiles, (tex, spritesheets) => {
+    for (let a of tex) {
+        a.image.writeAsync(a.name).then(() => {
+            console.log(`Saved atlas: ${a.name}`);
+        });
+    }
+    const ext = atlas.exporter.getExtension();
+    for (let s of spritesheets) {
+        const sheetName = spritesheets.length > 1
+            ? `${s.name}.${s.id}.${ext}`
+            : `${s.name}.${ext}`;
+        fs.writeFileSync(sheetName, atlas.exporter.compile(s));
+        console.log(`Saved spritesheet: ${sheetName}`);
+    }
+});

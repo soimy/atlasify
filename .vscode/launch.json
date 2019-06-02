@@ -7,15 +7,15 @@
         {
             "type": "node",
             "request": "launch",
+            "cwd": "${workspaceFolder}",
             "name": "Launch via NPM",
             "runtimeExecutable": "npm",
             "runtimeArgs": [
-                "run-script",
-                "cli"
+                "run-script", "test"
             ],
-            "preLaunchTask": "build",
             "port": 9229,
-            "protocol": "inspector"
+            "protocol": "inspector",
+            "preLaunchTask": "build"
         }
     ]
 }

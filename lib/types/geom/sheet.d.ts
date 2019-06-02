@@ -79,6 +79,7 @@ export declare class Sheet extends Rectangle {
      * @memberof Sheet
      */
     constructor(width?: number, height?: number, x?: number, y?: number, rot?: boolean);
+    serialize(): object;
     /**
      * Crop surrounding transparent pixels
      *

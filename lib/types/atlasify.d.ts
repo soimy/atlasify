@@ -1,5 +1,6 @@
 import { IOption } from "maxrects-packer";
-import { Sheet } from "./geom/sheet";
+import Jimp from "jimp";
+import { Exporter } from "./exporter";
 /**
  * Options class for composor and maxrects-packer
  *
@@ -79,19 +80,30 @@ export declare class Options implements IOption {
      */
     constructor(name?: string, width?: number, height?: number, padding?: number, type?: string);
 }
-export interface ITemplateView {
+export interface ISpritesheet {
+    name: string;
+    id: number;
     imageName: string;
     width: number;
     height: number;
     format: string;
     scale: number;
-    rects: Sheet[];
-    appInfo: any;
+    rects: object[];
+    appInfo?: any;
     base64Data?: IBase64Data;
 }
 export interface IBase64Data {
     prefix: string;
     data: string;
+}
+export interface IAtlas {
+    id: number;
+    image: Jimp;
+    width: number;
+    height: number;
+    name: string;
+    folder?: string;
+    format?: string;
 }
 export declare class Atlasify {
     options: Options;
@@ -108,10 +120,14 @@ export declare class Atlasify {
      * @param {string[]} paths pathalike urls
      * @memberof Atlasify
      */
-    load(paths: string[]): void;
-    private imageFilePaths;
-    private rects;
-    private packer;
-    private debugColor;
+    load(paths: string[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void;
+    private _inputPaths;
+    private _rects;
+    private _packer;
+    private _debugColor;
+    private _atlas;
+    private _spritesheets;
+    private _exporter;
+    readonly exporter: Exporter;
 }
 export { Sheet } from './geom/sheet';

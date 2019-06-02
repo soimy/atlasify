@@ -80,7 +80,7 @@ atlasifyOptions.smart = opt.autoSize;
 atlasifyOptions.pot = opt.pot;
 atlasifyOptions.square = opt.square;
 atlasifyOptions.allowRotation = opt.rot;
-atlasifyOptions.trimAlpha = opt.trim;
+atlasifyOptions.trimAlpha = opt.extrude > 0 ? true : opt.trim;
 atlasifyOptions.debug = opt.debug;
 atlasifyOptions.extrude = opt.extrude;
 
@@ -97,4 +97,18 @@ keys.forEach(key => {
 console.log("========================================");
 
 const atlas = new core.Atlasify(atlasifyOptions);
-atlas.load(imageFiles);
+atlas.load(imageFiles, (tex, spritesheets) => {
+    for (let a of tex) {
+        a.image.writeAsync(a.name).then(() => {
+            console.log(`Saved atlas: ${a.name}`);
+        });
+    }
+    const ext = atlas.exporter.getExtension();
+    for (let s of spritesheets) {
+        const sheetName = spritesheets.length > 1
+            ? `${s.name}.${s.id}.${ext}`
+            : `${s.name}.${ext}`;
+        fs.writeFileSync(sheetName, atlas.exporter.compile(s));
+        console.log(`Saved spritesheet: ${sheetName}`);
+    }
+});

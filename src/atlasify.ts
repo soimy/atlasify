@@ -96,20 +96,32 @@ export class Options implements IOption {
     ) { }
 }
 
-export interface ITemplateView {
+export interface ISpritesheet {
+    name: string;
+    id: number;
     imageName: string;
     width: number;
     height: number;
     format: string;
     scale: number;
-    rects: Sheet[];
-    appInfo: any;
+    rects: object[];
+    appInfo?: any;
     base64Data?: IBase64Data;
 }
 
 export interface IBase64Data {
     prefix: string;
     data: string;
+}
+
+export interface IAtlas {
+    id: number;
+    image: Jimp;
+    width: number;
+    height: number;
+    name: string;
+    folder?: string;
+    format?: string;
 }
 
 export class Atlasify {
@@ -121,9 +133,11 @@ export class Atlasify {
     * @memberof Atlasify
     */
     constructor (public options: Options) {
-        this.imageFilePaths = [];
-        this.rects = [];
-        this.packer = new MaxRectsPacker<Sheet>(options.width, options.height, options.padding, options);
+        this._inputPaths = [];
+        this._rects = [];
+        this._packer = new MaxRectsPacker<Sheet>(options.width, options.height, options.padding, options);
+        this._exporter = new Exporter();
+        this._exporter.setExportFormat(this.options.type);
     }
 
    /**
@@ -132,13 +146,11 @@ export class Atlasify {
     * @param {string[]} paths pathalike urls
     * @memberof Atlasify
     */
-    public load (paths: string[]): void {
-        this.imageFilePaths = paths;
-        const output = new Exporter();
-        output.setExportFormat(this.options.type);
+    public load (paths: string[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void {
+        this._inputPaths.concat(paths);
         const loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
-                .then(image => {
+                .then((image: Jimp) => {
                     const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
                     sheet.data = image;
                     sheet.name = path.basename(img);
@@ -148,7 +160,7 @@ export class Atlasify {
                     } else if (this.options.trimAlpha) {
                         sheet.trimAlpha();
                     }
-                    this.rects.push(sheet);
+                    this._rects.push(sheet);
                 })
                 .catch(err => {
                     console.error("File read error : " + err);
@@ -160,53 +172,66 @@ export class Atlasify {
                 const basename: string = path.basename(this.options.name, ext);
                 const fillColor: number = (ext === ".png" || ext === ".PNG") ? 0x00000000 : 0x000000ff;
 
-                this.packer.addArray(this.rects);
-                this.packer.bins.forEach((bin, index: number) => {
-                    const binName: string = this.packer.bins.length > 1 ? `${basename}.${index}${ext}` : `${basename}${ext}`;
+                this._packer.addArray(this._rects);
+                this._packer.bins.forEach((bin, index: number) => {
+                    const binName: string = this._packer.bins.length > 1 ? `${basename}.${index}${ext}` : `${basename}${ext}`;
                     const image = new Jimp(bin.width, bin.height, fillColor);
                     // Add tag to the last sheet to control mustache trailing comma
                     bin.rects[bin.rects.length - 1].last = true;
                     bin.rects.forEach(rect => {
                         const sheet = rect as Sheet;
                         const buffer: Jimp = sheet.data;
-                        // if (sheet.rot) buffer.rotate(90);
+                        sheet.frame.x += sheet.x;
+                        sheet.frame.y += sheet.y;
                         if (this.options.debug) {
-                            const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this.debugColor);
-                            image.blit(debugFrame, sheet.x + sheet.frame.x, sheet.y + sheet.frame.y);
+                            const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this._debugColor);
+                            image.blit(debugFrame, sheet.frame.x, sheet.frame.y);
                         }
                         image.blit(buffer, sheet.x, sheet.y);
                     });
-                    image.write(binName, () => {
-                        console.log('Wrote atlas image : ' + binName);
+                    this._atlas.push({
+                        id: index,
+                        width: bin.width,
+                        height: bin.height,
+                        image: image,
+                        name: binName,
+                        format: ext
                     });
 
                     // prepare spritesheet data
-                    const view: ITemplateView = {
+                    const view: ISpritesheet = {
+                        id: index,
+                        name: basename,
                         imageName: binName,
                         width: bin.width,
                         height: bin.height,
                         format: "RGBA8888",
                         scale: 1,
-                        rects: bin.rects as Sheet[],
+                        rects: (bin.rects as Sheet[]).map(rect => { return rect.serialize(); }),
                         appInfo: appInfo
                     };
-                    for (let sheet of view.rects) {
-                        sheet.frame.x += sheet.x;
-                        sheet.frame.y += sheet.y;
-                    }
-                    fs.writeFileSync(`${basename}.json`, output.compile(view));
-                    console.log('Wrote spritesheet : ' + basename + "." + output.getExtension());
+                    this._spritesheets.push(view);
                 });
+                callback(this._atlas, this._spritesheets);
             })
             .catch(err => {
                 console.error("File load error : " + err);
             });
     }
 
-    private imageFilePaths: string[];
-    private rects: Sheet[];
-    private packer: MaxRectsPacker;
-    private debugColor: number = 0xff000088;
+    private _inputPaths: string[];
+    private _rects: Sheet[];
+    private _packer: MaxRectsPacker;
+    private _debugColor: number = 0xff000088;
+
+    private _atlas: IAtlas[] = [];
+    get atlas (): IAtlas[] { return this._atlas; }
+
+    private _spritesheets: ISpritesheet[] = [];
+    get spritesheets (): ISpritesheet[] { return this._spritesheets; }
+
+    private _exporter: Exporter;
+    get exporter (): Exporter { return this._exporter; }
 }
 
 export { Sheet } from './geom/sheet';

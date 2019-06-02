@@ -99,6 +99,40 @@ export class Sheet extends Rectangle {
         this.data = new Jimp(width, height);
     }
 
+    public serialize (): object {
+        return {
+            name: this.name,
+            width: this.width,
+            height: this.height,
+            x: this.x,
+            y: this.y,
+            rot: this.rot,
+            trimmed: this.trimmed,
+            frame: {
+                width: this.frame.width,
+                height: this.frame.height,
+                x: this.frame.x,
+                y: this.frame.y
+            },
+            sourceFrame: {
+                width: this.sourceFrame.width,
+                height: this.sourceFrame.height,
+                x: this.sourceFrame.x,
+                y: this.sourceFrame.y
+            },
+            anchor: {
+                x: this.anchor.x,
+                y: this.anchor.y
+            },
+            nineSliceFrame: {
+                width: this.nineSliceFrame.width,
+                height: this.nineSliceFrame.height,
+                x: this.nineSliceFrame.x,
+                y: this.nineSliceFrame.y
+            }
+        };
+    }
+
     /**
      * Crop surrounding transparent pixels
      *
@@ -207,7 +241,7 @@ export class Sheet extends Rectangle {
         if (!this.rot) return; // if rot is set to false, do nothing.
 
         if (!this._rotated) this._rotated = true;
-        else return; // if already rotated, skip rotate and swap. 
+        else return; // if already rotated, skip rotate and swap.
 
         this.rotate();
     }

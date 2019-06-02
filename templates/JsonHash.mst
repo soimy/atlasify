@@ -8,7 +8,7 @@
       "spriteSourceSize": { "x": {{sourceFrame.x}}, "y": {{sourceFrame.y}}, "w": {{sourceFrame.width}}, "h": {{sourceFrame.height}} },
       "sourceSize": { "w": {{frame.width}}, "h": {{frame.height}} },
       "pivot": { "x": {{anchor.x}}, "y": {{anchor.y}} },
-      "9slicedFrame": { "x": {{nineSliceFrame.x}}, "y": {{nineSliceFrame.y}}}, "w": {{nineSliceFrame.width}}, "h": {{nineSliceFrame.height}} }
+      "9slicedFrame": { "x": {{nineSliceFrame.x}}, "y": {{nineSliceFrame.y}}, "w": {{nineSliceFrame.width}}, "h": {{nineSliceFrame.height}} }
     }{{^last}},{{/last}}
     {{/rects}}
   },

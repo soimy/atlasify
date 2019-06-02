@@ -140,12 +140,13 @@ export class Atlasify {
         this._exporter.setExportFormat(this.options.type);
     }
 
-   /**
-    * Load arrays of pathalike images url and do packing
-    *
-    * @param {string[]} paths pathalike urls
-    * @memberof Atlasify
-    */
+    /**
+     * Load arrays of pathalike images url and do packing
+     *
+     * @param {string[]} paths
+     * @param {(atlas: IAtlas[], spritesheets: ISpritesheet[]) => void} callback
+     * @memberof Atlasify
+     */
     public load (paths: string[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void {
         this._inputPaths.concat(paths);
         const loader: Promise<void>[] = paths.map(async img => {

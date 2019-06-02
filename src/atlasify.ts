@@ -23,12 +23,60 @@ let appInfo = require('../package.json');
  */
 export class Options implements IOption {
 
+    /**
+     * Atlas will automaticly shrink to the smallest possible square
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     public smart: boolean = true;
+
+    /**
+     * Atlas size shall be power of 2
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     public pot: boolean = true;
+
+    /**
+     * Atlas size shall be square
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     public square: boolean = false;
+
+    /**
+     * Allow 90-degree rotation while packing
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     public allowRotation: boolean = false;
+
+    /**
+     * Remove surrounding transparent pixels
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     public trimAlpha: boolean = false;
+
+    /**
+     * Extrude amount of edge pixels, will automaticly `trimAlpha` first.
+     *
+     * @type {number}
+     * @memberof Options
+     */
     public extrude: number = 0;
+
+    /**
+     * Draw debug info onto atlas
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     public debug: boolean = false;
 
    /**
@@ -68,6 +116,7 @@ export class Atlasify {
 
    /**
     * Creates an instance of Atlasify.
+    *
     * @param {Options} options Atlasify Options class
     * @memberof Atlasify
     */
@@ -79,6 +128,7 @@ export class Atlasify {
 
    /**
     * Load arrays of pathalike images url and do packing
+    *
     * @param {string[]} paths pathalike urls
     * @memberof Atlasify
     */
@@ -119,7 +169,7 @@ export class Atlasify {
                     bin.rects.forEach(rect => {
                         const sheet = rect as Sheet;
                         const buffer: Jimp = sheet.data;
-                        if (sheet.rot) buffer.rotate(90);
+                        // if (sheet.rot) buffer.rotate(90);
                         if (this.options.debug) {
                             const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this.debugColor);
                             image.blit(debugFrame, sheet.x + sheet.frame.x, sheet.y + sheet.frame.y);
@@ -158,3 +208,5 @@ export class Atlasify {
     private packer: MaxRectsPacker;
     private debugColor: number = 0xff000088;
 }
+
+export { Sheet } from './geom/sheet';

@@ -20,12 +20,54 @@ export declare class Options implements IOption {
     height: number;
     padding: number;
     type: string;
+    /**
+     * Atlas will automaticly shrink to the smallest possible square
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     smart: boolean;
+    /**
+     * Atlas size shall be power of 2
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     pot: boolean;
+    /**
+     * Atlas size shall be square
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     square: boolean;
+    /**
+     * Allow 90-degree rotation while packing
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     allowRotation: boolean;
+    /**
+     * Remove surrounding transparent pixels
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     trimAlpha: boolean;
+    /**
+     * Extrude amount of edge pixels, will automaticly `trimAlpha` first.
+     *
+     * @type {number}
+     * @memberof Options
+     */
     extrude: number;
+    /**
+     * Draw debug info onto atlas
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
     debug: boolean;
     /**
      * Creates an instance of Options.
@@ -55,12 +97,14 @@ export declare class Atlasify {
     options: Options;
     /**
      * Creates an instance of Atlasify.
+     *
      * @param {Options} options Atlasify Options class
      * @memberof Atlasify
      */
     constructor(options: Options);
     /**
      * Load arrays of pathalike images url and do packing
+     *
      * @param {string[]} paths pathalike urls
      * @memberof Atlasify
      */
@@ -70,3 +114,4 @@ export declare class Atlasify {
     private packer;
     private debugColor;
 }
+export { Sheet } from './geom/sheet';

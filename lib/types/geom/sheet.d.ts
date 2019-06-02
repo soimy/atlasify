@@ -6,7 +6,6 @@ export declare class Sheet extends Rectangle {
     height: number;
     x: number;
     y: number;
-    rot: boolean;
     /**
      * sprite name, normally filename before packing
      *
@@ -95,8 +94,27 @@ export declare class Sheet extends Rectangle {
      * @memberof Sheet
      */
     extrude(border: number): void;
+    /**
+     * Rotate image data 90-degree CW, and swap width/height
+     *
+     * note: rotate is done automaticly when `Sheet.rot` set to `true`, normally
+     * you don't need to do this manually unless you know what you are doing.
+     *
+     * @memberof Sheet
+     */
     rotate(): void;
     private _border;
+    private _rotated;
+    /**
+     * Status from packer whether `Sheet` should be rotated.
+     *
+     * note: if `rot` set to `true`, image data will be rotated automaticlly,
+     * and `width/height` is swaped.
+     *
+     * @type {boolean}
+     * @memberof Sheet
+     */
+    rot: boolean;
     private alphaScanner;
     private getChannelIndex;
 }

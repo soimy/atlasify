@@ -89,7 +89,7 @@ export class Sheet extends Rectangle {
         public height: number = 0,
         public x: number = 0,
         public y: number = 0,
-        public rot: boolean = false
+        rot: boolean = false
     ) {
         super();
         this.frame = new Rectangle(width, height);
@@ -169,12 +169,48 @@ export class Sheet extends Rectangle {
         this.data.blit(rightExtrude, border + this.frame.width, border);
     }
 
+    /**
+     * Rotate image data 90-degree CW, and swap width/height
+     *
+     * note: rotate is done automaticly when `Sheet.rot` set to `true`, normally
+     * you don't need to do this manually unless you know what you are doing.
+     *
+     * @memberof Sheet
+     */
     public rotate (): void {
-        // TODO
-        this.rot = true;
+        this.data.rotate(90);
+        [this.frame.width, this.frame.height] = [this.frame.height, this.frame.width];
+        [this.width, this.height] = [this.height, this.width];
     }
 
     private _border: number = 0;
+    private _rotated: boolean = false;
+
+    //
+    // overriding Rectangle.rot getter setter
+    //
+
+    /**
+     * Status from packer whether `Sheet` should be rotated.
+     *
+     * note: if `rot` set to `true`, image data will be rotated automaticlly,
+     * and `width/height` is swaped.
+     *
+     * @type {boolean}
+     * @memberof Sheet
+     */
+    get rot (): boolean {
+        return super.rot;
+    }
+    set rot (value: boolean) {
+        super.rot = value;
+        if (!this.rot) return; // if rot is set to false, do nothing.
+
+        if (!this._rotated) this._rotated = true;
+        else return; // if already rotated, skip rotate and swap. 
+
+        this.rotate();
+    }
 
     private alphaScanner (forward: boolean = true, horizontal: boolean = true, tolerance: number = 0x00): number {
         const bitmapData = this.data.bitmap.data;

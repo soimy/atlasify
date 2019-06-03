@@ -248,7 +248,6 @@ export class Sheet extends Rectangle {
      * @type {Jimp}
      * @memberof Sheet
      */
-    // private _data: Jimp = new Jimp();
 
     get data (): Jimp { return super.data; }
     set data (value: Jimp) {

@@ -26,6 +26,7 @@ cli
     .option('    --trim', 'remove surrounding transparent pixels (Default: false)', false)
     .option('    --extrude <n>', 'extrude edge pixels (Default: 0)', 0)
     .option('    --debug', 'draw debug gizmo on atlas (Default: false)', false)
+    .option('    --instant', 'instant packing is quicker and skip sorting (Default: false)', false)
     
     cli
     .command("*")
@@ -70,6 +71,7 @@ opt.square = utils.valueQueue([opt.square, false]);
 opt.rot = utils.valueQueue([opt.rot, false]);
 opt.trim = utils.valueQueue([opt.trim, false]);
 opt.debug = utils.valueQueue([opt.debug, false]);
+opt.instant = utils.valueQueue([opt.instant, false]);
 
 //
 // Load images into Rectangle objects
@@ -83,6 +85,7 @@ atlasifyOptions.allowRotation = opt.rot;
 atlasifyOptions.trimAlpha = opt.extrude > 0 ? true : opt.trim;
 atlasifyOptions.debug = opt.debug;
 atlasifyOptions.extrude = opt.extrude;
+atlasifyOptions.instant = opt.instant;
 
 //
 // Display options
@@ -97,7 +100,7 @@ keys.forEach(key => {
 console.log("========================================");
 
 const atlas = new core.Atlasify(atlasifyOptions);
-atlas.load(imageFiles, (tex, spritesheets) => {
+atlas.addURLs(imageFiles, (tex, spritesheets) => {
     for (let a of tex) {
         a.image.writeAsync(a.name).then(() => {
             console.log(`Saved atlas: ${a.name}`);

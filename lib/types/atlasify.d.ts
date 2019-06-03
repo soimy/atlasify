@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { IOption } from "maxrects-packer";
 import Jimp from "jimp";
 import { Exporter } from "./exporter";
@@ -49,6 +50,13 @@ export declare class Options implements IOption {
      * @memberof Options
      */
     allowRotation: boolean;
+    /**
+     * Instant mode will skip sorting and pack using given array order
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
+    instant: boolean;
     /**
      * Remove surrounding transparent pixels
      *
@@ -115,13 +123,14 @@ export declare class Atlasify {
      */
     constructor(options: Options);
     /**
-     * Load arrays of pathalike images url and do packing
+     * Add arrays of pathalike images url and do packing
      *
      * @param {string[]} paths
      * @param {(atlas: IAtlas[], spritesheets: ISpritesheet[]) => void} callback
      * @memberof Atlasify
      */
-    load(paths: string[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void;
+    addURLs(paths: string[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void;
+    addBuffers(buffers: Buffer[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void;
     private _inputPaths;
     private _rects;
     private _packer;

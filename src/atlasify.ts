@@ -55,6 +55,14 @@ export class Options implements IOption {
     public allowRotation: boolean = false;
 
     /**
+     * Instant mode will skip sorting and pack using given array order
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
+    public instant: boolean = false;
+
+    /**
      * Remove surrounding transparent pixels
      *
      * @type {boolean}
@@ -140,13 +148,13 @@ export class Atlasify {
     }
 
     /**
-     * Load arrays of pathalike images url and do packing
+     * Add arrays of pathalike images url and do packing
      *
      * @param {string[]} paths
      * @param {(atlas: IAtlas[], spritesheets: ISpritesheet[]) => void} callback
      * @memberof Atlasify
      */
-    public load (paths: string[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void {
+    public addURLs (paths: string[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void {
         this._inputPaths.concat(paths);
         const loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
@@ -161,6 +169,9 @@ export class Atlasify {
                         sheet.trimAlpha();
                     }
                     this._rects.push(sheet);
+                    if (this.options.instant) {
+                        this._packer.add(sheet);
+                    }
                 })
                 .catch(err => {
                     console.error("File read error : " + err);
@@ -172,7 +183,7 @@ export class Atlasify {
                 const basename: string = path.basename(this.options.name, ext);
                 const fillColor: number = (ext === ".png" || ext === ".PNG") ? 0x00000000 : 0x000000ff;
 
-                this._packer.addArray(this._rects);
+                if (!this.options.instant) this._packer.addArray(this._rects);
                 this._packer.bins.forEach((bin, index: number) => {
                     const binName: string = this._packer.bins.length > 1 ? `${basename}.${index}${ext}` : `${basename}${ext}`;
                     const image = new Jimp(bin.width, bin.height, fillColor);
@@ -217,6 +228,10 @@ export class Atlasify {
             .catch(err => {
                 console.error("File load error : " + err);
             });
+    }
+
+    public addBuffers (buffers: Buffer[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void {
+        // TODO
     }
 
     private _inputPaths: string[];

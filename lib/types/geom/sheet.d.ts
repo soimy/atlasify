@@ -54,13 +54,7 @@ export declare class Sheet extends Rectangle {
      * @memberof Sheet
      */
     trimmed: boolean;
-    /**
-     * image data object
-     *
-     * @type {Jimp}
-     * @memberof Sheet
-     */
-    data: Jimp;
+    hash: string;
     /**
      * for controlling mustache template trailing comma, don't touch
      *
@@ -116,6 +110,13 @@ export declare class Sheet extends Rectangle {
      * @memberof Sheet
      */
     rot: boolean;
+    /**
+     * image data object
+     *
+     * @type {Jimp}
+     * @memberof Sheet
+     */
+    data: Jimp;
     private alphaScanner;
     private getChannelIndex;
 }

@@ -58,14 +58,7 @@ export class Sheet extends Rectangle {
      */
     public trimmed: boolean = false;
 
-    /**
-     * image data object
-     *
-     * @type {Jimp}
-     * @memberof Sheet
-     */
-    public data: Jimp;
-
+    public hash: string = "";
     /**
      * for controlling mustache template trailing comma, don't touch
      *
@@ -129,7 +122,9 @@ export class Sheet extends Rectangle {
                 height: this.nineSliceFrame.height,
                 x: this.nineSliceFrame.x,
                 y: this.nineSliceFrame.y
-            }
+            },
+            hash: this.hash,
+            last: this.last
         };
     }
 
@@ -245,6 +240,22 @@ export class Sheet extends Rectangle {
         else return; // if already rotated, skip rotate and swap.
 
         this.rotate();
+    }
+
+    /**
+     * image data object
+     *
+     * @type {Jimp}
+     * @memberof Sheet
+     */
+    // private _data: Jimp = new Jimp();
+
+    get data (): Jimp { return super.data; }
+    set data (value: Jimp) {
+        super.data = value;
+        if (this.data.bitmap) {
+            this.hash = this.data.hash();
+        }
     }
 
     private alphaScanner (forward: boolean = true, horizontal: boolean = true, tolerance: number = 0x00): number {

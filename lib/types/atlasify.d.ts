@@ -127,8 +127,26 @@ export declare class Atlasify {
     private _packer;
     private _debugColor;
     private _atlas;
+    /**
+     * Get all atlas/image array
+     *
+     * note: this will only available with all async image load & packing done.
+     *
+     * @readonly
+     * @type {IAtlas[]}
+     * @memberof Atlasify
+     */
     readonly atlas: IAtlas[];
     private _spritesheets;
+    /**
+     * Get all serialized spritesheets array.
+     *
+     * note: this will only available with all async image load & packing done.
+     *
+     * @readonly
+     * @type {ISpritesheet[]}
+     * @memberof Atlasify
+     */
     readonly spritesheets: ISpritesheet[];
     private _exporter;
     readonly exporter: Exporter;

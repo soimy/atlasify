@@ -117,7 +117,8 @@ export declare class Atlasify {
     /**
      * Load arrays of pathalike images url and do packing
      *
-     * @param {string[]} paths pathalike urls
+     * @param {string[]} paths
+     * @param {(atlas: IAtlas[], spritesheets: ISpritesheet[]) => void} callback
      * @memberof Atlasify
      */
     load(paths: string[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void;
@@ -126,7 +127,9 @@ export declare class Atlasify {
     private _packer;
     private _debugColor;
     private _atlas;
+    readonly atlas: IAtlas[];
     private _spritesheets;
+    readonly spritesheets: ISpritesheet[];
     private _exporter;
     readonly exporter: Exporter;
 }

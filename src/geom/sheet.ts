@@ -141,7 +141,8 @@ export class Sheet extends Rectangle {
      * @memberof Sheet
      */
     public trimAlpha (tolerance: number = 0): void {
-        if (this.trimmed) return;
+        // if sheet is already trimmed, or sheet has no alpha, early quit
+        if (this.trimmed || !this.data.hasAlpha()) return;
         let top = this.alphaScanner(true, true, tolerance);
         if (top === this.data.bitmap.height) {// blank image
             this.trimmed = true;

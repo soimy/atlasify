@@ -226,9 +226,29 @@ export class Atlasify {
     private _debugColor: number = 0xff000088;
 
     private _atlas: IAtlas[] = [];
+
+    /**
+     * Get all atlas/image array
+     *
+     * note: this will only available with all async image load & packing done.
+     *
+     * @readonly
+     * @type {IAtlas[]}
+     * @memberof Atlasify
+     */
     get atlas (): IAtlas[] { return this._atlas; }
 
     private _spritesheets: ISpritesheet[] = [];
+
+    /**
+     * Get all serialized spritesheets array.
+     *
+     * note: this will only available with all async image load & packing done.
+     *
+     * @readonly
+     * @type {ISpritesheet[]}
+     * @memberof Atlasify
+     */
     get spritesheets (): ISpritesheet[] { return this._spritesheets; }
 
     private _exporter: Exporter;

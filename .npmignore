@@ -1,10 +1,12 @@
 .tmp
-output
-node_modules
 .DS_Store
-coverage
 .eslintrc
 .gitignore
+.travis.yml
+tslint.json
 *.png
 .vscode
+coverage
 test
+node_modules
+output

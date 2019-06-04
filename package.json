@@ -43,12 +43,13 @@
     "tslib": "^1.9.3",
     "tslint": "^5.17.0",
     "tslint-config-standard": "^8.0.1",
+    "typedoc": "^0.14.2",
     "typescript": "^3.5.1"
   },
   "dependencies": {
     "commander": "^2.20.0",
     "jimp": "^0.6.4",
-    "maxrects-packer": "^2.1.2",
+    "maxrects-packer": "^2.2.0",
     "mustache": "^3.0.1"
   },
   "config": {

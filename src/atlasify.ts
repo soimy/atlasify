@@ -141,7 +141,7 @@ export class Atlasify {
     */
     constructor (public options: Options) {
         this._inputPaths = [];
-        this._rects = [];
+        this._sheets = [];
         this._packer = new MaxRectsPacker<Sheet>(options.width, options.height, options.padding, options);
         this._exporter = new Exporter();
         this._exporter.setExportFormat(this.options.type);
@@ -156,7 +156,6 @@ export class Atlasify {
      */
     public addURLs (paths: string[], callback?: (err?: Error, atlas?: IAtlas[], spritesheets?: ISpritesheet[]) => void): Promise<Atlasify | void> {
         this._inputPaths.concat(paths);
-        let error: Error;
         let loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
                 .then((image: Jimp) => {
@@ -169,7 +168,7 @@ export class Atlasify {
                     } else if (this.options.trimAlpha) {
                         sheet.trimAlpha();
                     }
-                    this._rects.push(sheet);
+                    this._sheets.push(sheet);
                     if (this.options.instant) {
                         this._packer.add(sheet);
                     }
@@ -182,11 +181,12 @@ export class Atlasify {
                 const basename: string = path.basename(this.options.name, ext);
                 const fillColor: number = (ext === ".png" || ext === ".PNG") ? 0x00000000 : 0x000000ff;
 
-                if (!this.options.instant) this._packer.addArray(this._rects);
+                if (!this.options.instant) this._packer.addArray(this._sheets);
                 this._packer.bins.forEach((bin, index: number) => {
                     const binName: string = this._packer.bins.length > 1 ? `${basename}.${index}${ext}` : `${basename}${ext}`;
                     const image = new Jimp(bin.width, bin.height, fillColor);
                     // Add tag to the last sheet to control mustache trailing comma
+                    bin.data = "";
                     bin.rects[bin.rects.length - 1].last = true;
                     bin.rects.forEach(rect => {
                         const sheet = rect as Sheet;
@@ -205,7 +205,8 @@ export class Atlasify {
                         height: bin.height,
                         image: image,
                         name: binName,
-                        format: ext
+                        format: ext,
+                        folder: bin.data.folder ? bin.data.folder : ""
                     });
 
                     // prepare spritesheet data
@@ -228,7 +229,6 @@ export class Atlasify {
             .catch(err => {
                 console.error("File load error : " + err);
                 if (callback) callback(err);
-                error = err;
                 return Promise.reject(err);
             });
     }
@@ -249,7 +249,7 @@ export class Atlasify {
     }
 
     private _inputPaths: string[];
-    private _rects: Sheet[];
+    private _sheets: Sheet[];
     private _packer: MaxRectsPacker;
     private _debugColor: number = 0xff000088;
 

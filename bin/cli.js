@@ -27,6 +27,7 @@ cli
     .option('    --extrude <n>', 'extrude edge pixels (Default: 0)', 0)
     .option('    --debug', 'draw debug gizmo on atlas (Default: false)', false)
     .option('    --instant', 'instant packing is quicker and skip sorting (Default: false)', false)
+    .option('    --seperate-folder', 'Seperate bin based on folder (Default: false)', false)
     
     cli
     .command("*")
@@ -72,6 +73,7 @@ opt.rot = utils.valueQueue([opt.rot, false]);
 opt.trim = utils.valueQueue([opt.trim, false]);
 opt.debug = utils.valueQueue([opt.debug, false]);
 opt.instant = utils.valueQueue([opt.instant, false]);
+opt.seperateFolder = utils.valueQueue([opt.seperateFolder, false]);
 
 //
 // Load images into Rectangle objects
@@ -100,18 +102,24 @@ keys.forEach(key => {
 console.log("========================================");
 
 const atlas = new core.Atlasify(atlasifyOptions);
-atlas.addURLs(imageFiles, (tex, spritesheets) => {
-    for (let a of tex) {
-        a.image.writeAsync(a.name).then(() => {
-            console.log(`Saved atlas: ${a.name}`);
-        });
-    }
-    const ext = atlas.exporter.getExtension();
-    for (let s of spritesheets) {
-        const sheetName = spritesheets.length > 1
-            ? `${s.name}.${s.id}.${ext}`
-            : `${s.name}.${ext}`;
-        fs.writeFileSync(sheetName, atlas.exporter.compile(s));
-        console.log(`Saved spritesheet: ${sheetName}`);
-    }
+imageFiles.sort((a, b) => {
+    const af = utils.getLeafFolder(a);
+    const bf = utils.getLeafFolder(b);
+    return af > bf ? 1 : -1;
 });
+atlas.addURLs(imageFiles)
+    .then(result => {
+        for (let a of result.atlas) {
+            a.image.writeAsync(a.name).then(() => {
+                console.log(`Saved atlas: ${a.name}`);
+            });
+        }
+        const ext = atlas.exporter.getExtension();
+        for (let s of result.spritesheets) {
+            const sheetName = result.spritesheets.length > 1
+                ? `${s.name}.${s.id}.${ext}`
+                : `${s.name}.${ext}`;
+            fs.writeFileSync(sheetName, result.exporter.compile(s));
+            console.log(`Saved spritesheet: ${sheetName}`);
+        }
+    });

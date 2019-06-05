@@ -68,7 +68,8 @@ export class Sheet extends Rectangle {
     public last: boolean = false;
 
     /**
-     * Creates an instance of Sheet extends `MaxrectsPacker.Rectangle`
+     * Creates an instance of Sheet extends `Rectangle`
+     * from {@link https://github.com/soimy/maxrects-packer | MaxrectsPacker}
      *
      * @param {number} [width=0] width of sheet
      * @param {number} [height=0] height of sheet

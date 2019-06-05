@@ -154,9 +154,10 @@ export class Atlasify {
      * @param {(atlas: IAtlas[], spritesheets: ISpritesheet[]) => void} callback
      * @memberof Atlasify
      */
-    public addURLs (paths: string[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void {
+    public addURLs (paths: string[], callback?: (err?: Error, atlas?: IAtlas[], spritesheets?: ISpritesheet[]) => void): Promise<Atlasify | void> {
         this._inputPaths.concat(paths);
-        const loader: Promise<void>[] = paths.map(async img => {
+        let error: Error;
+        let loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
                 .then((image: Jimp) => {
                     const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
@@ -172,12 +173,10 @@ export class Atlasify {
                     if (this.options.instant) {
                         this._packer.add(sheet);
                     }
-                })
-                .catch(err => {
-                    console.error("File read error : " + err);
                 });
         });
-        Promise.all(loader)
+
+        return Promise.all(loader)
             .then(() => {
                 const ext: string = path.extname(this.options.name);
                 const basename: string = path.basename(this.options.name, ext);
@@ -223,15 +222,30 @@ export class Atlasify {
                     };
                     this._spritesheets.push(view);
                 });
-                callback(this._atlas, this._spritesheets);
+                if (callback) callback(undefined, this._atlas, this._spritesheets);
+                return Promise.resolve(this);
             })
             .catch(err => {
                 console.error("File load error : " + err);
+                if (callback) callback(err);
+                error = err;
+                return Promise.reject(err);
             });
     }
 
     public addBuffers (buffers: Buffer[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void {
         // TODO
+    }
+
+    /**
+     * Enclose previous packing bin and start a new one.
+     *
+     * @returns {number}
+     * @memberof Atlasify
+     */
+    public next (): number {
+        this._packer.next();
+        return this._packer.currentBinIndex;
     }
 
     private _inputPaths: string[];

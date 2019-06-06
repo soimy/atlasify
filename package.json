@@ -10,7 +10,7 @@
     "clean": "rimraf ./lib && rimraf ./dist && rimraf ./test/*.png",
     "build": "tsc",
     "build:clean": "npm run clean && npm run build",
-    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js -astr -p 2 -m 2048,2048 --debug --extrude 1 ./atlas && open ./sprite.png",
+    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js -astr -p 2 -m 1024,1024 --debug --extrude 1 --seperate-folder ./atlas && open ./*.png",
     "commit": "npx git-cz"
   },
   "repository": {

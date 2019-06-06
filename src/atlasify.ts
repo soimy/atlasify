@@ -1,4 +1,4 @@
-import { MaxRectsPacker, IOption } from "maxrects-packer";
+import { MaxRectsPacker, IOption, Bin } from "maxrects-packer";
 import Jimp from "jimp";
 import path from "path";
 import { Sheet } from "./geom/sheet";
@@ -63,6 +63,15 @@ export class Options implements IOption {
     public instant: boolean = false;
 
     /**
+     * Seperate sheets packing based on folder
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
+    public seperateFolder: boolean = false;
+    public tag?: boolean;
+
+    /**
      * Remove surrounding transparent pixels
      *
      * @type {boolean}
@@ -103,33 +112,37 @@ export class Options implements IOption {
     ) { }
 }
 
-export interface ISpritesheet {
+export type Atlas = {
+    image: Jimp;
+    ext: string;
+    width: number;
+    height: number;
     name: string;
-    id: number;
+    id?: number;
+    tag?: string;
+    format?: string; // TODO
+};
+
+export type Spritesheet = {
+    name: string;
+    id?: number;
+    tag?: string;
     imageName: string;
+    imageFormat: string;
     width: number;
     height: number;
     format: string;
+    ext: string;
     scale: number;
     rects: object[];
     appInfo?: any;
-    base64Data?: IBase64Data;
-}
+    base64Data?: Base64Data;
+};
 
-export interface IBase64Data {
+export type Base64Data = {
     prefix: string;
     data: string;
-}
-
-export interface IAtlas {
-    id: number;
-    image: Jimp;
-    width: number;
-    height: number;
-    name: string;
-    folder?: string;
-    format?: string;
-}
+};
 
 export class Atlasify {
 
@@ -142,6 +155,7 @@ export class Atlasify {
     constructor (public options: Options) {
         this._inputPaths = [];
         this._sheets = [];
+        if (options.seperateFolder) options.tag = true;
         this._packer = new MaxRectsPacker<Sheet>(options.width, options.height, options.padding, options);
         this._exporter = new Exporter();
         this._exporter.setExportFormat(this.options.type);
@@ -151,10 +165,10 @@ export class Atlasify {
      * Add arrays of pathalike images url and do packing
      *
      * @param {string[]} paths
-     * @param {(atlas: IAtlas[], spritesheets: ISpritesheet[]) => void} callback
+     * @param {(atlas: Atlas[], spritesheets: Spritesheet[]) => void} callback
      * @memberof Atlasify
      */
-    public addURLs (paths: string[], callback?: (err?: Error, atlas?: IAtlas[], spritesheets?: ISpritesheet[]) => void): Promise<Atlasify | void> {
+    public addURLs (paths: string[], callback?: (err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void): Promise<Atlasify | void> {
         this._inputPaths.concat(paths);
         let loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
@@ -168,6 +182,10 @@ export class Atlasify {
                     } else if (this.options.trimAlpha) {
                         sheet.trimAlpha();
                     }
+                    if (this.options.seperateFolder) {
+                        const tag = this.getLeafFolder(img);
+                        if (tag) sheet.tag = tag;
+                    }
                     this._sheets.push(sheet);
                     if (this.options.instant) {
                         this._packer.add(sheet);
@@ -177,17 +195,31 @@ export class Atlasify {
 
         return Promise.all(loader)
             .then(() => {
-                const ext: string = path.extname(this.options.name);
+                let ext: string = path.extname(this.options.name);
                 const basename: string = path.basename(this.options.name, ext);
-                const fillColor: number = (ext === ".png" || ext === ".PNG") ? 0x00000000 : 0x000000ff;
+
+                if (ext === "") ext = "png"; // assign default format PNG
+                else ext = ext.slice(1); // trim . of extname
+                ext = ext.toLowerCase();
+
+                const fillColor: number = (ext === "png") ? 0x00000000 : 0x000000ff;
+                const tagCount: {[index: string]: number} = {};
 
                 if (!this.options.instant) this._packer.addArray(this._sheets);
                 this._packer.bins.forEach((bin, index: number) => {
-                    const binName: string = this._packer.bins.length > 1 ? `${basename}.${index}${ext}` : `${basename}${ext}`;
+                    let binName = basename;
+                    if (bin.tag) binName = `${bin.tag}-${binName}`;
                     const image = new Jimp(bin.width, bin.height, fillColor);
+
+                    // Count tags
+                    let tag = bin.tag ? bin.tag : "_";
+                    if (!tagCount[tag]) tagCount[tag] = 0; // create index key if not exist
+                    else tagCount[tag] ++;
+
                     // Add tag to the last sheet to control mustache trailing comma
-                    bin.data = "";
                     bin.rects[bin.rects.length - 1].last = true;
+
+                    // Render rects onto atlas
                     bin.rects.forEach(rect => {
                         const sheet = rect as Sheet;
                         const buffer: Jimp = sheet.data;
@@ -199,30 +231,44 @@ export class Atlasify {
                         }
                         image.blit(buffer, sheet.x, sheet.y);
                     });
-                    this._atlas.push({
-                        id: index,
+
+                    const atlas: Atlas = {
+                        id: tagCount[tag],
                         width: bin.width,
                         height: bin.height,
                         image: image,
                         name: binName,
-                        format: ext,
-                        folder: bin.data.folder ? bin.data.folder : ""
-                    });
+                        format: "RGBA8888", // TODO
+                        ext: ext
+                    };
+                    this._atlas.push(atlas);
 
                     // prepare spritesheet data
-                    const view: ISpritesheet = {
-                        id: index,
+                    const view: Spritesheet = {
+                        id: tagCount[tag],
                         name: basename,
                         imageName: binName,
+                        imageFormat: "RGBA8888",
                         width: bin.width,
                         height: bin.height,
-                        format: "RGBA8888",
                         scale: 1,
                         rects: (bin.rects as Sheet[]).map(rect => { return rect.serialize(); }),
+                        format: this.options.type,
+                        ext: this._exporter.getExtension(),
                         appInfo: appInfo
                     };
                     this._spritesheets.push(view);
+
+                    // add tag if exist
+                    if (bin.tag) {
+                        atlas.tag = bin.tag;
+                        view.tag = bin.tag;
+                    }
                 });
+
+                // remove id if tag count < 2
+                this.pruneTagIndex(tagCount);
+
                 if (callback) callback(undefined, this._atlas, this._spritesheets);
                 return Promise.resolve(this);
             })
@@ -233,7 +279,7 @@ export class Atlasify {
             });
     }
 
-    public addBuffers (buffers: Buffer[], callback: (atlas: IAtlas[], spritesheets: ISpritesheet[]) => void): void {
+    public addBuffers (buffers: Buffer[], callback: (atlas: Atlas[], spritesheets: Spritesheet[]) => void): void {
         // TODO
     }
 
@@ -253,7 +299,7 @@ export class Atlasify {
     private _packer: MaxRectsPacker;
     private _debugColor: number = 0xff000088;
 
-    private _atlas: IAtlas[] = [];
+    private _atlas: Atlas[] = [];
 
     /**
      * Get all atlas/image array
@@ -261,12 +307,12 @@ export class Atlasify {
      * note: this will only available with all async image load & packing done.
      *
      * @readonly
-     * @type {IAtlas[]}
+     * @type {Atlas[]}
      * @memberof Atlasify
      */
-    get atlas (): IAtlas[] { return this._atlas; }
+    get atlas (): Atlas[] { return this._atlas; }
 
-    private _spritesheets: ISpritesheet[] = [];
+    private _spritesheets: Spritesheet[] = [];
 
     /**
      * Get all serialized spritesheets array.
@@ -274,13 +320,29 @@ export class Atlasify {
      * note: this will only available with all async image load & packing done.
      *
      * @readonly
-     * @type {ISpritesheet[]}
+     * @type {Spritesheet[]}
      * @memberof Atlasify
      */
-    get spritesheets (): ISpritesheet[] { return this._spritesheets; }
+    get spritesheets (): Spritesheet[] { return this._spritesheets; }
 
     private _exporter: Exporter;
     get exporter (): Exporter { return this._exporter; }
+
+    private getLeafFolder (pathalike: string): string | undefined {
+        const leafFolder = path.dirname(pathalike).split(path.sep).pop();
+        return leafFolder;
+    }
+
+    private pruneTagIndex (tagCount: { [index: string]: number; }) {
+        for (let a of this._atlas) {
+            const tag = a.tag ? a.tag : "_";
+            if (tagCount[tag] < 2 && a.id) delete a.id;
+        }
+        for (let s of this._spritesheets) {
+            const tag = s.tag ? s.tag : "_";
+            if (tagCount[tag] < 2 && s.id) delete s.id;
+        }
+    }
 }
 
 export { Sheet } from './geom/sheet';

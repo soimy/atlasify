@@ -58,7 +58,21 @@ export class Sheet extends Rectangle {
      */
     public trimmed: boolean = false;
 
-    public hash: string = "";
+    /**
+     * hash string generated from image, to identifing
+     *
+     * @type {string}
+     * @memberof Sheet
+     */
+    public hash?: string;
+
+    /**
+     * tag of group packing
+     *
+     * @type {string}
+     * @memberof Sheet
+     */
+    public tag?: string;
     /**
      * for controlling mustache template trailing comma, don't touch
      *

@@ -88,6 +88,7 @@ atlasifyOptions.trimAlpha = opt.extrude > 0 ? true : opt.trim;
 atlasifyOptions.debug = opt.debug;
 atlasifyOptions.extrude = opt.extrude;
 atlasifyOptions.instant = opt.instant;
+atlasifyOptions.seperateFolder = opt.seperateFolder;
 
 //
 // Display options
@@ -110,15 +111,13 @@ imageFiles.sort((a, b) => {
 atlas.addURLs(imageFiles)
     .then(result => {
         for (let a of result.atlas) {
-            a.image.writeAsync(a.name).then(() => {
-                console.log(`Saved atlas: ${a.name}`);
+            const imageName = a.id ? `${a.name}.${a.id}.${a.ext}` : `${a.name}.${a.ext}`
+            a.image.writeAsync(imageName).then(() => {
+                console.log(`Saved atlas: ${imageName}`);
             });
         }
-        const ext = atlas.exporter.getExtension();
         for (let s of result.spritesheets) {
-            const sheetName = result.spritesheets.length > 1
-                ? `${s.name}.${s.id}.${ext}`
-                : `${s.name}.${ext}`;
+            const sheetName = s.id ? `${s.imageName}.${s.id}.${s.ext}` : `${s.imageName}.${s.ext}`;
             fs.writeFileSync(sheetName, result.exporter.compile(s));
             console.log(`Saved spritesheet: ${sheetName}`);
         }

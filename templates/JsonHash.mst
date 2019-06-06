@@ -16,7 +16,7 @@
     "app": "{{{appInfo.name}}} {{{appInfo.homepage}}}",
     "version": "{{appInfo.version}}",
     "image": "{{^base64Data}}{{imageName}}{{/base64Data}}{{#base64Data}}{{{prefix}}}{{{data}}}{{/base64Data}}",
-    "format": "{{format}}",
+    "format": "{{imageFormat}}",
     "size": { "w": {{width}}, "h": {{height}} },
     "scale": {{scale}}
   }

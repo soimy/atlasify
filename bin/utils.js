@@ -399,3 +399,10 @@ const getAllFiles = (dir, recursive = true) =>
     return isDirectory ? (recursive ? [...files, ...getAllFiles(name)] : [...files]) : [...files, name];
   }, []);
 exports.getAllFiles = getAllFiles;
+
+
+function getLeafFolder (pathalike) {
+  const leafFolder = path.dirname(pathalike).split(path.sep).pop();
+  return leafFolder ? leafFolder : "";
+}
+exports.getLeafFolder = getLeafFolder;

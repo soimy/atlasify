@@ -59,13 +59,20 @@ export class Sheet extends Rectangle {
     public trimmed: boolean = false;
 
     /**
-     * image data object
+     * hash string generated from image, to identifing
      *
-     * @type {Jimp}
+     * @type {string}
      * @memberof Sheet
      */
-    public data: Jimp;
+    public hash?: string;
 
+    /**
+     * tag of group packing
+     *
+     * @type {string}
+     * @memberof Sheet
+     */
+    public tag?: string;
     /**
      * for controlling mustache template trailing comma, don't touch
      *
@@ -75,7 +82,8 @@ export class Sheet extends Rectangle {
     public last: boolean = false;
 
     /**
-     * Creates an instance of Sheet extends `MaxrectsPacker.Rectangle`
+     * Creates an instance of Sheet extends `Rectangle`
+     * from {@link https://github.com/soimy/maxrects-packer | MaxrectsPacker}
      *
      * @param {number} [width=0] width of sheet
      * @param {number} [height=0] height of sheet
@@ -129,7 +137,9 @@ export class Sheet extends Rectangle {
                 height: this.nineSliceFrame.height,
                 x: this.nineSliceFrame.x,
                 y: this.nineSliceFrame.y
-            }
+            },
+            hash: this.hash,
+            last: this.last
         };
     }
 
@@ -141,7 +151,8 @@ export class Sheet extends Rectangle {
      * @memberof Sheet
      */
     public trimAlpha (tolerance: number = 0): void {
-        if (this.trimmed) return;
+        // if sheet is already trimmed, or sheet has no alpha, early quit
+        if (this.trimmed || !this.data.hasAlpha()) return;
         let top = this.alphaScanner(true, true, tolerance);
         if (top === this.data.bitmap.height) {// blank image
             this.trimmed = true;
@@ -244,6 +255,21 @@ export class Sheet extends Rectangle {
         else return; // if already rotated, skip rotate and swap.
 
         this.rotate();
+    }
+
+    /**
+     * image data object
+     *
+     * @type {Jimp}
+     * @memberof Sheet
+     */
+
+    get data (): Jimp { return super.data; }
+    set data (value: Jimp) {
+        super.data = value;
+        if (this.data.bitmap) {
+            this.hash = this.data.hash();
+        }
     }
 
     private alphaScanner (forward: boolean = true, horizontal: boolean = true, tolerance: number = 0x00): number {

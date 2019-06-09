@@ -10,7 +10,7 @@
     "clean": "rimraf ./lib && rimraf ./dist && rimraf ./test/*.png",
     "build": "tsc",
     "build:clean": "npm run clean && npm run build",
-    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js -astr -p 2 -m 1024,1024 --debug --extrude 1 --seperate-folder ./atlas && open ./*.png",
+    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js -astr -p 2 -m 1024,1024 --debug --extrude 1 ./atlas && open ./*.png",
     "commit": "npx git-cz"
   },
   "repository": {
@@ -36,7 +36,7 @@
   "homepage": "https://github.com/soimy/atlasify#readme",
   "devDependencies": {
     "@types/mustache": "^0.8.32",
-    "@types/node": "^12.0.4",
+    "@types/node": "^12.0.5",
     "cz-conventional-changelog": "^2.1.0",
     "rimraf": "^2.6.3",
     "ts-node": "^8.2.0",
@@ -49,7 +49,7 @@
   "dependencies": {
     "commander": "^2.20.0",
     "jimp": "^0.6.4",
-    "maxrects-packer": "^2.2.0",
+    "maxrects-packer": "^2.3.0",
     "mustache": "^3.0.1"
   },
   "config": {

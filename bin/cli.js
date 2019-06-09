@@ -117,7 +117,7 @@ atlas.addURLs(imageFiles)
             });
         }
         for (let s of result.spritesheets) {
-            const sheetName = s.id ? `${s.imageName}.${s.id}.${s.ext}` : `${s.imageName}.${s.ext}`;
+            const sheetName = s.id ? `${s.name}.${s.id}.${s.ext}` : `${s.name}.${s.ext}`;
             fs.writeFileSync(sheetName, result.exporter.compile(s));
             console.log(`Saved spritesheet: ${sheetName}`);
         }

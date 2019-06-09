@@ -199,8 +199,7 @@ export class Atlasify {
                 const basename: string = path.basename(this.options.name, ext);
 
                 if (ext === "") ext = "png"; // assign default format PNG
-                else ext = ext.slice(1); // trim . of extname
-                ext = ext.toLowerCase();
+                else ext = ext.slice(1).toLowerCase(); // trim . of extname
 
                 const fillColor: number = (ext === "png") ? 0x00000000 : 0x000000ff;
                 const tagCount: {[index: string]: number} = {};
@@ -246,8 +245,8 @@ export class Atlasify {
                     // prepare spritesheet data
                     const view: Spritesheet = {
                         id: tagCount[tag],
-                        name: basename,
-                        imageName: binName,
+                        name: binName,
+                        imageName: `${binName}.${ext}`,
                         imageFormat: "RGBA8888",
                         width: bin.width,
                         height: bin.height,
@@ -292,6 +291,19 @@ export class Atlasify {
     public next (): number {
         this._packer.next();
         return this._packer.currentBinIndex;
+    }
+
+    public save (pathalike?: string): void {
+        // TODO
+    }
+
+    public load (pathalike: string): void {
+        // TODO
+    }
+
+    public static load (pathalike: string): Atlasify | undefined {
+        // TODO
+        return undefined;
     }
 
     private _inputPaths: string[];

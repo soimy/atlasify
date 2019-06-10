@@ -81,6 +81,14 @@ export class Options implements IOption {
     public trimAlpha: boolean = false;
 
     /**
+     * Trim alpha with tolerence value
+     *
+     * @type {number}
+     * @memberof Options
+     */
+    public alphaTolerence: number = 0;
+
+    /**
      * Extrude amount of edge pixels, will automaticly `trimAlpha` first.
      *
      * @type {number}
@@ -178,10 +186,10 @@ export class Atlasify {
                     sheet.data = image;
                     sheet.name = path.basename(img);
                     if (this.options.extrude > 0) {
-                        sheet.trimAlpha(); // need to trim before extrude
+                        sheet.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
                         sheet.extrude(this.options.extrude);
                     } else if (this.options.trimAlpha) {
-                        sheet.trimAlpha();
+                        sheet.trimAlpha(this.options.alphaTolerence);
                     }
                     if (this.options.seperateFolder) {
                         const tag = this.getLeafFolder(img);

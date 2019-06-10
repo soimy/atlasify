@@ -23,7 +23,7 @@ cli
     .option('-t, --pot', 'atlas size shall be power of 2 (Default: true)', true)
     .option('-s, --square', 'atlas size shall be square (Default: false)', false)
     .option('-r, --rot', 'allow 90-degree rotation while packing (Default: false)', false)
-    .option('    --trim', 'remove surrounding transparent pixels (Default: false)', false)
+    .option('    --trim [n]', 'remove surrounding transparent pixels with optional tolerence [n] (Default: false)', false)
     .option('    --extrude <n>', 'extrude edge pixels (Default: 0)', 0)
     .option('    --debug', 'draw debug gizmo on atlas (Default: false)', false)
     .option('    --instant', 'instant packing is quicker and skip sorting (Default: false)', false)
@@ -84,7 +84,8 @@ atlasifyOptions.smart = opt.autoSize;
 atlasifyOptions.pot = opt.pot;
 atlasifyOptions.square = opt.square;
 atlasifyOptions.allowRotation = opt.rot;
-atlasifyOptions.trimAlpha = opt.extrude > 0 ? true : opt.trim;
+atlasifyOptions.trimAlpha = opt.extrude > 0 ? true : opt.trim !== false ? true : false;
+atlasifyOptions.alphaTolerence = utils.isNumeric(opt.trim) ? opt.trim : 0;
 atlasifyOptions.debug = opt.debug;
 atlasifyOptions.extrude = opt.extrude;
 atlasifyOptions.instant = opt.instant;

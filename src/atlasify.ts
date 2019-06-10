@@ -178,7 +178,7 @@ export class Atlasify {
      * @memberof Atlasify
      */
     public addURLs (paths: string[], callback?: (err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void): Promise<Atlasify | void> {
-        this._inputPaths.concat(paths);
+        this._inputPaths = this._inputPaths.concat(paths);
         let loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
                 .then((image: Jimp) => {
@@ -302,19 +302,28 @@ export class Atlasify {
         return this._packer.currentBinIndex;
     }
 
-    public save (pathalike?: string): string {
+    public save (pathalike?: string, humanReadable: boolean = false): string {
         const atl: object = {
             options: this.options,
             packer: this._packer.save(),
             spritesheets: this._spritesheets,
-            // atlas: this._atlas,
+            atlas: this._atlas.map(a => {
+                return {
+                    id: a.id ? a.id : 0,
+                    width: a.width,
+                    height: a.height,
+                    name: a.name,
+                    format: "RGBA8888", // TODO
+                    ext: a.ext
+                };
+            }),
             imagePaths: this._inputPaths
         };
-        const result = JSON.stringify(atl, null, 2);
+        const result = humanReadable ? JSON.stringify(atl, null, 2) : JSON.stringify(atl);
         if (pathalike) {
             writeFile(pathalike, result, err => {
                 if (err) console.error(`Saving atl file encountered error: ${err}`);
-                else console.log(`Saved settings: ${pathalike}`);
+                else console.log(`Saved configuration: ${pathalike}`);
             });
         }
         return result;
@@ -334,7 +343,7 @@ export class Atlasify {
         }
     }
 
-    public static load (pathalike: string): Atlasify | undefined {
+    public static load (pathalike: string, overrides: any = null, quick: boolean = false): Atlasify | undefined {
         // TODO
         return undefined;
     }

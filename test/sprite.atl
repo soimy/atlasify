@@ -1,0 +1,1580 @@
+{
+  "options": {
+    "name": "sprite.png",
+    "width": 1024,
+    "height": 1024,
+    "padding": 2,
+    "type": "JsonHash",
+    "smart": true,
+    "pot": true,
+    "square": true,
+    "allowRotation": true,
+    "instant": false,
+    "seperateFolder": false,
+    "trimAlpha": true,
+    "alphaTolerence": 64,
+    "extrude": 1,
+    "debug": true
+  },
+  "packer": [
+    {
+      "width": 1024,
+      "height": 1024,
+      "maxWidth": 1024,
+      "maxHeight": 1024,
+      "freeRects": [
+        {
+          "x": 235,
+          "y": 233,
+          "width": 7,
+          "height": 2
+        },
+        {
+          "x": 438,
+          "y": 234,
+          "width": 18,
+          "height": 1
+        },
+        {
+          "x": 999,
+          "y": 0,
+          "width": 27,
+          "height": 1026
+        },
+        {
+          "x": 990,
+          "y": 135,
+          "width": 36,
+          "height": 891
+        },
+        {
+          "x": 638,
+          "y": 108,
+          "width": 187,
+          "height": 17
+        },
+        {
+          "x": 802,
+          "y": 0,
+          "width": 23,
+          "height": 125
+        },
+        {
+          "x": 588,
+          "y": 234,
+          "width": 44,
+          "height": 37
+        },
+        {
+          "x": 209,
+          "y": 461,
+          "width": 26,
+          "height": 8
+        },
+        {
+          "x": 970,
+          "y": 286,
+          "width": 56,
+          "height": 740
+        },
+        {
+          "x": 817,
+          "y": 271,
+          "width": 8,
+          "height": 15
+        },
+        {
+          "x": 967,
+          "y": 392,
+          "width": 59,
+          "height": 634
+        },
+        {
+          "x": 716,
+          "y": 372,
+          "width": 35,
+          "height": 61
+        },
+        {
+          "x": 575,
+          "y": 423,
+          "width": 13,
+          "height": 109
+        },
+        {
+          "x": 954,
+          "y": 489,
+          "width": 72,
+          "height": 537
+        },
+        {
+          "x": 812,
+          "y": 433,
+          "width": 5,
+          "height": 56
+        },
+        {
+          "x": 117,
+          "y": 611,
+          "width": 92,
+          "height": 16
+        },
+        {
+          "x": 404,
+          "y": 626,
+          "width": 11,
+          "height": 400
+        },
+        {
+          "x": 0,
+          "y": 1020,
+          "width": 1026,
+          "height": 6
+        },
+        {
+          "x": 108,
+          "y": 767,
+          "width": 9,
+          "height": 123
+        },
+        {
+          "x": 687,
+          "y": 532,
+          "width": 29,
+          "height": 48
+        },
+        {
+          "x": 809,
+          "y": 608,
+          "width": 217,
+          "height": 418
+        },
+        {
+          "x": 809,
+          "y": 580,
+          "width": 3,
+          "height": 446
+        },
+        {
+          "x": 558,
+          "y": 581,
+          "width": 17,
+          "height": 95
+        },
+        {
+          "x": 404,
+          "y": 721,
+          "width": 154,
+          "height": 305
+        },
+        {
+          "x": 368,
+          "y": 795,
+          "width": 658,
+          "height": 231
+        },
+        {
+          "x": 368,
+          "y": 766,
+          "width": 190,
+          "height": 260
+        },
+        {
+          "x": 677,
+          "y": 708,
+          "width": 349,
+          "height": 318
+        },
+        {
+          "x": 677,
+          "y": 676,
+          "width": 10,
+          "height": 350
+        },
+        {
+          "x": 415,
+          "y": 577,
+          "width": 41,
+          "height": 4
+        },
+        {
+          "x": 441,
+          "y": 469,
+          "width": 15,
+          "height": 112
+        },
+        {
+          "x": 0,
+          "y": 981,
+          "width": 108,
+          "height": 45
+        },
+        {
+          "x": 83,
+          "y": 898,
+          "width": 25,
+          "height": 128
+        },
+        {
+          "x": 257,
+          "y": 627,
+          "width": 60,
+          "height": 131
+        },
+        {
+          "x": 316,
+          "y": 627,
+          "width": 1,
+          "height": 263
+        },
+        {
+          "x": 249,
+          "y": 825,
+          "width": 777,
+          "height": 65
+        },
+        {
+          "x": 316,
+          "y": 795,
+          "width": 710,
+          "height": 95
+        },
+        {
+          "x": 316,
+          "y": 766,
+          "width": 242,
+          "height": 124
+        }
+      ],
+      "rects": [],
+      "options": {
+        "name": "sprite.png",
+        "width": 1024,
+        "height": 1024,
+        "padding": 2,
+        "type": "JsonHash",
+        "smart": true,
+        "pot": true,
+        "square": true,
+        "allowRotation": true,
+        "instant": false,
+        "seperateFolder": false,
+        "trimAlpha": true,
+        "alphaTolerence": 64,
+        "extrude": 1,
+        "debug": true
+      }
+    }
+  ],
+  "spritesheets": [
+    {
+      "id": 0,
+      "name": "sprite",
+      "imageName": "sprite.png",
+      "imageFormat": "RGBA8888",
+      "width": 1024,
+      "height": 1024,
+      "scale": 1,
+      "rects": [
+        {
+          "name": "foodwaste-icon.png",
+          "width": 240,
+          "height": 231,
+          "x": 0,
+          "y": 0,
+          "rot": false,
+          "trimmed": false,
+          "frame": {
+            "width": 238,
+            "height": 229,
+            "x": 1,
+            "y": 1
+          },
+          "sourceFrame": {
+            "width": 238,
+            "height": 229,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 119,
+            "y": 114.5
+          },
+          "nineSliceFrame": {
+            "width": 238,
+            "height": 229,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "9BCn2N8x7Lj",
+          "last": false
+        },
+        {
+          "name": "poisen-icon.png",
+          "width": 194,
+          "height": 233,
+          "x": 242,
+          "y": 0,
+          "rot": false,
+          "trimmed": false,
+          "frame": {
+            "width": 192,
+            "height": 231,
+            "x": 243,
+            "y": 1
+          },
+          "sourceFrame": {
+            "width": 192,
+            "height": 231,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 96,
+            "y": 115.5
+          },
+          "nineSliceFrame": {
+            "width": 192,
+            "height": 231,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "f613KCbtCpE",
+          "last": false
+        },
+        {
+          "name": "recycle-icon.png",
+          "width": 233,
+          "height": 226,
+          "x": 0,
+          "y": 233,
+          "rot": false,
+          "trimmed": false,
+          "frame": {
+            "width": 231,
+            "height": 224,
+            "x": 1,
+            "y": 234
+          },
+          "sourceFrame": {
+            "width": 231,
+            "height": 224,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 115.5,
+            "y": 112
+          },
+          "nineSliceFrame": {
+            "width": 231,
+            "height": 224,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "dg12yFXFe71",
+          "last": false
+        },
+        {
+          "name": "unrecycle-icon.png",
+          "width": 219,
+          "height": 232,
+          "x": 235,
+          "y": 235,
+          "rot": false,
+          "trimmed": false,
+          "frame": {
+            "width": 217,
+            "height": 230,
+            "x": 236,
+            "y": 236
+          },
+          "sourceFrame": {
+            "width": 217,
+            "height": 230,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 108.5,
+            "y": 115
+          },
+          "nineSliceFrame": {
+            "width": 217,
+            "height": 230,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "9op6KAVwr5e",
+          "last": false
+        },
+        {
+          "name": "u-toiletpaper.png",
+          "width": 207,
+          "height": 148,
+          "x": 0,
+          "y": 461,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 205,
+            "height": 146,
+            "x": 1,
+            "y": 462
+          },
+          "sourceFrame": {
+            "width": 206,
+            "height": 146,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 103,
+            "y": 73
+          },
+          "nineSliceFrame": {
+            "width": 206,
+            "height": 146,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "9jaaildbnUA",
+          "last": false
+        },
+        {
+          "name": "p-drugs.png",
+          "width": 198,
+          "height": 123,
+          "x": 438,
+          "y": 0,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 196,
+            "height": 121,
+            "x": 439,
+            "y": 1
+          },
+          "sourceFrame": {
+            "width": 197,
+            "height": 148,
+            "x": 1,
+            "y": 19
+          },
+          "anchor": {
+            "x": 98.5,
+            "y": 74
+          },
+          "nineSliceFrame": {
+            "width": 197,
+            "height": 148,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "90_2V1DoxtE",
+          "last": false
+        },
+        {
+          "name": "u-dust.png",
+          "width": 192,
+          "height": 107,
+          "x": 438,
+          "y": 125,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 190,
+            "height": 105,
+            "x": 439,
+            "y": 126
+          },
+          "sourceFrame": {
+            "width": 192,
+            "height": 105,
+            "x": 1,
+            "y": 0
+          },
+          "anchor": {
+            "x": 96,
+            "y": 52.5
+          },
+          "nineSliceFrame": {
+            "width": 192,
+            "height": 105,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "9lidSFEzEKN",
+          "last": false
+        },
+        {
+          "name": "k-vegetable.png",
+          "width": 191,
+          "height": 144,
+          "x": 632,
+          "y": 125,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 189,
+            "height": 142,
+            "x": 633,
+            "y": 126
+          },
+          "sourceFrame": {
+            "width": 190,
+            "height": 142,
+            "x": 1,
+            "y": 0
+          },
+          "anchor": {
+            "x": 95,
+            "y": 71
+          },
+          "nineSliceFrame": {
+            "width": 190,
+            "height": 142,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "9mkixL9X2M_",
+          "last": false
+        },
+        {
+          "name": "r-paper.png",
+          "width": 187,
+          "height": 130,
+          "x": 456,
+          "y": 234,
+          "rot": true,
+          "trimmed": true,
+          "frame": {
+            "width": 128,
+            "height": 185,
+            "x": 457,
+            "y": 235
+          },
+          "sourceFrame": {
+            "width": 207,
+            "height": 142,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 103.5,
+            "y": 71
+          },
+          "nineSliceFrame": {
+            "width": 207,
+            "height": 142,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "85Dq_GVBdhp",
+          "last": false
+        },
+        {
+          "name": "u-tableware.png",
+          "width": 172,
+          "height": 133,
+          "x": 825,
+          "y": 0,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 170,
+            "height": 131,
+            "x": 826,
+            "y": 1
+          },
+          "sourceFrame": {
+            "width": 191,
+            "height": 171,
+            "x": 1,
+            "y": 0
+          },
+          "anchor": {
+            "x": 95.5,
+            "y": 85.5
+          },
+          "nineSliceFrame": {
+            "width": 191,
+            "height": 171,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "8ha3GloJ6xg",
+          "last": false
+        },
+        {
+          "name": "r-cloth.png",
+          "width": 163,
+          "height": 149,
+          "x": 825,
+          "y": 135,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 161,
+            "height": 147,
+            "x": 826,
+            "y": 136
+          },
+          "sourceFrame": {
+            "width": 162,
+            "height": 167,
+            "x": 0,
+            "y": 9
+          },
+          "anchor": {
+            "x": 81,
+            "y": 83.5
+          },
+          "nineSliceFrame": {
+            "width": 162,
+            "height": 167,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "9mA6xlW7i0U",
+          "last": false
+        },
+        {
+          "name": "u-cig.png",
+          "width": 162,
+          "height": 106,
+          "x": 638,
+          "y": 0,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 160,
+            "height": 104,
+            "x": 639,
+            "y": 1
+          },
+          "sourceFrame": {
+            "width": 164,
+            "height": 105,
+            "x": 0,
+            "y": 1
+          },
+          "anchor": {
+            "x": 82,
+            "y": 52.5
+          },
+          "nineSliceFrame": {
+            "width": 164,
+            "height": 105,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "9iQrkAr5xYv",
+          "last": false
+        },
+        {
+          "name": "k-leaf.png",
+          "width": 161,
+          "height": 99,
+          "x": 588,
+          "y": 271,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 159,
+            "height": 97,
+            "x": 589,
+            "y": 272
+          },
+          "sourceFrame": {
+            "width": 168,
+            "height": 98,
+            "x": 1,
+            "y": 1
+          },
+          "anchor": {
+            "x": 84,
+            "y": 49
+          },
+          "nineSliceFrame": {
+            "width": 168,
+            "height": 98,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "ctfnF4V7YbM",
+          "last": false
+        },
+        {
+          "name": "p-insecticides.png",
+          "width": 64,
+          "height": 160,
+          "x": 751,
+          "y": 271,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 62,
+            "height": 158,
+            "x": 752,
+            "y": 272
+          },
+          "sourceFrame": {
+            "width": 97,
+            "height": 168,
+            "x": 16,
+            "y": 10
+          },
+          "anchor": {
+            "x": 48.5,
+            "y": 84
+          },
+          "nineSliceFrame": {
+            "width": 97,
+            "height": 168,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "c1y1Vl_D6G5",
+          "last": false
+        },
+        {
+          "name": "p-inkbox.png",
+          "width": 126,
+          "height": 158,
+          "x": 588,
+          "y": 372,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 124,
+            "height": 156,
+            "x": 589,
+            "y": 373
+          },
+          "sourceFrame": {
+            "width": 141,
+            "height": 174,
+            "x": 0,
+            "y": 18
+          },
+          "anchor": {
+            "x": 70.5,
+            "y": 87
+          },
+          "nineSliceFrame": {
+            "width": 141,
+            "height": 174,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "ci8o1xEp7dG",
+          "last": false
+        },
+        {
+          "name": "k-tea.png",
+          "width": 156,
+          "height": 117,
+          "x": 456,
+          "y": 423,
+          "rot": true,
+          "trimmed": false,
+          "frame": {
+            "width": 115,
+            "height": 154,
+            "x": 457,
+            "y": 424
+          },
+          "sourceFrame": {
+            "width": 154,
+            "height": 115,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 77,
+            "y": 57.5
+          },
+          "nineSliceFrame": {
+            "width": 154,
+            "height": 115,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "c58bbor9hrw",
+          "last": false
+        },
+        {
+          "name": "p-light.png",
+          "width": 106,
+          "height": 156,
+          "x": 209,
+          "y": 469,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 104,
+            "height": 154,
+            "x": 210,
+            "y": 470
+          },
+          "sourceFrame": {
+            "width": 104,
+            "height": 171,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 52,
+            "y": 85.5
+          },
+          "nineSliceFrame": {
+            "width": 104,
+            "height": 171,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "c21hQwT91H2",
+          "last": false
+        },
+        {
+          "name": "p-battery.png",
+          "width": 155,
+          "height": 96,
+          "x": 317,
+          "y": 469,
+          "rot": true,
+          "trimmed": true,
+          "frame": {
+            "width": 94,
+            "height": 153,
+            "x": 318,
+            "y": 470
+          },
+          "sourceFrame": {
+            "width": 184,
+            "height": 152,
+            "x": 15,
+            "y": 30
+          },
+          "anchor": {
+            "x": 92,
+            "y": 76
+          },
+          "nineSliceFrame": {
+            "width": 184,
+            "height": 152,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "96lqRF8oxFE",
+          "last": false
+        },
+        {
+          "name": "u-shit.png",
+          "width": 115,
+          "height": 154,
+          "x": 0,
+          "y": 611,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 113,
+            "height": 152,
+            "x": 1,
+            "y": 612
+          },
+          "sourceFrame": {
+            "width": 113,
+            "height": 153,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 56.5,
+            "y": 76.5
+          },
+          "nineSliceFrame": {
+            "width": 113,
+            "height": 153,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "bnMpMZcYdDx",
+          "last": false
+        },
+        {
+          "name": "k-bone.png",
+          "width": 151,
+          "height": 104,
+          "x": 817,
+          "y": 286,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 149,
+            "height": 102,
+            "x": 818,
+            "y": 287
+          },
+          "sourceFrame": {
+            "width": 149,
+            "height": 103,
+            "x": 0,
+            "y": 1
+          },
+          "anchor": {
+            "x": 74.5,
+            "y": 51.5
+          },
+          "nineSliceFrame": {
+            "width": 149,
+            "height": 103,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "9ktJuFy4TGO",
+          "last": false
+        },
+        {
+          "name": "k-peel.png",
+          "width": 148,
+          "height": 95,
+          "x": 817,
+          "y": 392,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 146,
+            "height": 93,
+            "x": 818,
+            "y": 393
+          },
+          "sourceFrame": {
+            "width": 149,
+            "height": 105,
+            "x": 1,
+            "y": 4
+          },
+          "anchor": {
+            "x": 74.5,
+            "y": 52.5
+          },
+          "nineSliceFrame": {
+            "width": 149,
+            "height": 105,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "9kOuID2DP4A",
+          "last": false
+        },
+        {
+          "name": "r-glass.png",
+          "width": 94,
+          "height": 145,
+          "x": 716,
+          "y": 433,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 92,
+            "height": 143,
+            "x": 717,
+            "y": 434
+          },
+          "sourceFrame": {
+            "width": 112,
+            "height": 159,
+            "x": 0,
+            "y": 1
+          },
+          "anchor": {
+            "x": 56,
+            "y": 79.5
+          },
+          "nineSliceFrame": {
+            "width": 112,
+            "height": 159,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "d1yg31GA2Kg",
+          "last": false
+        },
+        {
+          "name": "u-brokenchina.png",
+          "width": 142,
+          "height": 110,
+          "x": 575,
+          "y": 532,
+          "rot": true,
+          "trimmed": true,
+          "frame": {
+            "width": 108,
+            "height": 140,
+            "x": 576,
+            "y": 533
+          },
+          "sourceFrame": {
+            "width": 141,
+            "height": 110,
+            "x": 1,
+            "y": 1
+          },
+          "anchor": {
+            "x": 70.5,
+            "y": 55
+          },
+          "nineSliceFrame": {
+            "width": 141,
+            "height": 110,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "f0Y2ccYMhsM",
+          "last": false
+        },
+        {
+          "name": "p-paint.png",
+          "width": 141,
+          "height": 138,
+          "x": 415,
+          "y": 581,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 139,
+            "height": 136,
+            "x": 416,
+            "y": 582
+          },
+          "sourceFrame": {
+            "width": 140,
+            "height": 138,
+            "x": 0,
+            "y": 2
+          },
+          "anchor": {
+            "x": 70,
+            "y": 69
+          },
+          "nineSliceFrame": {
+            "width": 140,
+            "height": 138,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "c0M7Is_ACYU",
+          "last": false
+        },
+        {
+          "name": "k-food.png",
+          "width": 140,
+          "height": 117,
+          "x": 812,
+          "y": 489,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 138,
+            "height": 115,
+            "x": 813,
+            "y": 490
+          },
+          "sourceFrame": {
+            "width": 139,
+            "height": 117,
+            "x": 1,
+            "y": 1
+          },
+          "anchor": {
+            "x": 69.5,
+            "y": 58.5
+          },
+          "nineSliceFrame": {
+            "width": 139,
+            "height": 117,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "c3mbP4DunFd",
+          "last": false
+        },
+        {
+          "name": "r-metal.png",
+          "width": 138,
+          "height": 129,
+          "x": 117,
+          "y": 627,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 136,
+            "height": 127,
+            "x": 118,
+            "y": 628
+          },
+          "sourceFrame": {
+            "width": 139,
+            "height": 129,
+            "x": 2,
+            "y": 1
+          },
+          "anchor": {
+            "x": 69.5,
+            "y": 64.5
+          },
+          "nineSliceFrame": {
+            "width": 139,
+            "height": 129,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "9gS9cBb6ze7",
+          "last": false
+        },
+        {
+          "name": "r-plastic.png",
+          "width": 85,
+          "height": 138,
+          "x": 317,
+          "y": 626,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 83,
+            "height": 136,
+            "x": 318,
+            "y": 627
+          },
+          "sourceFrame": {
+            "width": 84,
+            "height": 137,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 42,
+            "y": 68.5
+          },
+          "nineSliceFrame": {
+            "width": 84,
+            "height": 137,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "8tE5mfooO66",
+          "last": false
+        },
+        {
+          "name": "flat.png",
+          "width": 130,
+          "height": 130,
+          "x": 117,
+          "y": 758,
+          "rot": false,
+          "trimmed": false,
+          "frame": {
+            "width": 128,
+            "height": 128,
+            "x": 118,
+            "y": 759
+          },
+          "sourceFrame": {
+            "width": 128,
+            "height": 128,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 64,
+            "y": 64
+          },
+          "nineSliceFrame": {
+            "width": 128,
+            "height": 128,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "80000000000",
+          "last": false
+        },
+        {
+          "name": "r-milk.png",
+          "width": 106,
+          "height": 129,
+          "x": 0,
+          "y": 767,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 104,
+            "height": 127,
+            "x": 1,
+            "y": 768
+          },
+          "sourceFrame": {
+            "width": 105,
+            "height": 128,
+            "x": 1,
+            "y": 1
+          },
+          "anchor": {
+            "x": 52.5,
+            "y": 64
+          },
+          "nineSliceFrame": {
+            "width": 105,
+            "height": 128,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "8mI5NEfBnGt",
+          "last": false
+        },
+        {
+          "name": "ring.png",
+          "width": 128,
+          "height": 128,
+          "x": 108,
+          "y": 890,
+          "rot": false,
+          "trimmed": false,
+          "frame": {
+            "width": 126,
+            "height": 126,
+            "x": 109,
+            "y": 891
+          },
+          "sourceFrame": {
+            "width": 126,
+            "height": 126,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 63,
+            "y": 63
+          },
+          "nineSliceFrame": {
+            "width": 126,
+            "height": 126,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "e20xgwa80ww",
+          "last": false
+        },
+        {
+          "name": "circle.png",
+          "width": 128,
+          "height": 128,
+          "x": 238,
+          "y": 890,
+          "rot": false,
+          "trimmed": false,
+          "frame": {
+            "width": 126,
+            "height": 126,
+            "x": 239,
+            "y": 891
+          },
+          "sourceFrame": {
+            "width": 126,
+            "height": 126,
+            "x": 0,
+            "y": 0
+          },
+          "anchor": {
+            "x": 63,
+            "y": 63
+          },
+          "nineSliceFrame": {
+            "width": 126,
+            "height": 126,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "8000w0a02w0",
+          "last": false
+        },
+        {
+          "name": "star.png",
+          "width": 126,
+          "height": 120,
+          "x": 687,
+          "y": 580,
+          "rot": true,
+          "trimmed": true,
+          "frame": {
+            "width": 118,
+            "height": 124,
+            "x": 688,
+            "y": 581
+          },
+          "sourceFrame": {
+            "width": 128,
+            "height": 128,
+            "x": 2,
+            "y": 0
+          },
+          "anchor": {
+            "x": 64,
+            "y": 64
+          },
+          "nineSliceFrame": {
+            "width": 128,
+            "height": 128,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "8NzrFdOLpl9",
+          "last": false
+        },
+        {
+          "name": "frame.png",
+          "width": 117,
+          "height": 117,
+          "x": 558,
+          "y": 676,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 115,
+            "height": 115,
+            "x": 559,
+            "y": 677
+          },
+          "sourceFrame": {
+            "width": 128,
+            "height": 128,
+            "x": 5,
+            "y": 5
+          },
+          "anchor": {
+            "x": 64,
+            "y": 64
+          },
+          "nineSliceFrame": {
+            "width": 128,
+            "height": 128,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "bk0M0300c20",
+          "last": false
+        },
+        {
+          "name": "exclam.png",
+          "width": 24,
+          "height": 106,
+          "x": 415,
+          "y": 469,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 22,
+            "height": 104,
+            "x": 416,
+            "y": 470
+          },
+          "sourceFrame": {
+            "width": 128,
+            "height": 128,
+            "x": 53,
+            "y": 7
+          },
+          "anchor": {
+            "x": 64,
+            "y": 64
+          },
+          "nineSliceFrame": {
+            "width": 128,
+            "height": 128,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "eBid48Q0180",
+          "last": false
+        },
+        {
+          "name": "circle80.png",
+          "width": 81,
+          "height": 81,
+          "x": 0,
+          "y": 898,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 79,
+            "height": 79,
+            "x": 1,
+            "y": 899
+          },
+          "sourceFrame": {
+            "width": 80,
+            "height": 80,
+            "x": 1,
+            "y": 1
+          },
+          "anchor": {
+            "x": 40,
+            "y": 40
+          },
+          "nineSliceFrame": {
+            "width": 80,
+            "height": 80,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "8002w0G02w0",
+          "last": false
+        },
+        {
+          "name": "circle64.png",
+          "width": 65,
+          "height": 65,
+          "x": 249,
+          "y": 758,
+          "rot": false,
+          "trimmed": true,
+          "frame": {
+            "width": 63,
+            "height": 63,
+            "x": 250,
+            "y": 759
+          },
+          "sourceFrame": {
+            "width": 64,
+            "height": 64,
+            "x": 1,
+            "y": 1
+          },
+          "anchor": {
+            "x": 32,
+            "y": 32
+          },
+          "nineSliceFrame": {
+            "width": 64,
+            "height": 64,
+            "x": 0,
+            "y": 0
+          },
+          "hash": "8002w0G02w0",
+          "last": true
+        }
+      ],
+      "format": "JsonHash",
+      "ext": "json",
+      "appInfo": {
+        "name": "atlasify",
+        "version": "0.1.0",
+        "description": "CLI and core module for atlasify texture packer using maxrects-packer & Jimp",
+        "main": "lib/atlasify.js",
+        "types": "lib/types/atlasify.d.ts",
+        "bin": "bin/cli.js",
+        "scripts": {
+          "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+          "clean": "rimraf ./lib && rimraf ./dist && rimraf ./test/*.png",
+          "build": "tsc",
+          "build:clean": "npm run clean && npm run build",
+          "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js -astr -p 2 -m 1024,1024 --debug --extrude 1 --trim 64 --save ./atlas && open ./*.png",
+          "commit": "npx git-cz"
+        },
+        "repository": {
+          "type": "git",
+          "url": "git+https://soimy@github.com/soimy/atlasify.git"
+        },
+        "keywords": [
+          "atlas",
+          "atlasify",
+          "sprite",
+          "spritesheet",
+          "bin",
+          "pack",
+          "packer",
+          "maxrect",
+          "rect"
+        ],
+        "author": "YM Shen <soimy@163.com> (http://github.com/soimy)",
+        "license": "MIT",
+        "bugs": {
+          "url": "https://github.com/soimy/atlasify/issues"
+        },
+        "homepage": "https://github.com/soimy/atlasify#readme",
+        "devDependencies": {
+          "@types/mustache": "^0.8.32",
+          "@types/node": "^12.0.5",
+          "cz-conventional-changelog": "^2.1.0",
+          "rimraf": "^2.6.3",
+          "ts-node": "^8.2.0",
+          "tslib": "^1.9.3",
+          "tslint": "^5.17.0",
+          "tslint-config-standard": "^8.0.1",
+          "typedoc": "^0.14.2",
+          "typescript": "^3.5.1"
+        },
+        "dependencies": {
+          "commander": "^2.20.0",
+          "jimp": "^0.6.4",
+          "maxrects-packer": "^2.3.0",
+          "mustache": "^3.0.1"
+        },
+        "config": {
+          "commitizen": {
+            "path": "cz-conventional-changelog"
+          }
+        }
+      }
+    }
+  ],
+  "atlas": [
+    {
+      "id": 0,
+      "width": 1024,
+      "height": 1024,
+      "name": "sprite",
+      "format": "RGBA8888",
+      "ext": "png"
+    }
+  ],
+  "imagePaths": [
+    "atlas/actor/u-toiletpaper.png",
+    "atlas/actor/u-tableware.png",
+    "atlas/actor/u-shit.png",
+    "atlas/actor/u-dust.png",
+    "atlas/actor/u-cig.png",
+    "atlas/actor/u-brokenchina.png",
+    "atlas/actor/r-plastic.png",
+    "atlas/actor/r-paper.png",
+    "atlas/actor/r-milk.png",
+    "atlas/actor/r-metal.png",
+    "atlas/actor/r-glass.png",
+    "atlas/actor/r-cloth.png",
+    "atlas/actor/p-paint.png",
+    "atlas/actor/p-light.png",
+    "atlas/actor/p-insecticides.png",
+    "atlas/actor/p-inkbox.png",
+    "atlas/actor/p-drugs.png",
+    "atlas/actor/p-battery.png",
+    "atlas/actor/k-vegetable.png",
+    "atlas/actor/k-tea.png",
+    "atlas/actor/k-peel.png",
+    "atlas/actor/k-leaf.png",
+    "atlas/actor/k-food.png",
+    "atlas/actor/k-bone.png",
+    "atlas/ui/unrecycle-icon.png",
+    "atlas/ui/star.png",
+    "atlas/ui/ring.png",
+    "atlas/ui/recycle-icon.png",
+    "atlas/ui/poisen-icon.png",
+    "atlas/ui/frame.png",
+    "atlas/ui/foodwaste-icon.png",
+    "atlas/ui/flat.png",
+    "atlas/ui/exclam.png",
+    "atlas/ui/circle80.png",
+    "atlas/ui/circle64.png",
+    "atlas/ui/circle.png"
+  ]
+}

@@ -28,6 +28,7 @@ cli
     .option('    --debug', 'draw debug gizmo on atlas (Default: false)', false)
     .option('    --instant', 'instant packing is quicker and skip sorting (Default: false)', false)
     .option('    --seperate-folder', 'Seperate bin based on folder (Default: false)', false)
+    .option('    --save', 'Save configuration for reuse (Default: false)', false)
     
     cli
     .command("*")
@@ -74,6 +75,7 @@ opt.trim = utils.valueQueue([opt.trim, false]);
 opt.debug = utils.valueQueue([opt.debug, false]);
 opt.instant = utils.valueQueue([opt.instant, false]);
 opt.seperateFolder = utils.valueQueue([opt.seperateFolder, false]);
+opt.save = utils.valueQueue([opt.save, false]);
 
 //
 // Load images into Rectangle objects
@@ -121,5 +123,12 @@ atlas.addURLs(imageFiles)
             const sheetName = s.id ? `${s.name}.${s.id}.${s.ext}` : `${s.name}.${s.ext}`;
             fs.writeFileSync(sheetName, result.exporter.compile(s));
             console.log(`Saved spritesheet: ${sheetName}`);
+        }
+        if (opt.save) {
+            let atlPath = result.options.name;
+            const dir = path.dirname(atlPath);
+            atlPath = path.basename(atlPath, path.extname(atlPath)) + ".atl";
+            atlPath = path.join(dir, atlPath);
+            result.save(atlPath, true);
         }
     });

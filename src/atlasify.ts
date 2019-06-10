@@ -3,6 +3,7 @@ import Jimp from "jimp";
 import path from "path";
 import { Sheet } from "./geom/sheet";
 import { Exporter } from "./exporter";
+import { writeFile, readFileSync } from "fs";
 
 let appInfo = require('../package.json');
 
@@ -293,12 +294,36 @@ export class Atlasify {
         return this._packer.currentBinIndex;
     }
 
-    public save (pathalike?: string): void {
-        // TODO
+    public save (pathalike?: string): string {
+        const atl: object = {
+            options: this.options,
+            packer: this._packer.save(),
+            spritesheets: this._spritesheets,
+            // atlas: this._atlas,
+            imagePaths: this._inputPaths
+        };
+        const result = JSON.stringify(atl, null, 2);
+        if (pathalike) {
+            writeFile(pathalike, result, err => {
+                if (err) console.error(`Saving atl file encountered error: ${err}`);
+                else console.log(`Saved settings: ${pathalike}`);
+            });
+        }
+        return result;
     }
 
-    public load (pathalike: string): void {
-        // TODO
+    public load (pathalike: string, overrides: any = null, quick: boolean = false): void {
+        const atl: any = JSON.parse(readFileSync(pathalike, 'utf-8'));
+        this._sheets = [];
+        this.options = { ...atl.options, ...overrides }; // combining saved options and cli options
+        this._packer = new MaxRectsPacker<Sheet>(this.options.width, this.options.height, this.options.padding, this.options);
+        this._exporter = new Exporter();
+        this._exporter.setExportFormat(this.options.type);
+        if (quick) {
+            // TODO
+        } else {
+            // TODO
+        }
     }
 
     public static load (pathalike: string): Atlasify | undefined {

@@ -245,7 +245,7 @@ export class Atlasify {
                             ext: ext
                         });
                         if (bin.tag) this._atlas[index].tag = bin.tag;
-                    } else {}
+                    }
 
                     const image = this._atlas[index].image;
 

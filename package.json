@@ -10,7 +10,7 @@
     "clean": "rimraf ./lib && rimraf ./dist && rimraf ./test/*.png",
     "build": "tsc",
     "build:clean": "yarn run clean && yarn run build",
-    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js -astr -p 2 -b 5 -m 1024,1024 --debug --extrude 1 --trim 64 --save ./atlas && open ./*.png",
+    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js -astr -p 2 -m 1024,1024 --extrude 1 --trim --debug --save ./atlas && open ./*.png",
     "commit": "npx git-cz"
   },
   "repository": {

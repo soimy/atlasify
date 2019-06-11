@@ -20,8 +20,8 @@ cli
     .option('-m, --size <w,h>', 'ouput texture atlas size (defaut: 2048,2048)', v => { return v.split(',') }, [2048, 2048])
     .option('-p, --padding <n>', 'padding between images (Default: 0)', 0)
     .option('-b, --border <n>', 'space to atlas edge (Default: 0)', 0)
-    .option('-a, --auto-size', 'shrink atlas to the smallest possible square (Default: true)', true)
-    .option('-t, --pot', 'atlas size shall be power of 2 (Default: true)', true)
+    .option('-a, --auto-size', 'shrink atlas to the smallest possible square (Default: false)', false)
+    .option('-t, --pot', 'atlas size shall be power of 2 (Default: false)', false)
     .option('-s, --square', 'atlas size shall be square (Default: false)', false)
     .option('-r, --rot', 'allow 90-degree rotation while packing (Default: false)', false)
     .option('    --trim [n]', 'remove surrounding transparent pixels with optional tolerence [n] (Default: false)', false)
@@ -68,8 +68,8 @@ if (!imageFiles) {
 // Set default value
 // Because commander.js not parse default boolean parameter
 //
-opt.autoSize = utils.valueQueue([opt.autoSize, true]);
-opt.pot = utils.valueQueue([opt.pot, true]);
+opt.autoSize = utils.valueQueue([opt.autoSize, false]);
+opt.pot = utils.valueQueue([opt.pot, false]);
 opt.square = utils.valueQueue([opt.square, false]);
 opt.rot = utils.valueQueue([opt.rot, false]);
 opt.trim = utils.valueQueue([opt.trim, false]);

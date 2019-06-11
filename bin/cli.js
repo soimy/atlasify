@@ -115,20 +115,31 @@ atlas.addURLs(imageFiles)
     .then(result => {
         for (let a of result.atlas) {
             const imageName = a.id ? `${a.name}.${a.id}.${a.ext}` : `${a.name}.${a.ext}`
-            a.image.writeAsync(imageName).then(() => {
-                console.log(`Saved atlas: ${imageName}`);
-            });
+            a.image.writeAsync(imageName)
+                .then(() => {
+                    console.log(`Saved atlas: ${imageName}`);
+                })
+                .catch(err => {
+                    console.error(`Failed saving atlas ${imageName}: ${err}`);
+                });
         }
         for (let s of result.spritesheets) {
             const sheetName = s.id ? `${s.name}.${s.id}.${s.ext}` : `${s.name}.${s.ext}`;
-            fs.writeFileSync(sheetName, result.exporter.compile(s));
-            console.log(`Saved spritesheet: ${sheetName}`);
+            fs.writeFile(sheetName, result.exporter.compile(s), 'utf-8', err => {
+                if(err) console.error(`Failed saving spritesheet ${sheetName}: ${err}`);
+                else console.log(`Saved spritesheet: ${sheetName}`);
+            });
         }
         if (opt.save) {
             let atlPath = result.options.name;
             const dir = path.dirname(atlPath);
             atlPath = path.basename(atlPath, path.extname(atlPath)) + ".atl";
             atlPath = path.join(dir, atlPath);
-            result.save(atlPath, true);
+            result.save().then(atl => {
+                fs.writeFile(atlPath, atl, 'utf-8', err => {
+                    if(err) console.error(`Failed saving configuration ${atlPath}: ${err}`);
+                    else console.log(`Saved configuration: ${atlPath}`);
+                });
+            });
         }
     });

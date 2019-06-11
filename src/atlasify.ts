@@ -217,7 +217,6 @@ export class Atlasify {
                 this._packer.bins.forEach((bin, index: number) => {
                     let binName = basename;
                     if (bin.tag) binName = `${bin.tag}-${binName}`;
-                    const image = new Jimp(bin.width, bin.height, fillColor);
 
                     // Count tags
                     let tag = bin.tag ? bin.tag : "_";
@@ -226,6 +225,21 @@ export class Atlasify {
 
                     // Add tag to the last sheet to control mustache trailing comma
                     bin.rects[bin.rects.length - 1].last = true;
+
+                    if (index === this._atlas.length) {
+                        this._atlas.push({
+                            id: tagCount[tag],
+                            width: bin.width,
+                            height: bin.height,
+                            image: new Jimp(bin.width, bin.height, fillColor),
+                            name: binName,
+                            format: "RGBA8888", // TODO
+                            ext: ext
+                        });
+                        if (bin.tag) this._atlas[index].tag = bin.tag;
+                    } else {}
+
+                    const image = this._atlas[index].image;
 
                     // Render rects onto atlas
                     bin.rects.forEach(rect => {
@@ -240,37 +254,22 @@ export class Atlasify {
                         image.blit(buffer, sheet.x, sheet.y);
                     });
 
-                    const atlas: Atlas = {
-                        id: tagCount[tag],
-                        width: bin.width,
-                        height: bin.height,
-                        image: image,
-                        name: binName,
-                        format: "RGBA8888", // TODO
-                        ext: ext
-                    };
-                    this._atlas.push(atlas);
-
-                    // prepare spritesheet data
-                    const view: Spritesheet = {
-                        id: tagCount[tag],
-                        name: binName,
-                        imageName: `${binName}.${ext}`,
-                        imageFormat: "RGBA8888",
-                        width: bin.width,
-                        height: bin.height,
-                        scale: 1,
-                        rects: (bin.rects as Sheet[]).map(rect => { return rect.serialize(); }),
-                        format: this.options.type,
-                        ext: this._exporter.getExtension(),
-                        appInfo: appInfo
-                    };
-                    this._spritesheets.push(view);
-
-                    // add tag if exist
-                    if (bin.tag) {
-                        atlas.tag = bin.tag;
-                        view.tag = bin.tag;
+                    if (index === this._spritesheets.length) {
+                        // prepare spritesheet data
+                        this._spritesheets.push({
+                            id: tagCount[tag],
+                            name: binName,
+                            imageName: `${binName}.${ext}`,
+                            imageFormat: "RGBA8888",
+                            width: bin.width,
+                            height: bin.height,
+                            scale: 1,
+                            rects: (bin.rects as Sheet[]).map(rect => { return rect.serialize(); }),
+                            format: this.options.type,
+                            ext: this._exporter.getExtension(),
+                            appInfo: appInfo
+                        });
+                        if (bin.tag) this._spritesheets[index].tag = bin.tag;
                     }
                 });
 
@@ -302,19 +301,21 @@ export class Atlasify {
         return this._packer.currentBinIndex;
     }
 
-    public save (pathalike?: string, humanReadable: boolean = false): string {
+    public async save (pathalike?: string, humanReadable: boolean = false): Promise<string> {
+        const atlasBase64 = await Promise.all(this._atlas.map(async a => a.image.getBase64Async(Jimp.MIME_PNG)));
         const atl: object = {
             options: this.options,
             packer: this._packer.save(),
             spritesheets: this._spritesheets,
-            atlas: this._atlas.map(a => {
+            atlas: this._atlas.map((a, i) => {
                 return {
                     id: a.id ? a.id : 0,
                     width: a.width,
                     height: a.height,
                     name: a.name,
                     format: "RGBA8888", // TODO
-                    ext: a.ext
+                    ext: a.ext,
+                    image: atlasBase64[i]
                 };
             }),
             imagePaths: this._inputPaths

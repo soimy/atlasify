@@ -19,6 +19,7 @@ cli
     .option('-o, --output <filename>', 'output atlas filename (Default: sprite.png)', 'sprite.png')
     .option('-m, --size <w,h>', 'ouput texture atlas size (defaut: 2048,2048)', v => { return v.split(',') }, [2048, 2048])
     .option('-p, --padding <n>', 'padding between images (Default: 0)', 0)
+    .option('-b, --border <n>', 'space to atlas edge (Default: 0)', 0)
     .option('-a, --auto-size', 'shrink atlas to the smallest possible square (Default: true)', true)
     .option('-t, --pot', 'atlas size shall be power of 2 (Default: true)', true)
     .option('-s, --square', 'atlas size shall be square (Default: false)', false)
@@ -86,6 +87,7 @@ atlasifyOptions.smart = opt.autoSize;
 atlasifyOptions.pot = opt.pot;
 atlasifyOptions.square = opt.square;
 atlasifyOptions.allowRotation = opt.rot;
+atlasifyOptions.border = opt.border;
 atlasifyOptions.trimAlpha = opt.extrude > 0 ? true : opt.trim !== false ? true : false;
 atlasifyOptions.alphaTolerence = utils.isNumeric(opt.trim) ? opt.trim : 0;
 atlasifyOptions.debug = opt.debug;

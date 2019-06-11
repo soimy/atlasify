@@ -8,7 +8,7 @@ import { writeFile, readFileSync } from "fs";
 let appInfo = require('../package.json');
 
 /**
- * Options class for composor and maxrects-packer
+ * Options class for atlasify and maxrects-packer
  *
  * @property {boolean} options.square use square size (default is true)
  * @property {boolean} options.pot use power of 2 sizing (default is true)
@@ -54,6 +54,14 @@ export class Options implements IOption {
      * @memberof Options
      */
     public allowRotation: boolean = false;
+
+    /**
+     * Controlling packer border to edge
+     *
+     * @type {number}
+     * @memberof Options
+     */
+    public border: number = 0;
 
     /**
      * Instant mode will skip sorting and pack using given array order

@@ -251,7 +251,7 @@ export class Atlasify {
 
                     // Render rects onto atlas
                     bin.rects.forEach(rect => {
-                        const sheet = rect as Sheet;
+                        const sheet = rect;
                         const buffer: Jimp = sheet.data;
                         sheet.frame.x += sheet.x;
                         sheet.frame.y += sheet.y;
@@ -272,7 +272,7 @@ export class Atlasify {
                             width: bin.width,
                             height: bin.height,
                             scale: 1,
-                            rects: (bin.rects as Sheet[]).map(rect => { return rect.serialize(); }),
+                            rects: (bin.rects).map(rect => { return rect.serialize(); }),
                             format: this.options.type,
                             ext: this._exporter.getExtension(),
                             appInfo: appInfo
@@ -359,7 +359,7 @@ export class Atlasify {
 
     private _inputPaths: string[];
     private _sheets: Sheet[];
-    private _packer: MaxRectsPacker;
+    private _packer: MaxRectsPacker<Sheet>;
     private _debugColor: number = 0xff000088;
 
     private _atlas: Atlas[] = [];

@@ -225,7 +225,6 @@ export class Sheet extends Rectangle {
     public rotate (): void {
         this.data.rotate(90);
         [this.frame.width, this.frame.height] = [this.frame.height, this.frame.width];
-        [this.width, this.height] = [this.height, this.width];
     }
 
     private _border: number = 0;

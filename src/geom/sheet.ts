@@ -93,13 +93,18 @@ export class Sheet extends Rectangle {
      * @memberof Sheet
      */
     constructor (
-        public width: number = 0,
-        public height: number = 0,
-        public x: number = 0,
-        public y: number = 0,
+        width: number = 0,
+        height: number = 0,
+        x: number = 0,
+        y: number = 0,
         rot: boolean = false
     ) {
         super();
+        this._x = x;
+        this._y = y;
+        this._width = width;
+        this._height = height;
+        this._rot = rot;
         this.frame = new Rectangle(width, height);
         this.sourceFrame = new Rectangle(width, height);
         this.anchor = new Vec2(width / 2, height / 2);
@@ -107,6 +112,12 @@ export class Sheet extends Rectangle {
         this.data = new Jimp(width, height);
     }
 
+    /**
+     * Return a serialized json object
+     *
+     * @returns {object}
+     * @memberof Sheet
+     */
     public serialize (): object {
         return {
             name: this.name,
@@ -141,6 +152,16 @@ export class Sheet extends Rectangle {
             hash: this.hash,
             last: this.last
         };
+    }
+
+    /**
+     * Load sheet settings from json object
+     *
+     * @param {object} data
+     * @memberof Sheet
+     */
+    public parse (data: object): void {
+        // TODO
     }
 
     /**

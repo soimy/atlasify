@@ -160,8 +160,21 @@ export class Sheet extends Rectangle {
      * @param {object} data
      * @memberof Sheet
      */
-    public parse (data: object): void {
-        // TODO
+    public parse (data: object, target: object = this): this {
+        // TODO: Need test !
+        Object.keys(data).forEach(key => {
+            if (typeof(data[key]) === "object" && data[key] !== null && this[key]) {
+                this.parse(data[key], this[key]);
+            } else {
+                target[key] = data[key];
+            }
+        });
+        return this;
+    }
+
+    public static Factory (data: object): Sheet {
+        const sheet = new Sheet();
+        return sheet.parse(data);
     }
 
     /**

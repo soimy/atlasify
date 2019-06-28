@@ -317,7 +317,9 @@ export class Atlasify {
         return this._packer.currentBinIndex;
     }
 
-    public async save (pathalike?: string, humanReadable: boolean = false): Promise<string> {
+    public async save (humanReadable?: boolean): Promise<string>;
+    public async save (humanReadable?: boolean, pathalike?: string): Promise<boolean>;
+    public async save (...args: any[]): Promise<any> {
         const atlasBase64 = await Promise.all(this._atlas.map(async a => a.image.getBase64Async(Jimp.MIME_PNG)));
         const atl: IAtl = {
             options: this.options,
@@ -336,11 +338,36 @@ export class Atlasify {
             }),
             imagePaths: this._inputPaths
         };
+        let humanReadable: boolean = false;
+        let pathalike: string | undefined;
+        if (args.length === 0) {
+            humanReadable = false;
+        } else if (args.length === 1 ) {
+            if (typeof(args[0]) === "boolean") {
+                humanReadable = args[0];
+            } else if (typeof(args[0] === "string")) {
+                pathalike = args[0];
+            } else {
+                throw new Error("Atlasify.save(): wrong argument type");
+            }
+        } else if (args.length > 1) {
+            if (typeof(args[0]) === "boolean" && typeof(args[1]) === "string") {
+                humanReadable = args[0];
+                pathalike = args[1];
+            } else {
+                throw new Error("Atlasify.save(): wrong argument type");
+            }
+        }
         const result = humanReadable ? JSON.stringify(atl, null, 2) : JSON.stringify(atl);
         if (pathalike) {
             writeFile(pathalike, result, err => {
-                if (err) console.error(`Saving atl file encountered error: ${err}`);
-                else console.log(`Saved configuration: ${pathalike}`);
+                if (err) {
+                    console.error(`Saving atl file encountered error: ${err}`);
+                    return false;
+                } else {
+                    console.log(`Saved configuration: ${pathalike}`);
+                    return true;
+                }
             });
         }
         return result;

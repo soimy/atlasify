@@ -763,10 +763,10 @@ marked@^0.4.0:
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.4.0.tgz#9ad2c2a7a1791f10a852e0112f77b571dce10c66"
   integrity sha512-tMsdNBgOsrUophCAFQl0XPe6Zqk/uy9gnue+jIIKhykO51hxyu6uNx7zBPy0+y/WKYVZZMspV9YeXLNdKk+iYw==
 
-maxrects-packer@^2.4.0-alpha.0:
-  version "2.4.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/maxrects-packer/-/maxrects-packer-2.4.0-alpha.0.tgz#86979c80c991680c365eab0768390ed92b12480f"
-  integrity sha512-iHN8DSnzhs7Icna0e1Z5NvEPr8p02uC4Nly4FON1EeYWtDAz3N6qYsdicXgWt0osZsBb1ixcP1tm8YKoUTVIig==
+maxrects-packer@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/maxrects-packer/-/maxrects-packer-2.4.0.tgz#23682454cc79130892085d3c297eca8cfeb909ef"
+  integrity sha512-tzTTmC0iiN3EgMZNFFe6ska9oZ6bVZnlgmBcQCtaII01GLx5GvP+HClrjCczqniqnlPzped7lZhsSrrK700/Gg==
 
 mime@^1.3.4:
   version "1.6.0"

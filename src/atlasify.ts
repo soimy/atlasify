@@ -1,4 +1,4 @@
-import { MaxRectsPacker, IOption, Bin } from "maxrects-packer";
+import { MaxRectsPacker, IOption, IBin } from "maxrects-packer";
 import Jimp from "jimp";
 import path from "path";
 import { Sheet } from "./geom/sheet";
@@ -161,6 +161,14 @@ export type Base64Data = {
     data: string;
 };
 
+export interface IAtl {
+    options: IOption;
+    packer: IBin[];
+    spritesheets: Spritesheet[];
+    atlas: {image: string, ext: string, width: number, height: number, name: string, id?: number, tag?: string, format?: string}[];
+    imagePaths: string[];
+}
+
 export class Atlasify {
 
    /**
@@ -311,7 +319,7 @@ export class Atlasify {
 
     public async save (pathalike?: string, humanReadable: boolean = false): Promise<string> {
         const atlasBase64 = await Promise.all(this._atlas.map(async a => a.image.getBase64Async(Jimp.MIME_PNG)));
-        const atl: object = {
+        const atl: IAtl = {
             options: this.options,
             packer: this._packer.save(),
             spritesheets: this._spritesheets,
@@ -338,15 +346,23 @@ export class Atlasify {
         return result;
     }
 
-    public load (pathalike: string, overrides: any = null, quick: boolean = false): void {
-        const atl: any = JSON.parse(readFileSync(pathalike, 'utf-8'));
+    public async load (pathalike: string, overrides: any = null, quick: boolean = false): Promise<void> {
+        const atl: IAtl = JSON.parse(readFileSync(pathalike, 'utf-8'));
         this._sheets = [];
         this.options = { ...atl.options, ...overrides }; // combining saved options and cli options
         this._packer = new MaxRectsPacker<Sheet>(this.options.width, this.options.height, this.options.padding, this.options);
         this._exporter = new Exporter();
         this._exporter.setExportFormat(this.options.type);
         if (quick) {
-            // TODO
+            // Load packer
+            this._packer.load(atl.packer);
+            // Load spritesheets
+            this._spritesheets = atl.spritesheets;
+            // load atlas
+            this._atlas = await Promise.all(atl.atlas.map(async (a, i) => {
+                // async overwrite atlas base64 string image with Jimp object
+                return { ...a, image: await Jimp.read(Buffer.from(a.image.replace(/^data:image\/png;base64,/, ""), 'base64')) };
+            }));
         } else {
             // TODO
         }

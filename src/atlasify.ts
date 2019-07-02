@@ -220,86 +220,79 @@ export class Atlasify {
 
         return Promise.all(loader)
             .then(() => {
-                let ext: string = path.extname(this.options.name);
-                const basename: string = path.basename(this.options.name, ext);
-
-                if (ext === "") ext = "png"; // assign default format PNG
-                else ext = ext.slice(1).toLowerCase(); // trim . of extname
-
-                const fillColor: number = (ext === "png") ? 0x00000000 : 0x000000ff;
-                const tagCount: {[index: string]: number} = {};
-
-                if (!this.options.instant) this._packer.addArray(this._sheets);
-                this._packer.bins.forEach((bin, index: number) => {
-                    let binName = basename;
-                    if (bin.tag) binName = `${bin.tag}-${binName}`;
-
-                    // Count tags
-                    let tag = bin.tag ? bin.tag : "_";
-                    if (!tagCount[tag]) tagCount[tag] = 0; // create index key if not exist
-                    else tagCount[tag] ++;
-
-                    // Add tag to the last sheet to control mustache trailing comma
-                    bin.rects[bin.rects.length - 1].last = true;
-
-                    if (index === this._atlas.length) {
-                        this._atlas.push({
-                            id: tagCount[tag],
-                            width: bin.width,
-                            height: bin.height,
-                            image: new Jimp(bin.width, bin.height, fillColor),
-                            name: binName,
-                            format: "RGBA8888", // TODO
-                            ext: ext
-                        });
-                        if (bin.tag) this._atlas[index].tag = bin.tag;
-                    }
-
-                    const image = this._atlas[index].image;
-
-                    // Render rects onto atlas
-                    bin.rects.forEach(rect => {
-                        const sheet = rect;
-                        const buffer: Jimp = sheet.data;
-                        sheet.frame.x += sheet.x;
-                        sheet.frame.y += sheet.y;
-                        if (this.options.debug) {
-                            const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this._debugColor);
-                            image.blit(debugFrame, sheet.frame.x, sheet.frame.y);
-                        }
-                        image.blit(buffer, sheet.x, sheet.y);
-                    });
-
-                    if (index === this._spritesheets.length) {
-                        // prepare spritesheet data
-                        this._spritesheets.push({
-                            id: tagCount[tag],
-                            name: binName,
-                            imageName: `${binName}.${ext}`,
-                            imageFormat: "RGBA8888",
-                            width: bin.width,
-                            height: bin.height,
-                            scale: 1,
-                            rects: (bin.rects).map(rect => { return rect.serialize(); }),
-                            format: this.options.type,
-                            ext: this._exporter.getExtension(),
-                            appInfo: appInfo
-                        });
-                        if (bin.tag) this._spritesheets[index].tag = bin.tag;
-                    }
-                });
-
-                // remove id if tag count < 2
-                this.pruneTagIndex(tagCount);
-
-                if (callback) callback(undefined, this._atlas, this._spritesheets);
-                return Promise.resolve(this);
+                return this.process(callback);
             })
             .catch(err => {
                 console.error("File load error : " + err);
                 if (callback) callback(err);
                 return Promise.reject(err);
             });
+    }
+
+    public process (callback?: ((err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void)): Promise<this> {
+        let ext: string = path.extname(this.options.name);
+        const basename: string = path.basename(this.options.name, ext);
+        if (ext === "") ext = "png"; // assign default format PNG
+        else ext = ext.slice(1).toLowerCase(); // trim . of extname
+        const fillColor: number = (ext === "png") ? 0x00000000 : 0x000000ff;
+        const tagCount: { [index: string]: number; } = {};
+        if (!this.options.instant) this._packer.addArray(this._sheets);
+        this._packer.bins.forEach((bin, index: number) => {
+            let binName = basename;
+            if (bin.tag) binName = `${bin.tag}-${binName}`;
+            // Count tags
+            let tag = bin.tag ? bin.tag : "_";
+            if (!tagCount[tag]) tagCount[tag] = 0; // create index key if not exist
+            else tagCount[tag]++;
+            // Add tag to the last sheet to control mustache trailing comma
+            bin.rects[bin.rects.length - 1].last = true;
+            if (index === this._atlas.length) {
+                this._atlas.push({
+                    id: tagCount[tag],
+                    width: bin.width,
+                    height: bin.height,
+                    image: new Jimp(bin.width, bin.height, fillColor),
+                    name: binName,
+                    format: "RGBA8888",
+                    ext: ext
+                });
+                if (bin.tag) this._atlas[index].tag = bin.tag;
+            }
+            const image = this._atlas[index].image;
+            // Render rects onto atlas
+            bin.rects.forEach(rect => {
+                const sheet = rect;
+                const buffer: Jimp = sheet.data;
+                sheet.frame.x += sheet.x;
+                sheet.frame.y += sheet.y;
+                if (this.options.debug) {
+                    const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this._debugColor);
+                    image.blit(debugFrame, sheet.frame.x, sheet.frame.y);
+                }
+                image.blit(buffer, sheet.x, sheet.y);
+            });
+            if (index === this._spritesheets.length) {
+                // prepare spritesheet data
+                this._spritesheets.push({
+                    id: tagCount[tag],
+                    name: binName,
+                    imageName: `${binName}.${ext}`,
+                    imageFormat: "RGBA8888",
+                    width: bin.width,
+                    height: bin.height,
+                    scale: 1,
+                    rects: (bin.rects).map(rect => { return rect.serialize(); }),
+                    format: this.options.type,
+                    ext: this._exporter.getExtension(),
+                    appInfo: appInfo
+                });
+                if (bin.tag) this._spritesheets[index].tag = bin.tag;
+            }
+        });
+        // remove id if tag count < 2
+        this.pruneTagIndex(tagCount);
+        if (callback) callback(undefined, this._atlas, this._spritesheets);
+        return Promise.resolve(this);
     }
 
     public addBuffers (buffers: Buffer[], callback: (atlas: Atlas[], spritesheets: Spritesheet[]) => void): void {

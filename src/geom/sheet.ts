@@ -172,8 +172,8 @@ export class Sheet extends Rectangle {
         return this;
     }
 
-    public static Factory (data: object): Sheet {
-        const sheet = new Sheet();
+    public static Factory (data: any): Sheet {
+        const sheet = new Sheet(data.width, data.height);
         return sheet.parse(data);
     }
 

@@ -17,6 +17,7 @@ cli
     .arguments('<image-files/folder>')
     .description('CLI tools to packing and compositing image files into atlas using MaxRects packing algorithm')
     .option('-o, --output <filename>', 'output atlas filename (Default: sprite.png)', 'sprite.png')
+    .option('    --load <filename>', 'load saved project atl file')
     .option('-m, --size <w,h>', 'ouput texture atlas size (defaut: 2048,2048)', v => { return v.split(',') }, [2048, 2048])
     .option('-p, --padding <n>', 'padding between images (Default: 0)', 0)
     .option('-b, --border <n>', 'space to atlas edge (Default: 0)', 0)
@@ -113,36 +114,41 @@ imageFiles.sort((a, b) => {
     const bf = utils.getLeafFolder(b);
     return af > bf ? 1 : -1;
 });
-atlas.addURLs(imageFiles)
-    .then(result => {
-        for (let a of result.atlas) {
-            const imageName = a.id ? `${a.name}.${a.id}.${a.ext}` : `${a.name}.${a.ext}`
-            a.image.writeAsync(imageName)
-                .then(() => {
-                    console.log(`Saved atlas: ${imageName}`);
-                })
-                .catch(err => {
-                    console.error(`Failed saving atlas ${imageName}: ${err}`);
-                });
-        }
-        for (let s of result.spritesheets) {
-            const sheetName = s.id ? `${s.name}.${s.id}.${s.ext}` : `${s.name}.${s.ext}`;
-            fs.writeFile(sheetName, result.exporter.compile(s), 'utf-8', err => {
-                if(err) console.error(`Failed saving spritesheet ${sheetName}: ${err}`);
-                else console.log(`Saved spritesheet: ${sheetName}`);
-            });
-        }
-        if (opt.save) {
-            let atlPath = result.options.name;
-            const dir = path.dirname(atlPath);
-            atlPath = path.basename(atlPath, path.extname(atlPath)) + ".atl";
-            atlPath = path.join(dir, atlPath);
-            result.save(true).then(atl => {
-                fs.writeFile(atlPath, atl, 'utf-8', err => {
-                    if(err) console.error(`Failed saving configuration ${atlPath}: ${err}`);
-                    else console.log(`Saved configuration: ${atlPath}`);
-                });
-            })
-            .catch(console.error);
-        }
-    });
+
+if (opt.load) {
+    console.log(`Loading project file: ${opt.load}`);
+    atlas.load(opt.load);
+}
+// atlas.addURLs(imageFiles)
+//     .then(result => {
+//         for (let a of result.atlas) {
+//             const imageName = a.id ? `${a.name}.${a.id}.${a.ext}` : `${a.name}.${a.ext}`
+//             a.image.writeAsync(imageName)
+//                 .then(() => {
+//                     console.log(`Saved atlas: ${imageName}`);
+//                 })
+//                 .catch(err => {
+//                     console.error(`Failed saving atlas ${imageName}: ${err}`);
+//                 });
+//         }
+//         for (let s of result.spritesheets) {
+//             const sheetName = s.id ? `${s.name}.${s.id}.${s.ext}` : `${s.name}.${s.ext}`;
+//             fs.writeFile(sheetName, result.exporter.compile(s), 'utf-8', err => {
+//                 if(err) console.error(`Failed saving spritesheet ${sheetName}: ${err}`);
+//                 else console.log(`Saved spritesheet: ${sheetName}`);
+//             });
+//         }
+//         if (opt.save) {
+//             let atlPath = result.options.name;
+//             const dir = path.dirname(atlPath);
+//             atlPath = path.basename(atlPath, path.extname(atlPath)) + ".atl";
+//             atlPath = path.join(dir, atlPath);
+//             result.save(true).then(atl => {
+//                 fs.writeFile(atlPath, atl, 'utf-8', err => {
+//                     if(err) console.error(`Failed saving configuration ${atlPath}: ${err}`);
+//                     else console.log(`Saved configuration: ${atlPath}`);
+//                 });
+//             })
+//             .catch(console.error);
+//         }
+//     });

@@ -137,11 +137,12 @@ atlas.addURLs(imageFiles)
             const dir = path.dirname(atlPath);
             atlPath = path.basename(atlPath, path.extname(atlPath)) + ".atl";
             atlPath = path.join(dir, atlPath);
-            result.save(undefined, true).then(atl => {
+            result.save(true).then(atl => {
                 fs.writeFile(atlPath, atl, 'utf-8', err => {
                     if(err) console.error(`Failed saving configuration ${atlPath}: ${err}`);
                     else console.log(`Saved configuration: ${atlPath}`);
                 });
-            });
+            })
+            .catch(console.error);
         }
     });

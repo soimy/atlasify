@@ -317,8 +317,31 @@ export class Atlasify {
         return this._packer.currentBinIndex;
     }
 
+    /**
+     * Async serialize current project & settings to string
+     *
+     * @param {boolean} [humanReadable=false]
+     * @returns {Promise<string>}
+     * @memberof Atlasify
+     */
     public async save (humanReadable?: boolean): Promise<string>;
+    /**
+     * Asycn save current project & settings to file
+     *
+     * @param {boolean} [humanReadable=false]
+     * @param {string} [pathalike]
+     * @returns {Promise<boolean>}
+     * @memberof Atlasify
+     */
     public async save (humanReadable?: boolean, pathalike?: string): Promise<boolean>;
+    /**
+     * Asycn save current project & settings to file and return serialized string
+     * 
+     * @param {boolean} [humanReadable=false]
+     * @param {string} [pathalike]
+     * @returns {Promise<string}>}
+     * @memberof Atlasify
+     */
     public async save (...args: any[]): Promise<any> {
         const atlasBase64 = await Promise.all(this._atlas.map(async a => a.image.getBase64Async(Jimp.MIME_PNG)));
         const atl: IAtl = {
@@ -342,7 +365,7 @@ export class Atlasify {
         let pathalike: string | undefined;
         if (args.length === 0) {
             humanReadable = false;
-        } else if (args.length === 1 ) {
+        } else if (args.length === 1) {
             if (typeof(args[0]) === "boolean") {
                 humanReadable = args[0];
             } else if (typeof(args[0] === "string")) {
@@ -380,19 +403,27 @@ export class Atlasify {
         this._packer = new MaxRectsPacker<Sheet>(this.options.width, this.options.height, this.options.padding, this.options);
         this._exporter = new Exporter();
         this._exporter.setExportFormat(this.options.type);
-        if (quick) {
-            // Load packer
-            this._packer.load(atl.packer);
-            // Load spritesheets
-            this._spritesheets = atl.spritesheets;
-            // load atlas
-            this._atlas = await Promise.all(atl.atlas.map(async (a, i) => {
-                // async overwrite atlas base64 string image with Jimp object
-                return { ...a, image: await Jimp.read(Buffer.from(a.image.replace(/^data:image\/png;base64,/, ""), 'base64')) };
-            }));
-        } else {
-            // TODO
-        }
+
+        // Load packer
+        this._packer.load(atl.packer);
+        // Load spritesheets
+        this._spritesheets = atl.spritesheets;
+        // load atlas
+        this._atlas = await Promise.all(atl.atlas.map(async (a, i) => {
+            // async overwrite atlas base64 string image with Jimp object
+            return { ...a, image: await Jimp.read(Buffer.from(a.image.replace(/^data:image\/png;base64,/, ""), 'base64')) };
+        }));
+        // Load sheets
+        this._spritesheets.forEach((spritesheet, i) => {
+            spritesheet.rects.forEach(r => {
+                const sheet = Sheet.Factory(r);
+                if (!quick) {
+                    // TODO
+                }
+                this._sheets.push(sheet);
+                this._packer.bins[i].rects.push(sheet);
+            });
+        });
     }
 
     public static load (pathalike: string, overrides: any = null, quick: boolean = false): Atlasify | undefined {

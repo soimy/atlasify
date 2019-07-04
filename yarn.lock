@@ -1427,10 +1427,10 @@ marked@^0.4.0:
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.4.0.tgz#9ad2c2a7a1791f10a852e0112f77b571dce10c66"
   integrity sha512-tMsdNBgOsrUophCAFQl0XPe6Zqk/uy9gnue+jIIKhykO51hxyu6uNx7zBPy0+y/WKYVZZMspV9YeXLNdKk+iYw==
 
-maxrects-packer@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/maxrects-packer/-/maxrects-packer-2.4.0.tgz#23682454cc79130892085d3c297eca8cfeb909ef"
-  integrity sha512-tzTTmC0iiN3EgMZNFFe6ska9oZ6bVZnlgmBcQCtaII01GLx5GvP+HClrjCczqniqnlPzped7lZhsSrrK700/Gg==
+maxrects-packer@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/maxrects-packer/-/maxrects-packer-2.4.1.tgz#5369cc10f8a3029f4d89c91d11bd06d7e71cf834"
+  integrity sha512-qcQaPNkbO6rSEOh5tbQcNpEZtnO2q0zefERaUhxbF8PkusLDROcQeeG47cVeE7L8woEmeNtOolJ3SVqHdScIwg==
 
 micromatch@^3.1.4:
   version "3.1.10"

@@ -73,6 +73,15 @@ export class Sheet extends Rectangle {
      * @memberof Sheet
      */
     public tag?: string;
+
+    /**
+     * Dummy tag which represent a clone of other sheet
+     *
+     * @type {boolean}
+     * @memberof Sheet
+     */
+    public dummy: boolean = false;
+
     /**
      * for controlling mustache template trailing comma, don't touch
      *
@@ -150,6 +159,7 @@ export class Sheet extends Rectangle {
                 y: this.nineSliceFrame.y
             },
             hash: this.hash,
+            dummy: this.dummy,
             last: this.last
         };
     }

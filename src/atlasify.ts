@@ -193,14 +193,16 @@ export class Atlasify {
      * @param {(atlas: Atlas[], spritesheets: Spritesheet[]) => void} callback
      * @memberof Atlasify
      */
-    public addURLs (paths: string[], callback?: (err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void): Promise<Atlasify | void> {
+    public addURLs (paths: string[], callback?: (err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void): Promise<Atlasify> {
         this._inputPaths = this._inputPaths.concat(paths);
         let loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
                 .then((image: Jimp) => {
                     const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
-                    sheet.data = image;
                     sheet.name = path.basename(img);
+                    sheet.data = image;
+
+                    // post-processing
                     if (this.options.extrude > 0) {
                         sheet.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
                         sheet.extrude(this.options.extrude);
@@ -211,9 +213,34 @@ export class Atlasify {
                         const tag = this.getLeafFolder(img);
                         if (tag) sheet.tag = tag;
                     }
-                    this._sheets.push(sheet);
-                    if (this.options.instant) {
-                        this._packer.add(sheet);
+
+                    const hash = image.hash();
+                    // search if image already exist
+                    let isNew = true;
+                    for (const i in this._sheets) {
+                        const s = this._sheets[i];
+                        if (s.name === sheet.name) {
+                            isNew = false;
+                            if (s.data && s.data.hash() === hash) return; // early exit if no change
+                            // input image has changed, need process
+                            this._sheets[i] = sheet;
+                            break;
+                        } else if (s.data && s.data.hash() === hash) {
+                            // This is the dummy sheet with different name
+                            sheet.dummy = true;
+                            sheet.data = s.data; // point to the same jimp object
+                            break;
+                        }
+                    }
+                    // if no early exit, set dirty status
+                    this._dirty ++;
+
+                    // push to _sheets if is new sheet
+                    if (isNew) {
+                        this._sheets.push(sheet);
+                        if (this.options.instant) {
+                            this._packer.add(sheet);
+                        }
                     }
                 });
         });
@@ -230,13 +257,22 @@ export class Atlasify {
     }
 
     public process (callback?: ((err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void)): Promise<this> {
+
+        if (this._dirty === 0) return Promise.resolve(this); // early quick if nothing changed
+
         let ext: string = path.extname(this.options.name);
         const basename: string = path.basename(this.options.name, ext);
         if (ext === "") ext = "png"; // assign default format PNG
         else ext = ext.slice(1).toLowerCase(); // trim . of extname
         const fillColor: number = (ext === "png") ? 0x00000000 : 0x000000ff;
         const tagCount: { [index: string]: number; } = {};
-        if (!this.options.instant) this._packer.addArray(this._sheets);
+        if (!this.options.instant) {
+            this._packer.reset();
+            this._packer.addArray(this._sheets.filter(s => s.dummy === false));
+        } else {
+            this._packer.repack();
+        }
+
         this._packer.bins.forEach((bin, index: number) => {
             let binName = basename;
             if (bin.tag) binName = `${bin.tag}-${binName}`;
@@ -287,10 +323,12 @@ export class Atlasify {
                     appInfo: appInfo
                 });
                 if (bin.tag) this._spritesheets[index].tag = bin.tag;
+                // TODO: Add dummy sheets to spritesheet
             }
         });
         // remove id if tag count < 2
         this.pruneTagIndex(tagCount);
+        this._dirty = 0; // set clean
         if (callback) callback(undefined, this._atlas, this._spritesheets);
         return Promise.resolve(this);
     }
@@ -329,7 +367,7 @@ export class Atlasify {
     public async save (humanReadable?: boolean, pathalike?: string): Promise<boolean>;
     /**
      * Asycn save current project & settings to file and return serialized string
-     * 
+     *
      * @param {boolean} [humanReadable=false]
      * @param {string} [pathalike]
      * @returns {Promise<string}>}
@@ -389,7 +427,12 @@ export class Atlasify {
         return result;
     }
 
-    public async load (pathalike: string, overrides: any = null, quick: boolean = false): Promise<void> {
+    public static async Load (pathalike: string, overrides: any = null, quick: boolean = false): Promise<Atlasify> {
+        const factory = new Atlasify(new Options());
+        return factory.load(pathalike, overrides, quick);
+    }
+
+    public async load (pathalike: string, overrides: any = null, quick: boolean = false): Promise<Atlasify> {
         const atl: IAtl = JSON.parse(readFileSync(pathalike, 'utf-8'));
         this._sheets = [];
         this.options = { ...atl.options, ...overrides }; // combining saved options and cli options
@@ -417,6 +460,8 @@ export class Atlasify {
                 this._packer.bins[i].rects.push(sheet);
             });
         });
+        console.log("Load completed");
+        return this;
     }
 
     public static load (pathalike: string, overrides: any = null, quick: boolean = false): Atlasify | undefined {
@@ -430,6 +475,7 @@ export class Atlasify {
     private _debugColor: number = 0xff000088;
 
     private _atlas: Atlas[] = [];
+    private _dirty: number = 0;
 
     /**
      * Get all atlas/image array

@@ -80,7 +80,7 @@ export class Sheet extends Rectangle {
      * @type {boolean}
      * @memberof Sheet
      */
-    public dummy: boolean = false;
+    public dummy: string[] = [];
 
     /**
      * for controlling mustache template trailing comma, don't touch

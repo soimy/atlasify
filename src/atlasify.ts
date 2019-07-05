@@ -227,8 +227,8 @@ export class Atlasify {
                             break;
                         } else if (s.data && s.data.hash() === hash) {
                             // This is the dummy sheet with different name
-                            sheet.dummy = true;
-                            sheet.data = s.data; // point to the same jimp object
+                            isNew = false;
+                            sheet.dummy.push(sheet.name);
                             break;
                         }
                     }
@@ -268,33 +268,37 @@ export class Atlasify {
         const tagCount: { [index: string]: number; } = {};
         if (!this.options.instant) {
             this._packer.reset();
-            this._packer.addArray(this._sheets.filter(s => s.dummy === false));
+            this._packer.addArray(this._sheets);
         } else {
             this._packer.repack();
         }
 
         this._packer.bins.forEach((bin, index: number) => {
-            let binName = basename;
-            if (bin.tag) binName = `${bin.tag}-${binName}`;
             // Count tags
             let tag = bin.tag ? bin.tag : "_";
             if (!tagCount[tag]) tagCount[tag] = 0; // create index key if not exist
             else tagCount[tag]++;
+
+            if (!bin.dirty) return; // early return if bin is not changed
+
+            let binName = basename;
+            if (bin.tag) binName = `${bin.tag}-${binName}`;
             // Add tag to the last sheet to control mustache trailing comma
             bin.rects[bin.rects.length - 1].last = true;
-            if (index === this._atlas.length) {
-                this._atlas.push({
-                    id: tagCount[tag],
-                    width: bin.width,
-                    height: bin.height,
-                    image: new Jimp(bin.width, bin.height, fillColor),
-                    name: binName,
-                    format: "RGBA8888",
-                    ext: ext
-                });
-                if (bin.tag) this._atlas[index].tag = bin.tag;
-            }
+
+            this._atlas[index] = {
+                id: tagCount[tag],
+                width: bin.width,
+                height: bin.height,
+                image: new Jimp(bin.width, bin.height, fillColor),
+                name: binName,
+                format: "RGBA8888",
+                ext: ext
+            };
+            if (bin.tag) this._atlas[index].tag = bin.tag;
+
             const image = this._atlas[index].image;
+
             // Render rects onto atlas
             bin.rects.forEach(rect => {
                 const sheet = rect;
@@ -307,24 +311,24 @@ export class Atlasify {
                 }
                 image.blit(buffer, sheet.x, sheet.y);
             });
-            if (index === this._spritesheets.length) {
-                // prepare spritesheet data
-                this._spritesheets.push({
-                    id: tagCount[tag],
-                    name: binName,
-                    imageName: `${binName}.${ext}`,
-                    imageFormat: "RGBA8888",
-                    width: bin.width,
-                    height: bin.height,
-                    scale: 1,
-                    rects: (bin.rects).map(rect => { return rect.serialize(); }),
-                    format: this.options.type,
-                    ext: this._exporter.getExtension(),
-                    appInfo: appInfo
-                });
-                if (bin.tag) this._spritesheets[index].tag = bin.tag;
-                // TODO: Add dummy sheets to spritesheet
-            }
+
+            // prepare spritesheet data
+            this._spritesheets[index] = {
+                id: tagCount[tag],
+                name: binName,
+                imageName: `${binName}.${ext}`,
+                imageFormat: "RGBA8888",
+                width: bin.width,
+                height: bin.height,
+                scale: 1,
+                rects: (bin.rects).map(rect => { return rect.serialize(); }),
+                format: this.options.type,
+                ext: this._exporter.getExtension(),
+                appInfo: appInfo
+            };
+            if (bin.tag) this._spritesheets[index].tag = bin.tag;
+            // TODO: Add dummy sheets to spritesheet
+
         });
         // remove id if tag count < 2
         this.pruneTagIndex(tagCount);

@@ -219,13 +219,15 @@ export class Atlasify {
                     let isNew = true;
                     for (const i in this._sheets) {
                         const s = this._sheets[i];
+                        if (!s.data) continue; // skip empty sheet
+                        const shash = s.data.hash();
                         if (s.name === sheet.name) {
                             isNew = false;
-                            if (s.data && s.data.hash() === hash) return; // early exit if no change
+                            if (shash === hash) return; // early exit if no change
                             // input image has changed, need process
                             this._sheets[i] = sheet;
                             break;
-                        } else if (s.data && s.data.hash() === hash) {
+                        } else if (shash === hash) {
                             // This is the dummy sheet with different name
                             isNew = false;
                             sheet.dummy.push(sheet.name);
@@ -299,6 +301,7 @@ export class Atlasify {
 
             const image = this._atlas[index].image;
 
+            const serializedSheet: object[] = [];
             // Render rects onto atlas
             bin.rects.forEach(rect => {
                 const sheet = rect;
@@ -310,6 +313,14 @@ export class Atlasify {
                     image.blit(debugFrame, sheet.frame.x, sheet.frame.y);
                 }
                 image.blit(buffer, sheet.x, sheet.y);
+
+                // share rects iteration to add serialized sheets
+                serializedSheet.push(rect.serialize());
+                if (rect.dummy.length > 0) {
+                    rect.dummy.forEach(n => {
+                        serializedSheet.push({ ...rect.serialize(), name: n });
+                    });
+                }
             });
 
             // prepare spritesheet data
@@ -321,13 +332,12 @@ export class Atlasify {
                 width: bin.width,
                 height: bin.height,
                 scale: 1,
-                rects: (bin.rects).map(rect => { return rect.serialize(); }),
+                rects: serializedSheet,
                 format: this.options.type,
                 ext: this._exporter.getExtension(),
                 appInfo: appInfo
             };
             if (bin.tag) this._spritesheets[index].tag = bin.tag;
-            // TODO: Add dummy sheets to spritesheet
 
         });
         // remove id if tag count < 2
@@ -466,11 +476,6 @@ export class Atlasify {
         });
         console.log("Load completed");
         return this;
-    }
-
-    public static load (pathalike: string, overrides: any = null, quick: boolean = false): Atlasify | undefined {
-        // TODO
-        return undefined;
     }
 
     private _inputPaths: string[];

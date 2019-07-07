@@ -175,7 +175,11 @@ export class Sheet extends Rectangle {
             if (typeof(data[key]) === "object" && data[key] !== null && this[key]) {
                 this.parse(data[key], this[key]);
             } else {
-                target[key] = data[key];
+                try {
+                    target[key] = data[key];
+                } catch (err) {
+                    console.error(err);
+                } 
             }
         });
         return this;
@@ -277,6 +281,18 @@ export class Sheet extends Rectangle {
     private _rotated: boolean = false;
     private _hash: string = "";
     private _imageDirty: number = 0;
+
+    set x (value: number) {
+        super.x = value;
+        this.frame.x = this._border + value;
+    }
+    get x (): number { return super.x; }
+
+    set y (value: number) {
+        super.y = value;
+        this.frame.y = this._border + value;
+    }
+    get y (): number { return super.y; }
 
     //
     // overriding Rectangle.rot getter setter

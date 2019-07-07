@@ -17,6 +17,14 @@ export class Sheet extends Rectangle {
     public name: string = "";
 
     /**
+     * path/url to the source image
+     *
+     * @type {string}
+     * @memberof Sheet
+     */
+    public url: string = "";
+
+    /**
      * frame rectangle to be rendered to final atlas
      *
      * @type {Rectangle}
@@ -57,14 +65,6 @@ export class Sheet extends Rectangle {
      * @memberof Sheet
      */
     public trimmed: boolean = false;
-
-    /**
-     * hash string generated from image, to identifing
-     *
-     * @type {string}
-     * @memberof Sheet
-     */
-    public hash?: string;
 
     /**
      * tag of group packing
@@ -130,6 +130,7 @@ export class Sheet extends Rectangle {
     public serialize (): object {
         return {
             name: this.name,
+            url: this.url,
             width: this.width,
             height: this.height,
             x: this.x,
@@ -158,9 +159,7 @@ export class Sheet extends Rectangle {
                 x: this.nineSliceFrame.x,
                 y: this.nineSliceFrame.y
             },
-            hash: this.hash,
-            dummy: this.dummy,
-            last: this.last
+            dummy: this.dummy
         };
     }
 
@@ -217,6 +216,7 @@ export class Sheet extends Rectangle {
             }
         }
         this.data.crop(this.sourceFrame.x, this.sourceFrame.y, this.width, this.height);
+        this._imageDirty ++;
     }
 
     /**
@@ -256,6 +256,7 @@ export class Sheet extends Rectangle {
             .crop(border + this.frame.width - 1, border, 1, this.frame.height)
             .resize(border, this.frame.height);
         this.data.blit(rightExtrude, border + this.frame.width, border);
+        this._imageDirty ++;
     }
 
     /**
@@ -269,10 +270,13 @@ export class Sheet extends Rectangle {
     public rotate (): void {
         this.data.rotate(90);
         [this.frame.width, this.frame.height] = [this.frame.height, this.frame.width];
+        this._imageDirty ++;
     }
 
     private _border: number = 0;
     private _rotated: boolean = false;
+    private _hash: string = "";
+    private _imageDirty: number = 0;
 
     //
     // overriding Rectangle.rot getter setter
@@ -310,9 +314,26 @@ export class Sheet extends Rectangle {
     get data (): Jimp { return super.data; }
     set data (value: Jimp) {
         super.data = value;
-        if (this.data.bitmap) {
-            this.hash = this.data.hash();
-        }
+        this._imageDirty ++;
+
+        // hash is expensive, so move to manually update hash value
+        //
+        // if (this.data.bitmap) {
+            // this.hash = this.data.hash();
+        // }
+    }
+
+    /**
+     * hash string generated from image, for identifing
+     *
+     * @type {string}
+     * @memberof Sheet
+     */
+    get hash (): string {
+        // update hash only when imagedata is touched
+        if (this.data && this._imageDirty > 0) this._hash = this.data.hash();
+        this._imageDirty = 0;
+        return this._hash;
     }
 
     private alphaScanner (forward: boolean = true, horizontal: boolean = true, tolerance: number = 0x00): number {

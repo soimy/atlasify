@@ -200,6 +200,7 @@ export class Atlasify {
                 .then((image: Jimp) => {
                     const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
                     sheet.name = path.basename(img);
+                    sheet.url = img;
                     sheet.data = image;
 
                     // post-processing
@@ -214,23 +215,27 @@ export class Atlasify {
                         if (tag) sheet.tag = tag;
                     }
 
-                    const hash = image.hash();
                     // search if image already exist
                     let isNew = true;
                     for (const i in this._sheets) {
                         const s = this._sheets[i];
                         if (!s.data) continue; // skip empty sheet
-                        const shash = s.data.hash();
                         if (s.name === sheet.name) {
                             isNew = false;
-                            if (shash === hash) return; // early exit if no change
+                            if (s.width === sheet.width &&
+                                s.height === sheet.height && // do pHash compare only on same size image
+                                s.hash === sheet.hash) {
+                                return; // early exit if no change
+                            }
                             // input image has changed, need process
                             this._sheets[i] = sheet;
                             break;
-                        } else if (shash === hash) {
+                        } else if (s.width === sheet.width &&
+                            s.height === sheet.height &&
+                            s.hash === sheet.hash) {
                             // This is the dummy sheet with different name
                             isNew = false;
-                            sheet.dummy.push(sheet.name);
+                            s.dummy.push(sheet.name);
                             break;
                         }
                     }
@@ -285,8 +290,6 @@ export class Atlasify {
 
             let binName = basename;
             if (bin.tag) binName = `${bin.tag}-${binName}`;
-            // Add tag to the last sheet to control mustache trailing comma
-            bin.rects[bin.rects.length - 1].last = true;
 
             this._atlas[index] = {
                 id: tagCount[tag],
@@ -301,7 +304,7 @@ export class Atlasify {
 
             const image = this._atlas[index].image;
 
-            const serializedSheet: object[] = [];
+            const serializedSheet: any[] = [];
             // Render rects onto atlas
             bin.rects.forEach(rect => {
                 const sheet = rect;
@@ -322,6 +325,8 @@ export class Atlasify {
                     });
                 }
             });
+            // Add tag to the last sheet to control mustache trailing comma
+            serializedSheet[serializedSheet.length - 1].last = true;
 
             // prepare spritesheet data
             this._spritesheets[index] = {

@@ -478,6 +478,7 @@ export class Atlasify {
                         .then(image => {
                             sheet.data = image;
                             // post-processing
+                            if (sheet.rot) sheet.data.rotate(90);
                             if (this.options.extrude > 0) {
                                 sheet.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
                                 sheet.extrude(this.options.extrude);

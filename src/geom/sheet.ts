@@ -177,6 +177,8 @@ export class Sheet extends Rectangle {
             } else {
                 try {
                     target[key] = data[key];
+                    // fix rot setter w/h swap
+                    if (key === "rot" && data[key] === true) [this.width, this.height] = [this.height, this.width];
                 } catch (err) {
                     console.error(err);
                 }

@@ -254,7 +254,7 @@ export class Atlasify {
 
         return Promise.all(loader)
             .then(() => {
-                return this.process(callback);
+                return this.pack(callback);
             })
             .catch(err => {
                 console.error("File load error : " + err);
@@ -263,7 +263,7 @@ export class Atlasify {
             });
     }
 
-    public process (callback?: ((err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void)): Promise<this> {
+    public pack (callback?: ((err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void)): Promise<this> {
 
         if (this._dirty === 0) return Promise.resolve(this); // early quick if nothing changed
 

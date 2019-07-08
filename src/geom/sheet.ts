@@ -179,7 +179,7 @@ export class Sheet extends Rectangle {
                     target[key] = data[key];
                 } catch (err) {
                     console.error(err);
-                } 
+                }
             }
         });
         return this;
@@ -271,8 +271,8 @@ export class Sheet extends Rectangle {
      *
      * @memberof Sheet
      */
-    public rotate (): void {
-        this.data.rotate(90);
+    public rotate (clockwise: boolean = true): void {
+        this.data.rotate(90 * (clockwise ? 1 : -1));
         [this.frame.width, this.frame.height] = [this.frame.height, this.frame.width];
         this._imageDirty ++;
     }
@@ -312,12 +312,10 @@ export class Sheet extends Rectangle {
     }
     set rot (value: boolean) {
         super.rot = value;
-        if (!this.rot) return; // if rot is set to false, do nothing.
 
-        if (!this._rotated) this._rotated = true;
-        else return; // if already rotated, skip rotate and swap.
-
-        this.rotate();
+        if (this._rotated === value) return;
+        this._rotated = value;
+        this.rotate(value);
     }
 
     /**

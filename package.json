@@ -11,7 +11,7 @@
     "prepare": "patch-package",
     "build": "tsc",
     "build:clean": "yarn run clean && yarn run build",
-    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js --load ./sprite.atl -astr -p 2 -m 1024,1024 --extrude 1 --trim --debug --save ./atlas && open ./*.png",
+    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js --load ./sprite.atl -astr -p 2 -m 1024,1024 --extrude 1 --trim --debug --save ./atlas/ui/",
     "commit": "npx git-cz"
   },
   "repository": {

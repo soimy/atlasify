@@ -52,7 +52,7 @@
   "dependencies": {
     "commander": "^2.20.0",
     "jimp": "^0.6.4",
-    "maxrects-packer": "^2.4.2",
+    "maxrects-packer": "^2.4.3",
     "mustache": "^3.0.1"
   },
   "config": {

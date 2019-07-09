@@ -274,7 +274,24 @@ export class Sheet extends Rectangle {
      * @memberof Sheet
      */
     public rotate (clockwise: boolean = true): void {
-        this.data.rotate(90 * (clockwise ? 1 : -1));
+        // jimp rotate is buggy, avoid it!
+        // this.data.rotate(90 * (clockwise ? 1 : -1));
+        const bitmap = this.data.bitmap;
+        const rotBuffer: Buffer = Buffer.from(bitmap.data);
+        const rotOffsetStep = clockwise ? -4 : 4;
+        let rotOffset = clockwise ? rotBuffer.length - 4 : 0;
+
+        for (let x = 0; x < bitmap.width; x++) {
+            for (let y = bitmap.height - 1; y >= 0; y--) {
+                let srcOffset = (bitmap.width * y + x) << 2;
+                let tmp = bitmap.data.readUInt32BE(srcOffset);
+                rotBuffer.writeUInt32BE(tmp, rotOffset);
+                rotOffset += rotOffsetStep;
+            }
+        }
+        bitmap.data = rotBuffer;
+        [bitmap.width, bitmap.height] = [bitmap.height, bitmap.width];
+
         [this.frame.width, this.frame.height] = [this.frame.height, this.frame.width];
         this._imageDirty ++;
     }

@@ -1,13 +1,14 @@
-import { MaxRectsPacker, IOption, Bin } from "maxrects-packer";
+import { MaxRectsPacker, IOption, IBin } from "maxrects-packer";
 import Jimp from "jimp";
 import path from "path";
 import { Sheet } from "./geom/sheet";
 import { Exporter } from "./exporter";
+import { writeFile, readFileSync } from "fs";
 
 let appInfo = require('../package.json');
 
 /**
- * Options class for composor and maxrects-packer
+ * Options class for atlasify and maxrects-packer
  *
  * @property {boolean} options.square use square size (default is true)
  * @property {boolean} options.pot use power of 2 sizing (default is true)
@@ -55,6 +56,14 @@ export class Options implements IOption {
     public allowRotation: boolean = false;
 
     /**
+     * Controlling packer border to edge
+     *
+     * @type {number}
+     * @memberof Options
+     */
+    public border: number = 0;
+
+    /**
      * Instant mode will skip sorting and pack using given array order
      *
      * @type {boolean}
@@ -78,6 +87,14 @@ export class Options implements IOption {
      * @memberof Options
      */
     public trimAlpha: boolean = false;
+
+    /**
+     * Trim alpha with tolerence value
+     *
+     * @type {number}
+     * @memberof Options
+     */
+    public alphaTolerence: number = 0;
 
     /**
      * Extrude amount of edge pixels, will automaticly `trimAlpha` first.
@@ -144,6 +161,14 @@ export type Base64Data = {
     data: string;
 };
 
+export interface IAtl {
+    options: IOption;
+    packer: IBin[];
+    spritesheets: Spritesheet[];
+    atlas: {image: string, ext: string, width: number, height: number, name: string, id?: number, tag?: string, format?: string}[];
+    imagePaths: string[];
+}
+
 export class Atlasify {
 
    /**
@@ -168,115 +193,163 @@ export class Atlasify {
      * @param {(atlas: Atlas[], spritesheets: Spritesheet[]) => void} callback
      * @memberof Atlasify
      */
-    public addURLs (paths: string[], callback?: (err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void): Promise<Atlasify | void> {
-        this._inputPaths.concat(paths);
+    public addURLs (paths: string[], callback?: (err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void): Promise<Atlasify> {
+        this._inputPaths = this._inputPaths.concat(paths);
         let loader: Promise<void>[] = paths.map(async img => {
             return Jimp.read(img)
                 .then((image: Jimp) => {
                     const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
-                    sheet.data = image;
                     sheet.name = path.basename(img);
+                    sheet.url = img;
+                    sheet.data = image;
+
+                    // post-processing
                     if (this.options.extrude > 0) {
-                        sheet.trimAlpha(); // need to trim before extrude
+                        sheet.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
                         sheet.extrude(this.options.extrude);
                     } else if (this.options.trimAlpha) {
-                        sheet.trimAlpha();
+                        sheet.trimAlpha(this.options.alphaTolerence);
                     }
                     if (this.options.seperateFolder) {
                         const tag = this.getLeafFolder(img);
                         if (tag) sheet.tag = tag;
                     }
-                    this._sheets.push(sheet);
-                    if (this.options.instant) {
-                        this._packer.add(sheet);
+
+                    // search if image already exist
+                    let isNew = true;
+                    for (const i in this._sheets) {
+                        const s = this._sheets[i];
+                        if (!s.data) continue; // skip empty sheet
+                        if (s.name === sheet.name) {
+                            isNew = false;
+                            if (s.width === sheet.width &&
+                                s.height === sheet.height && // do pHash compare only on same size image
+                                s.hash === sheet.hash) {
+                                return; // early exit if no change
+                            }
+                            // input image has changed, need process
+                            this._sheets[i] = sheet;
+                            break;
+                        } else if (s.width === sheet.width &&
+                            s.height === sheet.height &&
+                            s.hash === sheet.hash) {
+                            // This is the dummy sheet with different name
+                            isNew = false;
+                            s.dummy.push(sheet.name);
+                            break;
+                        }
+                    }
+                    // if no early exit, set dirty status
+                    this._dirty ++;
+
+                    // push to _sheets if is new sheet
+                    if (isNew) {
+                        this._sheets.push(sheet);
+                        if (this.options.instant) {
+                            this._packer.add(sheet);
+                        }
                     }
                 });
         });
 
         return Promise.all(loader)
             .then(() => {
-                let ext: string = path.extname(this.options.name);
-                const basename: string = path.basename(this.options.name, ext);
-
-                if (ext === "") ext = "png"; // assign default format PNG
-                else ext = ext.slice(1); // trim . of extname
-                ext = ext.toLowerCase();
-
-                const fillColor: number = (ext === "png") ? 0x00000000 : 0x000000ff;
-                const tagCount: {[index: string]: number} = {};
-
-                if (!this.options.instant) this._packer.addArray(this._sheets);
-                this._packer.bins.forEach((bin, index: number) => {
-                    let binName = basename;
-                    if (bin.tag) binName = `${bin.tag}-${binName}`;
-                    const image = new Jimp(bin.width, bin.height, fillColor);
-
-                    // Count tags
-                    let tag = bin.tag ? bin.tag : "_";
-                    if (!tagCount[tag]) tagCount[tag] = 0; // create index key if not exist
-                    else tagCount[tag] ++;
-
-                    // Add tag to the last sheet to control mustache trailing comma
-                    bin.rects[bin.rects.length - 1].last = true;
-
-                    // Render rects onto atlas
-                    bin.rects.forEach(rect => {
-                        const sheet = rect as Sheet;
-                        const buffer: Jimp = sheet.data;
-                        sheet.frame.x += sheet.x;
-                        sheet.frame.y += sheet.y;
-                        if (this.options.debug) {
-                            const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this._debugColor);
-                            image.blit(debugFrame, sheet.frame.x, sheet.frame.y);
-                        }
-                        image.blit(buffer, sheet.x, sheet.y);
-                    });
-
-                    const atlas: Atlas = {
-                        id: tagCount[tag],
-                        width: bin.width,
-                        height: bin.height,
-                        image: image,
-                        name: binName,
-                        format: "RGBA8888", // TODO
-                        ext: ext
-                    };
-                    this._atlas.push(atlas);
-
-                    // prepare spritesheet data
-                    const view: Spritesheet = {
-                        id: tagCount[tag],
-                        name: basename,
-                        imageName: binName,
-                        imageFormat: "RGBA8888",
-                        width: bin.width,
-                        height: bin.height,
-                        scale: 1,
-                        rects: (bin.rects as Sheet[]).map(rect => { return rect.serialize(); }),
-                        format: this.options.type,
-                        ext: this._exporter.getExtension(),
-                        appInfo: appInfo
-                    };
-                    this._spritesheets.push(view);
-
-                    // add tag if exist
-                    if (bin.tag) {
-                        atlas.tag = bin.tag;
-                        view.tag = bin.tag;
-                    }
-                });
-
-                // remove id if tag count < 2
-                this.pruneTagIndex(tagCount);
-
-                if (callback) callback(undefined, this._atlas, this._spritesheets);
-                return Promise.resolve(this);
+                return this.pack(callback);
             })
             .catch(err => {
                 console.error("File load error : " + err);
                 if (callback) callback(err);
                 return Promise.reject(err);
             });
+    }
+
+    public pack (callback?: ((err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void)): Promise<this> {
+
+        if (this._dirty === 0) return Promise.resolve(this); // early quick if nothing changed
+
+        let ext: string = path.extname(this.options.name);
+        const basename: string = path.basename(this.options.name, ext);
+        if (ext === "") ext = "png"; // assign default format PNG
+        else ext = ext.slice(1).toLowerCase(); // trim . of extname
+        const fillColor: number = (ext === "png") ? 0x00000000 : 0x000000ff;
+        const tagCount: { [index: string]: number; } = {};
+        if (!this.options.instant) {
+            this._packer.reset();
+            this._packer.addArray(this._sheets);
+        } else {
+            this._packer.repack(false);
+        }
+
+        this._packer.bins.forEach((bin, index: number) => {
+            // Count tags
+            let tag = bin.tag ? bin.tag : "_";
+            if (!tagCount[tag]) tagCount[tag] = 0; // create index key if not exist
+            else tagCount[tag]++;
+
+            if (!bin.dirty) return; // early return if bin is not changed
+
+            let binName = basename;
+            if (bin.tag) binName = `${bin.tag}-${binName}`;
+
+            this._atlas[index] = {
+                id: tagCount[tag],
+                width: bin.width,
+                height: bin.height,
+                image: new Jimp(bin.width, bin.height, fillColor),
+                name: binName,
+                format: "RGBA8888",
+                ext: ext
+            };
+            if (bin.tag) this._atlas[index].tag = bin.tag;
+
+            const image = this._atlas[index].image;
+
+            const serializedSheet: any[] = [];
+            // Render rects onto atlas
+            bin.rects.forEach(rect => {
+                const sheet = rect;
+                const buffer: Jimp = sheet.data;
+                // sheet.frame.x += sheet.x;
+                // sheet.frame.y += sheet.y;
+                if (this.options.debug) {
+                    const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this._debugColor);
+                    image.blit(debugFrame, sheet.frame.x, sheet.frame.y);
+                }
+                image.blit(buffer, sheet.x, sheet.y);
+
+                // share rects iteration to add serialized sheets
+                serializedSheet.push(rect.serialize());
+                if (rect.dummy.length > 0) {
+                    rect.dummy.forEach(n => {
+                        serializedSheet.push({ ...rect.serialize(), name: n });
+                    });
+                }
+            });
+            // Add tag to the last sheet to control mustache trailing comma
+            serializedSheet[serializedSheet.length - 1].last = true;
+
+            // prepare spritesheet data
+            this._spritesheets[index] = {
+                id: tagCount[tag],
+                name: binName,
+                imageName: `${binName}.${ext}`,
+                imageFormat: "RGBA8888",
+                width: bin.width,
+                height: bin.height,
+                scale: 1,
+                rects: serializedSheet,
+                format: this.options.type,
+                ext: this._exporter.getExtension(),
+                appInfo: appInfo
+            };
+            if (bin.tag) this._spritesheets[index].tag = bin.tag;
+
+        });
+        // remove id if tag count < 2
+        this.pruneTagIndex(tagCount);
+        this._dirty = 0; // set clean
+        if (callback) callback(undefined, this._atlas, this._spritesheets);
+        return Promise.resolve(this);
     }
 
     public addBuffers (buffers: Buffer[], callback: (atlas: Atlas[], spritesheets: Spritesheet[]) => void): void {
@@ -294,12 +367,164 @@ export class Atlasify {
         return this._packer.currentBinIndex;
     }
 
+    /**
+     * Async serialize current project & settings to string
+     *
+     * @param {boolean} [humanReadable=false]
+     * @returns {Promise<string>}
+     * @memberof Atlasify
+     */
+    public async save (humanReadable?: boolean): Promise<string>;
+    /**
+     * Asycn save current project & settings to file
+     *
+     * @param {boolean} [humanReadable=false]
+     * @param {string} [pathalike]
+     * @returns {Promise<boolean>}
+     * @memberof Atlasify
+     */
+    public async save (humanReadable?: boolean, pathalike?: string): Promise<boolean>;
+    /**
+     * Asycn save current project & settings to file and return serialized string
+     *
+     * @param {boolean} [humanReadable=false]
+     * @param {string} [pathalike]
+     * @returns {Promise<string}>}
+     * @memberof Atlasify
+     */
+    public async save (...args: any[]): Promise<any> {
+        const atlasBase64 = await Promise.all(this._atlas.map(async a => a.image.getBase64Async(Jimp.MIME_PNG)));
+        const atl: IAtl = {
+            options: this.options,
+            packer: this._packer.save(),
+            spritesheets: this._spritesheets,
+            atlas: this._atlas.map((a, i) => {
+                return {
+                    id: a.id ? a.id : 0,
+                    width: a.width,
+                    height: a.height,
+                    name: a.name,
+                    format: "RGBA8888", // TODO
+                    ext: a.ext,
+                    image: atlasBase64[i]
+                };
+            }),
+            imagePaths: this._inputPaths
+        };
+        let humanReadable: boolean = false;
+        let pathalike: string | undefined;
+        if (args.length === 0) {
+            humanReadable = false;
+        } else if (args.length === 1) {
+            if (typeof(args[0]) === "boolean") {
+                humanReadable = args[0];
+            } else if (typeof(args[0] === "string")) {
+                pathalike = args[0];
+            } else {
+                throw new Error("Atlasify.save(): wrong argument type");
+            }
+        } else if (args.length > 1) {
+            if (typeof(args[0]) === "boolean" && typeof(args[1]) === "string") {
+                humanReadable = args[0];
+                pathalike = args[1];
+            } else {
+                throw new Error("Atlasify.save(): wrong argument type");
+            }
+        }
+        const result = humanReadable ? JSON.stringify(atl, null, 2) : JSON.stringify(atl);
+        if (pathalike) {
+            writeFile(pathalike, result, err => {
+                if (err) {
+                    console.error(`Saving atl file encountered error: ${err}`);
+                    return false;
+                } else {
+                    console.log(`Saved configuration: ${pathalike}`);
+                    return true;
+                }
+            });
+        }
+        return result;
+    }
+
+    public static async Load (pathalike: string, overrides: any = null, quick: boolean = true): Promise<Atlasify> {
+        const factory = new Atlasify(new Options());
+        return factory.load(pathalike, overrides, quick);
+    }
+
+    public async load (pathalike: string, overrides: any = null, quick: boolean = true): Promise<Atlasify> {
+        const atl: IAtl = JSON.parse(readFileSync(pathalike, 'utf-8'));
+        this._sheets = [];
+        this.options = { ...atl.options, ...overrides }; // combining saved options and cli options
+        this._packer = new MaxRectsPacker<Sheet>(this.options.width, this.options.height, this.options.padding, this.options);
+        this._exporter = new Exporter();
+        this._exporter.setExportFormat(this.options.type);
+
+        // Load packer
+        this._packer.load(atl.packer);
+        // Load spritesheets
+        this._spritesheets = atl.spritesheets;
+        // load atlas
+        this._atlas = await Promise.all(atl.atlas.map(async (a, i) => {
+            // async overwrite atlas base64 string image with Jimp object
+            return { ...a, image: await Jimp.read(Buffer.from(a.image.replace(/^data:image\/png;base64,/, ""), 'base64')) };
+        }));
+        // Load sheets
+        this._spritesheets.forEach((spritesheet, i) => {
+            spritesheet.rects.forEach(r => {
+                const sheet = Sheet.Factory(r);
+                if (!quick) {
+                    // TODO
+                    Jimp.read(sheet.url)
+                        .then(image => {
+                            const reloaded = new Sheet(image.bitmap.width, image.bitmap.height);
+                            reloaded.data = image;
+                            // post-processing
+                            if (this.options.extrude > 0) {
+                                reloaded.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
+                                reloaded.extrude(this.options.extrude);
+                            } else if (this.options.trimAlpha) {
+                                reloaded.trimAlpha(this.options.alphaTolerence);
+                            }
+                            // unrotate sheets for stable result
+                            if (sheet.rot) sheet.rot = false;
+
+                            sheet.data = reloaded.data;
+
+                            // manage option overrides
+                            if (!this.options.seperateFolder && sheet.tag) delete sheet.tag;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            console.log("Fall back to pre-rendered atlas");
+                            sheet.data = new Jimp(sheet.width, sheet.height)
+                                .blit(this._atlas[i].image, 0, 0, sheet.x, sheet.y, sheet.width, sheet.height);
+                            // unrotate sheets for stable result
+                            if (sheet.rot) sheet.rot = false;
+                        });
+                } else {
+                    sheet.data = new Jimp(sheet.width, sheet.height)
+                        .blit(this._atlas[i].image, 0, 0, sheet.x, sheet.y, sheet.width, sheet.height);
+                    // unrotate sheets for stable result
+                    if (sheet.rot) sheet.rot = false;
+                }
+                this._sheets.push(sheet);
+                this._packer.bins[i].rects.push(sheet);
+            });
+        });
+
+        // TODO: Load imagePaths
+
+        console.log("Load completed");
+        return this;
+    }
+
     private _inputPaths: string[];
     private _sheets: Sheet[];
-    private _packer: MaxRectsPacker;
+    private _packer: MaxRectsPacker<Sheet>;
     private _debugColor: number = 0xff000088;
 
     private _atlas: Atlas[] = [];
+    private _dirty: number = 0;
 
     /**
      * Get all atlas/image array

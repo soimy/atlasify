@@ -17,17 +17,20 @@ cli
     .arguments('<image-files/folder>')
     .description('CLI tools to packing and compositing image files into atlas using MaxRects packing algorithm')
     .option('-o, --output <filename>', 'output atlas filename (Default: sprite.png)', 'sprite.png')
+    .option('    --load <filename>', 'load saved project atl file')
     .option('-m, --size <w,h>', 'ouput texture atlas size (defaut: 2048,2048)', v => { return v.split(',') }, [2048, 2048])
     .option('-p, --padding <n>', 'padding between images (Default: 0)', 0)
-    .option('-a, --auto-size', 'shrink atlas to the smallest possible square (Default: true)', true)
-    .option('-t, --pot', 'atlas size shall be power of 2 (Default: true)', true)
+    .option('-b, --border <n>', 'space to atlas edge (Default: 0)', 0)
+    .option('-a, --auto-size', 'shrink atlas to the smallest possible square (Default: false)', false)
+    .option('-t, --pot', 'atlas size shall be power of 2 (Default: false)', false)
     .option('-s, --square', 'atlas size shall be square (Default: false)', false)
     .option('-r, --rot', 'allow 90-degree rotation while packing (Default: false)', false)
-    .option('    --trim', 'remove surrounding transparent pixels (Default: false)', false)
+    .option('    --trim [n]', 'remove surrounding transparent pixels with optional tolerence [n] (Default: false)', false)
     .option('    --extrude <n>', 'extrude edge pixels (Default: 0)', 0)
     .option('    --debug', 'draw debug gizmo on atlas (Default: false)', false)
     .option('    --instant', 'instant packing is quicker and skip sorting (Default: false)', false)
     .option('    --seperate-folder', 'Seperate bin based on folder (Default: false)', false)
+    .option('    --save', 'Save configuration for reuse (Default: false)', false)
     
     cli
     .command("*")
@@ -66,14 +69,15 @@ if (!imageFiles) {
 // Set default value
 // Because commander.js not parse default boolean parameter
 //
-opt.autoSize = utils.valueQueue([opt.autoSize, true]);
-opt.pot = utils.valueQueue([opt.pot, true]);
+opt.autoSize = utils.valueQueue([opt.autoSize, false]);
+opt.pot = utils.valueQueue([opt.pot, false]);
 opt.square = utils.valueQueue([opt.square, false]);
 opt.rot = utils.valueQueue([opt.rot, false]);
 opt.trim = utils.valueQueue([opt.trim, false]);
 opt.debug = utils.valueQueue([opt.debug, false]);
 opt.instant = utils.valueQueue([opt.instant, false]);
 opt.seperateFolder = utils.valueQueue([opt.seperateFolder, false]);
+opt.save = utils.valueQueue([opt.save, false]);
 
 //
 // Load images into Rectangle objects
@@ -84,7 +88,9 @@ atlasifyOptions.smart = opt.autoSize;
 atlasifyOptions.pot = opt.pot;
 atlasifyOptions.square = opt.square;
 atlasifyOptions.allowRotation = opt.rot;
-atlasifyOptions.trimAlpha = opt.extrude > 0 ? true : opt.trim;
+atlasifyOptions.border = opt.border;
+atlasifyOptions.trimAlpha = opt.extrude > 0 ? true : opt.trim !== false ? true : false;
+atlasifyOptions.alphaTolerence = utils.isNumeric(opt.trim) ? opt.trim : 0;
 atlasifyOptions.debug = opt.debug;
 atlasifyOptions.extrude = opt.extrude;
 atlasifyOptions.instant = opt.instant;
@@ -108,17 +114,42 @@ imageFiles.sort((a, b) => {
     const bf = utils.getLeafFolder(b);
     return af > bf ? 1 : -1;
 });
-atlas.addURLs(imageFiles)
-    .then(result => {
-        for (let a of result.atlas) {
-            const imageName = a.id ? `${a.name}.${a.id}.${a.ext}` : `${a.name}.${a.ext}`
-            a.image.writeAsync(imageName).then(() => {
-                console.log(`Saved atlas: ${imageName}`);
+
+if (opt.load) {
+    console.log(`Loading project file: ${opt.load}`);
+    atlas.load(opt.load, atlasifyOptions, false)
+        .then(atlas => atlas.addURLs(imageFiles).then(result => fileIO(result)));
+} else atlas.addURLs(imageFiles).then(result => fileIO(result));
+
+function fileIO(result) {
+    for (let a of result.atlas) {
+        const imageName = a.id ? `${a.name}.${a.id}.${a.ext}` : `${a.name}.${a.ext}`
+        a.image.writeAsync(imageName)
+        .then(() => {
+            console.log(`Saved atlas: ${imageName}`);
+        })
+        .catch(err => {
+            console.error(`Failed saving atlas ${imageName}: ${err}`);
+        });
+    }
+    for (let s of result.spritesheets) {
+        const sheetName = s.id ? `${s.name}.${s.id}.${s.ext}` : `${s.name}.${s.ext}`;
+        fs.writeFile(sheetName, result.exporter.compile(s), 'utf-8', err => {
+            if(err) console.error(`Failed saving spritesheet ${sheetName}: ${err}`);
+            else console.log(`Saved spritesheet: ${sheetName}`);
+        });
+    }
+    if (opt.save) {
+        let atlPath = result.options.name;
+        const dir = path.dirname(atlPath);
+        atlPath = path.basename(atlPath, path.extname(atlPath)) + ".atl";
+        atlPath = path.join(dir, atlPath);
+        result.save(true).then(atl => {
+            fs.writeFile(atlPath, atl, 'utf-8', err => {
+                if(err) console.error(`Failed saving configuration ${atlPath}: ${err}`);
+                else console.log(`Saved configuration: ${atlPath}`);
             });
-        }
-        for (let s of result.spritesheets) {
-            const sheetName = s.id ? `${s.imageName}.${s.id}.${s.ext}` : `${s.imageName}.${s.ext}`;
-            fs.writeFileSync(sheetName, result.exporter.compile(s));
-            console.log(`Saved spritesheet: ${sheetName}`);
-        }
-    });
+        })
+        .catch(console.error);
+    }
+}

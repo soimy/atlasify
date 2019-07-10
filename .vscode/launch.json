@@ -4,14 +4,15 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "node",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "name": "Launch via NPM",
-            "runtimeExecutable": "npm",
+            "name": "Launch via Yarn",
+            "runtimeExecutable": "yarn",
             "runtimeArgs": [
-                "run-script", "test"
+                "run", "test"
             ],
             "port": 9229,
             "protocol": "inspector",

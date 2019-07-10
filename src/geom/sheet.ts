@@ -17,6 +17,14 @@ export class Sheet extends Rectangle {
     public name: string = "";
 
     /**
+     * path/url to the source image
+     *
+     * @type {string}
+     * @memberof Sheet
+     */
+    public url: string = "";
+
+    /**
      * frame rectangle to be rendered to final atlas
      *
      * @type {Rectangle}
@@ -59,20 +67,21 @@ export class Sheet extends Rectangle {
     public trimmed: boolean = false;
 
     /**
-     * hash string generated from image, to identifing
-     *
-     * @type {string}
-     * @memberof Sheet
-     */
-    public hash?: string;
-
-    /**
      * tag of group packing
      *
      * @type {string}
      * @memberof Sheet
      */
     public tag?: string;
+
+    /**
+     * Dummy tag which represent a clone of other sheet
+     *
+     * @type {boolean}
+     * @memberof Sheet
+     */
+    public dummy: string[] = [];
+
     /**
      * for controlling mustache template trailing comma, don't touch
      *
@@ -93,13 +102,18 @@ export class Sheet extends Rectangle {
      * @memberof Sheet
      */
     constructor (
-        public width: number = 0,
-        public height: number = 0,
-        public x: number = 0,
-        public y: number = 0,
+        width: number = 0,
+        height: number = 0,
+        x: number = 0,
+        y: number = 0,
         rot: boolean = false
     ) {
         super();
+        this._x = x;
+        this._y = y;
+        this._width = width;
+        this._height = height;
+        this._rot = rot;
         this.frame = new Rectangle(width, height);
         this.sourceFrame = new Rectangle(width, height);
         this.anchor = new Vec2(width / 2, height / 2);
@@ -107,14 +121,20 @@ export class Sheet extends Rectangle {
         this.data = new Jimp(width, height);
     }
 
+    /**
+     * Return a serialized json object
+     *
+     * @returns {object}
+     * @memberof Sheet
+     */
     public serialize (): object {
-        return {
+        let json: object = {
             name: this.name,
+            url: this.url,
             width: this.width,
             height: this.height,
             x: this.x,
             y: this.y,
-            rot: this.rot,
             trimmed: this.trimmed,
             frame: {
                 width: this.frame.width,
@@ -138,9 +158,41 @@ export class Sheet extends Rectangle {
                 x: this.nineSliceFrame.x,
                 y: this.nineSliceFrame.y
             },
-            hash: this.hash,
-            last: this.last
+            dummy: this.dummy,
+            _border: this._border,
+            _rotated: this._rotated,
+            _rot: this._rot,
+            rot: this.rot
         };
+        if (this.tag) json = { ...json, tag: this.tag };
+        return json;
+    }
+
+    /**
+     * Load sheet settings from json object
+     *
+     * @param {object} data
+     * @memberof Sheet
+     */
+    public parse (data: object, target: object = this): this {
+        // TODO: Need test !
+        Object.keys(data).forEach(key => {
+            if (typeof(data[key]) === "object" && data[key] !== null && this[key]) {
+                this.parse(data[key], this[key]);
+            } else {
+                try {
+                    target[key] = data[key];
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        });
+        return this;
+    }
+
+    public static Factory (data: any): Sheet {
+        const sheet = new Sheet(data.width, data.height);
+        return sheet.parse(data);
     }
 
     /**
@@ -173,6 +225,7 @@ export class Sheet extends Rectangle {
             }
         }
         this.data.crop(this.sourceFrame.x, this.sourceFrame.y, this.width, this.height);
+        this._imageDirty ++;
     }
 
     /**
@@ -212,6 +265,7 @@ export class Sheet extends Rectangle {
             .crop(border + this.frame.width - 1, border, 1, this.frame.height)
             .resize(border, this.frame.height);
         this.data.blit(rightExtrude, border + this.frame.width, border);
+        this._imageDirty ++;
     }
 
     /**
@@ -222,14 +276,45 @@ export class Sheet extends Rectangle {
      *
      * @memberof Sheet
      */
-    public rotate (): void {
-        this.data.rotate(90);
+    public rotate (clockwise: boolean = true): void {
+        // jimp rotate is buggy, avoid it!
+        // this.data.rotate(90 * (clockwise ? 1 : -1));
+        const bitmap = this.data.bitmap;
+        const rotBuffer: Buffer = Buffer.from(bitmap.data);
+        const rotOffsetStep = clockwise ? -4 : 4;
+        let rotOffset = clockwise ? rotBuffer.length - 4 : 0;
+
+        for (let x = 0; x < bitmap.width; x++) {
+            for (let y = bitmap.height - 1; y >= 0; y--) {
+                let srcOffset = (bitmap.width * y + x) << 2;
+                let tmp = bitmap.data.readUInt32BE(srcOffset);
+                rotBuffer.writeUInt32BE(tmp, rotOffset);
+                rotOffset += rotOffsetStep;
+            }
+        }
+        bitmap.data = rotBuffer;
+        [bitmap.width, bitmap.height] = [bitmap.height, bitmap.width];
+
         [this.frame.width, this.frame.height] = [this.frame.height, this.frame.width];
-        [this.width, this.height] = [this.height, this.width];
+        this._imageDirty ++;
     }
 
     private _border: number = 0;
     private _rotated: boolean = false;
+    private _hash: string = "";
+    private _imageDirty: number = 0;
+
+    set x (value: number) {
+        super.x = value;
+        this.frame.x = this._border + value;
+    }
+    get x (): number { return super.x; }
+
+    set y (value: number) {
+        super.y = value;
+        this.frame.y = this._border + value;
+    }
+    get y (): number { return super.y; }
 
     //
     // overriding Rectangle.rot getter setter
@@ -249,12 +334,10 @@ export class Sheet extends Rectangle {
     }
     set rot (value: boolean) {
         super.rot = value;
-        if (!this.rot) return; // if rot is set to false, do nothing.
 
-        if (!this._rotated) this._rotated = true;
-        else return; // if already rotated, skip rotate and swap.
-
-        this.rotate();
+        if (this._rotated === value) return;
+        this._rotated = value;
+        this.rotate(value);
     }
 
     /**
@@ -267,9 +350,26 @@ export class Sheet extends Rectangle {
     get data (): Jimp { return super.data; }
     set data (value: Jimp) {
         super.data = value;
-        if (this.data.bitmap) {
-            this.hash = this.data.hash();
-        }
+        this._imageDirty ++;
+
+        // hash is expensive, so move to manually update hash value
+        //
+        // if (this.data.bitmap) {
+            // this.hash = this.data.hash();
+        // }
+    }
+
+    /**
+     * hash string generated from image, for identifing
+     *
+     * @type {string}
+     * @memberof Sheet
+     */
+    get hash (): string {
+        // update hash only when imagedata is touched
+        if (this.data && this._imageDirty > 0) this._hash = this.data.hash();
+        this._imageDirty = 0;
+        return this._hash;
     }
 
     private alphaScanner (forward: boolean = true, horizontal: boolean = true, tolerance: number = 0x00): number {

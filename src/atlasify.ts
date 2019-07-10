@@ -476,34 +476,44 @@ export class Atlasify {
                     // TODO
                     Jimp.read(sheet.url)
                         .then(image => {
-                            sheet.data = image;
+                            const reloaded = new Sheet(image.bitmap.width, image.bitmap.height);
+                            reloaded.data = image;
                             // post-processing
-                            if (sheet.rot) sheet.data.rotate(90);
                             if (this.options.extrude > 0) {
-                                sheet.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
-                                sheet.extrude(this.options.extrude);
+                                reloaded.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
+                                reloaded.extrude(this.options.extrude);
                             } else if (this.options.trimAlpha) {
-                                sheet.trimAlpha(this.options.alphaTolerence);
+                                reloaded.trimAlpha(this.options.alphaTolerence);
                             }
-                            if (this.options.seperateFolder) {
-                                const tag = this.getLeafFolder(sheet.url);
-                                if (tag) sheet.tag = tag;
-                            }
+                            // unrotate sheets for stable result
+                            if (sheet.rot) sheet.rot = false;
+
+                            sheet.data = reloaded.data;
+
+                            // manage option overrides
+                            if (!this.options.seperateFolder && sheet.tag) delete sheet.tag;
                         })
                         .catch(error => {
                             console.error(error);
                             console.log("Fall back to pre-rendered atlas");
                             sheet.data = new Jimp(sheet.width, sheet.height)
                                 .blit(this._atlas[i].image, 0, 0, sheet.x, sheet.y, sheet.width, sheet.height);
+                            // unrotate sheets for stable result
+                            if (sheet.rot) sheet.rot = false;
                         });
                 } else {
                     sheet.data = new Jimp(sheet.width, sheet.height)
                         .blit(this._atlas[i].image, 0, 0, sheet.x, sheet.y, sheet.width, sheet.height);
+                    // unrotate sheets for stable result
+                    if (sheet.rot) sheet.rot = false;
                 }
                 this._sheets.push(sheet);
                 this._packer.bins[i].rects.push(sheet);
             });
         });
+
+        // TODO: Load imagePaths
+
         console.log("Load completed");
         return this;
     }

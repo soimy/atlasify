@@ -128,14 +128,13 @@ export class Sheet extends Rectangle {
      * @memberof Sheet
      */
     public serialize (): object {
-        return {
+        let json: object = {
             name: this.name,
             url: this.url,
             width: this.width,
             height: this.height,
             x: this.x,
             y: this.y,
-            rot: this.rot,
             trimmed: this.trimmed,
             frame: {
                 width: this.frame.width,
@@ -159,8 +158,14 @@ export class Sheet extends Rectangle {
                 x: this.nineSliceFrame.x,
                 y: this.nineSliceFrame.y
             },
-            dummy: this.dummy
+            dummy: this.dummy,
+            _border: this._border,
+            _rotated: this._rotated,
+            _rot: this._rot,
+            rot: this.rot
         };
+        if (this.tag) json = { ...json, tag: this.tag };
+        return json;
     }
 
     /**
@@ -177,8 +182,6 @@ export class Sheet extends Rectangle {
             } else {
                 try {
                     target[key] = data[key];
-                    // fix rot setter w/h swap
-                    if (key === "rot" && data[key] === true) [this.width, this.height] = [this.height, this.width];
                 } catch (err) {
                     console.error(err);
                 }

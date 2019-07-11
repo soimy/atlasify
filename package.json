@@ -1,10 +1,11 @@
 {
   "name": "atlasify",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CLI and core module for atlasify texture packer using maxrects-packer & Jimp",
   "main": "lib/atlasify.js",
   "types": "lib/types/atlasify.d.ts",
   "bin": "bin/cli.js",
+  "ts:main": "src/atlasify.ts",
   "scripts": {
     "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "clean": "rimraf ./lib && rimraf ./dist && rimraf ./test/*.png",
@@ -12,6 +13,7 @@
     "build": "tsc",
     "build:clean": "yarn run clean && yarn run build",
     "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js --load ./sprite.atl -astr -p 2 -m 1024,1024 --extrude 1 --trim --debug --save ./atlas/ui/",
+    "version": "standard-version",
     "commit": "npx git-cz"
   },
   "repository": {
@@ -42,6 +44,7 @@
     "patch-package": "^6.1.2",
     "postinstall-prepare": "^1.0.1",
     "rimraf": "^2.6.3",
+    "standard-version": "^6.0.1",
     "ts-node": "^8.2.0",
     "tslib": "^1.9.3",
     "tslint": "^5.17.0",

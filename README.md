@@ -1,4 +1,7 @@
-![Atlasify](https://github.com/soimy/atlasify/blob/master/media/title.png?raw=true)
+# ![Atlasify](https://github.com/soimy/atlasify/blob/master/media/title.png?raw=true)
+
+![npm version](https://badge.fury.io/js/atlasify.svg)
+![npm type definitions](https://shields-staging.herokuapp.com/npm/types/atlasify.svg)
 
 ## What is Atlasify
 
@@ -10,21 +13,32 @@ Atlasify is an open-source app designed to pack graphical assets like
 - True-type fonts
 - Vector graphics (SVG)
 
-into a single/several GPU friendly texture atlas to reduce drawcall, and a spritesheet catalog `json\xml` to locate those assets.
+into a single/several GPU friendly texture atlas to reduce draw call, and a spritesheet catalog `json\xml` to locate those assets.
 
 ![demo](https://github.com/soimy/atlasify/blob/master/assets/demo.jpg?raw=true)
 
 ## Why Atlasify
 
-Yes, there are many excellent packing tools like Texture packer etc. already. But the goal of Atlasify is being able to managing, generating and packing all kinds of graphical assets like above into a single atlas in one application. 
+Yes, there are many excellent packing tools like Texture packer etc. already. But the goal of Atlasify is being able to managing, generating and packing all kinds of graphical assets like above into a single atlas in one application.
 
-Together with proper render pipline, this will be a perfect solution for rendering GPU accelerated vector and true-type text on any game engine.
+Together with proper render pipeline, this will be a perfect solution for rendering GPU accelerated vector and true-type text on any game engine.
 
 And most of all, it will be **free and open source**.
 
 ## The architecture
 
-Atlasify's pipeline contain four kinds of modules:
+![Architecture](https://github.com/soimy/atlasify/blob/master/assets/architecture.png?raw=true)
+> Proposal Map, modules marked as ☑️ is implemented.
+
+Atlasify's pipeline contain these kinds of modules:
+
+### Controller
+
+Controllers get input assets and settings from user, and start the whole packing process. Controllers will have the following forms:
+
+- **GUI** Of cause! Will be Electron based, cross-platform, separated module. (Working in progress)
+- **WebAPI** More accessible from the internet. (Planned)
+- **CLI** Command-line interface for terminal user & CI automation. (Implemented)
 
 ### Generators
 
@@ -32,20 +46,27 @@ Reading different input data and generate Array of `Buffer` & `Metric` for the c
 
 - PNG/Jpeg image reader Through file I/O & [Jimp](https://github.com/oliver-moran/jimp)
 - Multi-signed distance field font renderer [msdf-bmfont-xml](https://github.com/soimy/msdf-bmfont-xml)
+    > `msdf-bmfont-xml` will be depreciated when Atlasify is finished. I'm planning to rewrite msdf generator as a separate module using Rust.
+
+### Post-Processor
+
+Store `Buffer` & `Metric` as `Sheet` object and do the following manipulation based on settings:
+
+- TrimAlpha
+- Extrude edge pixels
+- Split/Composite ARGB channels
+- Rotation
 
 ### Core
 
 [Core module](https://github.com/soimy/atlasify) to control the whole pipeline:
 
-1. Calling the generators and get the `Buffer` & `Metric`; 
-2. Doing `Buffer` post-processing like `TrimAlpha` & `Extrude Edge`;
-3. Calling Packer to process the `Metric` and composing the `Buffer` onto the atlas;
-4. Generate the `spritesheet`data object;
-5. Calling the Exporter to compile the `spritesheet` onto different templates;
-
-### GUI
-
-Of cause, GUI. Will be Electron based, cross-platform. If I have time for that;-)
+1. Aquire settings from front-end(CLI, GUI)
+2. Store array of `Buffer` & `Metric` from generator;
+3. Doing `Buffer` post-processing like `TrimAlpha` & `Extrude Edge`;
+4. Calling Packer to process the `Metric` and composing the `Buffer` onto the atlas;
+5. Generate the `spritesheet`data object;
+6. Calling the Exporter to compile the `spritesheet` onto different templates;
 
 ### Packer
 
@@ -53,7 +74,7 @@ Atlasify uses [maxrects-packer](https://github.com/soimy/maxrects-packer) to cal
 
 ### Exporter
 
-Almost every game engine has it's own data structure to represent the spritesheets, Exportors use [mustache.js](http://mustache.github.com/) template system, so it's highly customizalbe through modifying `mst` template files. Atlasify supports these types out-of-the-box:
+Almost every game engine has it's own data structure to represent the spritesheets, Exporters use [mustache.js](http://mustache.github.com/) template system, so it's highly customizable through modifying `mst` template files. Atlasify supports these types out-of-the-box:
 
 - bmfont/xml
 - json (font)
@@ -68,11 +89,48 @@ Almost every game engine has it's own data structure to represent the spriteshee
 
 ### Engine plugins
 
-Atlasify extends the "standard" TexturePacker data structure to better utilize the power of GPU accelerated asset rendering like `multi-channel` & `multi-page`, and most importantly, MSDF (multi-signed distance field) based vector object. Many game engine don't support these feature yet, so it's important to implement plugins for them. (Coming soon)
+Atlasify extends the "standard" TexturePacker data structure to better utilize the power of GPU accelerated asset rendering like `multi-channel` & `multi-page`, and most importantly, MSDF (multi-signed distance field) based vector object. Many game engine don't support these feature yet, so it's important to implement plugins as separated modules for them. (Coming soon)
 
-# Core module
+---
 
-![npm version](https://badge.fury.io/js/atlasify.svg)
-![npm type definitions](https://shields-staging.herokuapp.com/npm/types/atlasify.svg)
+## Installation
 
-CLI and core module for atlasify texture packer
+For now only CLI controller and core module is implemented. In order to reduce package size, GUI will be a [separate Repo](https://github.com/soimy/atlasify-gui) and platform dependent installer will be publish in the Release section of [Main Repo](https://github.com/soimy/atlasify)
+
+To install the CLI, run the following command in terminal:
+
+```bash
+npm i -g atlasify
+```
+
+## Usage (CLI)
+
+```bash
+$ atlasify --help
+
+Usage: cli [options] <image-files/folder>
+
+CLI tools to packing and compositing image files into atlas using MaxRects packing algorithm
+
+Options:
+  -V, --version            output the version number
+  -o, --output <filename>  output atlas filename (Default: sprite.png)
+      --load <filename>    load saved project atl file
+  -m, --size <w,h>         ouput texture atlas size (defaut: 2048,2048)
+  -p, --padding <n>        padding between images (Default: 0)
+  -b, --border <n>         space to atlas edge (Default: 0)
+  -a, --auto-size          shrink atlas to the smallest possible square (Default: false)
+  -t, --pot                atlas size shall be power of 2 (Default: false)
+  -s, --square             atlas size shall be square (Default: false)
+  -r, --rot                allow 90-degree rotation while packing (Default: false)
+      --trim [n]           remove surrounding transparent pixels with optional tolerence [n] (Default: false)
+      --extrude <n>        extrude edge pixels (Default: 0)
+      --debug              draw debug gizmo on atlas (Default: false)
+      --instant            instant packing is quicker and skip sorting (Default: false)
+      --seperate-folder    Seperate bin based on folder (Default: false)
+      --save               Save configuration for reuse (Default: false)
+  -h, --help               output usage information
+
+```
+
+// TO BE CONTINUED

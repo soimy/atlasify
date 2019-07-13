@@ -12,6 +12,9 @@
     "prepare": "patch-package",
     "build": "tsc",
     "build:clean": "npm run clean && npm run build",
+    "doc": "typedoc && touch docs/.nojekyll",
+    "doc:json": "typedoc --json docs/typedoc.json",
+    "doc:publish": "gh-pages --dotfiles=true -m \"[ci skip] Updates\" -d docs",
     "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js --load ./sprite.atl -astr -p 2 -m 1024,1024 --extrude 1 --trim --debug --save ./atlas/ui/",
     "version": "standard-version",
     "commit": "npx git-cz"
@@ -41,6 +44,7 @@
     "@types/mustache": "^0.8.32",
     "@types/node": "^12.0.5",
     "cz-conventional-changelog": "^2.1.0",
+    "gh-pages": "^2.0.1",
     "patch-package": "^6.1.2",
     "postinstall-prepare": "^1.0.1",
     "rimraf": "^2.6.3",

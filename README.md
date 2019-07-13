@@ -105,7 +105,7 @@ npm i -g atlasify
 
 ## Usage (CLI)
 
-```bash
+```console
 $ atlasify --help
 
 Usage: cli [options] <image-files/folder>
@@ -116,7 +116,7 @@ Options:
   -V, --version            output the version number
   -o, --output <filename>  output atlas filename (Default: sprite.png)
       --load <filename>    load saved project atl file
-  -m, --size <w,h>         ouput texture atlas size (defaut: 2048,2048)
+  -m, --size <w,h>         ouput texture atlas size (Default: 2048,2048)
   -p, --padding <n>        padding between images (Default: 0)
   -b, --border <n>         space to atlas edge (Default: 0)
   -a, --auto-size          shrink atlas to the smallest possible square (Default: false)
@@ -133,4 +133,55 @@ Options:
 
 ```
 
-// TO BE CONTINUED
+> Important: Atlasify is in **VERY EARLY STAGE**, any interface or API might change
+
+Examples: Packing all assets inside `./assets/actor` folder into an autosize atlas with max-size 1024x1024, trim image alpha and extrude 1px on edge pixels, 2px padding and save to `sprite.png` & save project file for later reuse.
+
+```console
+$ atlasify -o sprite.png -ast -p 2 -m 1024,1024 --extrude 1 --trim --save ./assets/actor
+
+Saved atlas: sprite.png
+Saved spritesheet: sprite.json
+Saved configuration: sprite.atl
+```
+
+Examples: Load previous project files and add all assets inside `./assets/ui` folder into the same atlas with same settings except no edge pixel extrude and no trim alpha.
+
+```console
+$ atlasify --load ./sprite.atl --extrude 0 --no-trim ./assets/ui
+
+Loading project file: ./sprite.atl
+Load completed
+Saved atlas: sprite.png
+Saved spritesheet: sprite.json
+Saved configuration: sprite.atl
+```
+
+## Module quick start
+
+```javascript
+import { Atlasify, Option } from "atlasify";
+const opts = new Options("sprite.png", 1024, 1024);
+opts.extrude = 1;
+opts.trimAlpha = true;
+imageFiles = [
+    "a.png",
+    "b.png",
+    "c.jpg"
+]
+
+const packer = new Atlasify(opts);
+packer.addURLs(imageFiles).then(result => {
+    // Do your fileIO with results
+});
+```
+
+Please refer to `./bin/cli.js` & test files(WIP) for further examples.
+
+## API Reference
+
+- [Atlasify](https://soimy.github.io/atlasify/classes/_atlasify_.atlasify.html)
+- [Sheet](https://soimy.github.io/atlasify/classes/_geom_sheet_.sheet.html)
+- [Exporter](https://soimy.github.io/atlasify/classes/_exporter_.exporter.html)
+
+> Sorry about silly documentation with confusing Typedoc, will do a better API document in the future.

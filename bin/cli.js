@@ -117,7 +117,7 @@ imageFiles.sort((a, b) => {
 
 if (opt.load) {
     console.log(`Loading project file: ${opt.load}`);
-    atlas.load(opt.load, atlasifyOptions, false)
+    atlas.load(opt.load, atlasifyOptions)
         .then(atlas => atlas.addURLs(imageFiles).then(result => fileIO(result)));
 } else atlas.addURLs(imageFiles).then(result => fileIO(result));
 

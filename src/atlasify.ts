@@ -162,7 +162,7 @@ export type Base64Data = {
 };
 
 export interface IAtl {
-    options: IOption;
+    options: Options;
     packer: IBin[];
     spritesheets: Spritesheet[];
     atlas: {image: string, ext: string, width: number, height: number, name: string, id?: number, tag?: string, format?: string}[];
@@ -196,60 +196,7 @@ export class Atlasify {
     public addURLs (paths: string[], callback?: (err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void): Promise<Atlasify> {
         this._inputPaths = this._inputPaths.concat(paths);
         let loader: Promise<void>[] = paths.map(async img => {
-            return Jimp.read(img)
-                .then((image: Jimp) => {
-                    const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
-                    sheet.name = path.basename(img);
-                    sheet.url = img;
-                    sheet.data = image;
-
-                    // post-processing
-                    if (this.options.extrude > 0) {
-                        sheet.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
-                        sheet.extrude(this.options.extrude);
-                    } else if (this.options.trimAlpha) {
-                        sheet.trimAlpha(this.options.alphaTolerence);
-                    }
-                    if (this.options.seperateFolder) {
-                        const tag = this.getLeafFolder(img);
-                        if (tag) sheet.tag = tag;
-                    }
-
-                    // search if image already exist
-                    let isNew = true;
-                    for (const i in this._sheets) {
-                        const s = this._sheets[i];
-                        if (!s.data) continue; // skip empty sheet
-                        if (s.name === sheet.name) {
-                            isNew = false;
-                            if (s.width === sheet.width &&
-                                s.height === sheet.height && // do pHash compare only on same size image
-                                s.hash === sheet.hash) {
-                                return; // early exit if no change
-                            }
-                            // input image has changed, need process
-                            this._sheets[i] = sheet;
-                            break;
-                        } else if (s.width === sheet.width &&
-                            s.height === sheet.height &&
-                            s.hash === sheet.hash) {
-                            // This is the dummy sheet with different name
-                            isNew = false;
-                            s.dummy.push(sheet.name);
-                            break;
-                        }
-                    }
-                    // if no early exit, set dirty status
-                    this._dirty ++;
-
-                    // push to _sheets if is new sheet
-                    if (isNew) {
-                        this._sheets.push(sheet);
-                        if (this.options.instant) {
-                            this._packer.add(sheet);
-                        }
-                    }
-                });
+            return Jimp.read(img).then(image => this.metricFromImage(image, img));
         });
 
         return Promise.all(loader)
@@ -261,6 +208,60 @@ export class Atlasify {
                 if (callback) callback(err);
                 return Promise.reject(err);
             });
+    }
+
+    private metricFromImage (image: Jimp, imgPath: string): void {
+        const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
+        sheet.name = path.basename(imgPath);
+        sheet.url = imgPath;
+        sheet.data = image;
+
+        // post-processing
+        if (this.options.extrude > 0) {
+            sheet.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
+            sheet.extrude(this.options.extrude);
+        } else if (this.options.trimAlpha) {
+            sheet.trimAlpha(this.options.alphaTolerence);
+        }
+        if (this.options.seperateFolder) {
+            const tag = this.getLeafFolder(imgPath);
+            if (tag) sheet.tag = tag;
+        }
+
+        // search if image already exist
+        let isNew = true;
+        for (const i in this._sheets) {
+            const s = this._sheets[i];
+            if (!s.data) continue; // skip empty sheet
+            if (s.name === sheet.name) {
+                isNew = false;
+                if (s.width === sheet.width &&
+                    s.height === sheet.height && // do pHash compare only on same size image
+                    s.hash === sheet.hash) {
+                    return; // early exit if no change
+                }
+                // input image has changed, need process
+                this._sheets[i] = sheet;
+                break;
+            } else if (s.width === sheet.width &&
+                s.height === sheet.height &&
+                s.hash === sheet.hash) {
+                // This is the dummy sheet with different name
+                isNew = false;
+                s.dummy.push(sheet.name);
+                break;
+            }
+        }
+        // if no early exit, set dirty status
+        this._dirty ++;
+
+        // push to _sheets if is new sheet
+        if (isNew) {
+            this._sheets.push(sheet);
+            if (this.options.instant) {
+                this._packer.add(sheet);
+            }
+        }
     }
 
     public pack (callback?: ((err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void)): Promise<this> {
@@ -446,12 +447,12 @@ export class Atlasify {
         return result;
     }
 
-    public static async Load (pathalike: string, overrides: any = null, quick: boolean = true): Promise<Atlasify> {
+    public static async Load (pathalike: string, overrides: any = null): Promise<Atlasify> {
         const factory = new Atlasify(new Options());
-        return factory.load(pathalike, overrides, quick);
+        return factory.load(pathalike, overrides);
     }
 
-    public async load (pathalike: string, overrides: any = null, quick: boolean = true): Promise<Atlasify> {
+    public async load (pathalike: string, overrides: any = null): Promise<Atlasify> {
         const atl: IAtl = JSON.parse(readFileSync(pathalike, 'utf-8'));
         this._sheets = [];
         this.options = { ...atl.options, ...overrides }; // combining saved options and cli options
@@ -469,51 +470,50 @@ export class Atlasify {
             return { ...a, image: await Jimp.read(Buffer.from(a.image.replace(/^data:image\/png;base64,/, ""), 'base64')) };
         }));
         // Load sheets
+        const loaders: Promise<Jimp>[] = [];
         this._spritesheets.forEach((spritesheet, i) => {
             spritesheet.rects.forEach(r => {
                 const sheet = Sheet.Factory(r);
-                if (!quick) {
-                    // TODO
-                    Jimp.read(sheet.url)
-                        .then(image => {
-                            const reloaded = new Sheet(image.bitmap.width, image.bitmap.height);
-                            reloaded.data = image;
-                            // post-processing
-                            if (this.options.extrude > 0) {
-                                reloaded.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
-                                reloaded.extrude(this.options.extrude);
-                            } else if (this.options.trimAlpha) {
-                                reloaded.trimAlpha(this.options.alphaTolerence);
-                            }
-                            // unrotate sheets for stable result
-                            if (sheet.rot) sheet.rot = false;
 
-                            sheet.data = reloaded.data;
+                const loader = Jimp.read(sheet.url);
+                loader
+                    .then(image => {
+                        const reloaded = new Sheet(image.bitmap.width, image.bitmap.height);
+                        reloaded.data = image;
+                        // post-processing
+                        // Note: only use saved options which sync saved sheet metrics
+                        // option overriding will be done in deep repack using inputPath
+                        if (atl.options.extrude > 0) {
+                            reloaded.trimAlpha(atl.options.alphaTolerence); // need to trim before extrude
+                            reloaded.extrude(atl.options.extrude);
+                        } else if (atl.options.trimAlpha) {
+                            reloaded.trimAlpha(atl.options.alphaTolerence);
+                        }
+                        // unrotate sheets for stable result
+                        if (sheet.rot) sheet.rot = false;
 
-                            // manage option overrides
-                            if (!this.options.seperateFolder && sheet.tag) delete sheet.tag;
-                        })
-                        .catch(error => {
-                            console.error(error);
-                            console.log("Fall back to pre-rendered atlas");
-                            sheet.data = new Jimp(sheet.width, sheet.height)
-                                .blit(this._atlas[i].image, 0, 0, sheet.x, sheet.y, sheet.width, sheet.height);
-                            // unrotate sheets for stable result
-                            if (sheet.rot) sheet.rot = false;
-                        });
-                } else {
-                    sheet.data = new Jimp(sheet.width, sheet.height)
-                        .blit(this._atlas[i].image, 0, 0, sheet.x, sheet.y, sheet.width, sheet.height);
-                    // unrotate sheets for stable result
-                    if (sheet.rot) sheet.rot = false;
-                }
+                        sheet.data = reloaded.data;
+
+                        // manage option overrides
+                        if (!this.options.seperateFolder && sheet.tag) delete sheet.tag;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        console.log("Fall back to pre-rendered atlas");
+                        sheet.data = new Jimp(sheet.width, sheet.height)
+                            .blit(this._atlas[i].image, 0, 0, sheet.x, sheet.y, sheet.width, sheet.height);
+                        // unrotate sheets for stable result
+                        if (sheet.rot) sheet.rot = false;
+                    });
                 this._sheets.push(sheet);
                 this._packer.bins[i].rects.push(sheet);
+                loaders.push(loader);
             });
         });
 
         // TODO: Load imagePaths
 
+        await Promise.all(loaders);
         console.log("Load completed");
         return this;
     }

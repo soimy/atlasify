@@ -284,7 +284,7 @@ export class Atlasify {
         this._packer.bins.forEach((bin, index: number) => {
             // Count tags
             let tag = bin.tag ? bin.tag : "_";
-            if (!tagCount[tag]) tagCount[tag] = 0; // create index key if not exist
+            if (!tagCount.hasOwnProperty(tag)) tagCount[tag] = 0; // create index key if not exist
             else tagCount[tag]++;
 
             if (!bin.dirty) return; // early return if bin is not changed
@@ -561,11 +561,11 @@ export class Atlasify {
     private pruneTagIndex (tagCount: { [index: string]: number; }) {
         for (let a of this._atlas) {
             const tag = a.tag ? a.tag : "_";
-            if (tagCount[tag] < 2 && a.id) delete a.id;
+            if (tagCount[tag] < 1 && a.id) delete a.id;
         }
         for (let s of this._spritesheets) {
             const tag = s.tag ? s.tag : "_";
-            if (tagCount[tag] < 2 && s.id) delete s.id;
+            if (tagCount[tag] < 1 && s.id) delete s.id;
         }
     }
 }

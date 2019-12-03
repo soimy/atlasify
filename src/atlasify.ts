@@ -561,11 +561,11 @@ export class Atlasify {
     private pruneTagIndex (tagCount: { [index: string]: number; }) {
         for (let a of this._atlas) {
             const tag = a.tag ? a.tag : "_";
-            if (tagCount[tag] < 1 && a.id) delete a.id;
+            if (tagCount[tag] < 1 && a.hasOwnProperty("id")) delete a.id;
         }
         for (let s of this._spritesheets) {
             const tag = s.tag ? s.tag : "_";
-            if (tagCount[tag] < 1 && s.id) delete s.id;
+            if (tagCount[tag] < 1 && s.hasOwnProperty("id")) delete s.id;
         }
     }
 }

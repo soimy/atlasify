@@ -9,8 +9,8 @@
             "type": "node",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "name": "Launch via Yarn",
-            "runtimeExecutable": "yarn",
+            "name": "Launch via NPM",
+            "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run", "test"
             ],

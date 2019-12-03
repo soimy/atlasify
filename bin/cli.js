@@ -30,6 +30,7 @@ cli
     .option('    --debug', 'draw debug gizmo on atlas (Default: false)', false)
     .option('    --instant', 'instant packing is quicker and skip sorting (Default: false)', false)
     .option('    --seperate-folder', 'Seperate bin based on folder (Default: false)', false)
+    .option('    --search-dummy', 'Search duplicate sprites to reduce atlas size (Default: false)', false)
     .option('    --save', 'Save configuration for reuse (Default: false)', false)
     
     cli
@@ -77,6 +78,7 @@ opt.trim = utils.valueQueue([opt.trim, false]);
 opt.debug = utils.valueQueue([opt.debug, false]);
 opt.instant = utils.valueQueue([opt.instant, false]);
 opt.seperateFolder = utils.valueQueue([opt.seperateFolder, false]);
+opt.searchDummy = utils.valueQueue([opt.searchDummy, false]);
 opt.save = utils.valueQueue([opt.save, false]);
 
 //
@@ -95,6 +97,7 @@ atlasifyOptions.debug = opt.debug;
 atlasifyOptions.extrude = opt.extrude;
 atlasifyOptions.instant = opt.instant;
 atlasifyOptions.seperateFolder = opt.seperateFolder;
+atlasifyOptions.searchDummy = opt.searchDummy;
 
 //
 // Display options

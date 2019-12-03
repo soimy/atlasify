@@ -112,6 +112,14 @@ export class Options implements IOption {
      */
     public debug: boolean = false;
 
+    /**
+     * Search duplicated dummy sprites to reduce atlas element
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
+    public searchDummy: boolean = false;
+
    /**
     * Creates an instance of Options.
     * @param {string} [name='sprite'] output filename of atlas/spreadsheet (default is 'sprite.png')
@@ -236,14 +244,15 @@ export class Atlasify {
             if (s.name === sheet.name) {
                 isNew = false;
                 if (s.width === sheet.width &&
-                    s.height === sheet.height && // do pHash compare only on same size image
+                    s.height === sheet.height &&
+                    this.options.searchDummy && // do pHash compare only on same size image
                     s.hash === sheet.hash) {
                     return; // early exit if no change
                 }
                 // input image has changed, need process
                 this._sheets[i] = sheet;
                 break;
-            } else if (s.width === sheet.width &&
+            } else if (this.options.searchDummy && s.width === sheet.width &&
                 s.height === sheet.height &&
                 s.hash === sheet.hash) {
                 // This is the dummy sheet with different name

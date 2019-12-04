@@ -325,7 +325,7 @@ export class Atlasify {
                     const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this._debugColor);
                     image.blit(debugFrame, sheet.frame.x, sheet.frame.y);
                 }
-                image.blit(buffer, sheet.x, sheet.y);
+                image.composite(buffer, sheet.x, sheet.y);
 
                 // share rects iteration to add serialized sheets
                 serializedSheet.push(rect.serialize());

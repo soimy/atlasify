@@ -242,29 +242,29 @@ export class Sheet extends Rectangle {
         this.height += border * 2;
         const extrudedImage = new Jimp(this.width, this.height);
         // centered original image
-        extrudedImage.blit(this.data, border, border);
+        extrudedImage.composite(this.data, border, border);
         this.data = extrudedImage;
 
         // top extruded border
         const topExtrude = this.data.clone()
             .crop(border, border, this.frame.width, 1)
             .resize(this.frame.width, border);
-        this.data.blit(topExtrude, border, 0);
+        this.data.composite(topExtrude, border, 0);
         // bottom extruded border
         const bottomExtrude = this.data.clone()
             .crop(border, border + this.frame.height - 1, this.frame.width, 1)
             .resize(this.frame.width, border);
-        this.data.blit(bottomExtrude, border, border + this.frame.height);
+        this.data.composite(bottomExtrude, border, border + this.frame.height);
         // left extruded border
         const leftExtrude = this.data.clone()
             .crop(border, border, 1, this.frame.height)
             .resize(border, this.frame.height);
-        this.data.blit(leftExtrude, 0, border);
+        this.data.composite(leftExtrude, 0, border);
         // right extruded border
         const rightExtrude = this.data.clone()
             .crop(border + this.frame.width - 1, border, 1, this.frame.height)
             .resize(border, this.frame.height);
-        this.data.blit(rightExtrude, border + this.frame.width, border);
+        this.data.composite(rightExtrude, border + this.frame.width, border);
         this._imageDirty ++;
     }
 

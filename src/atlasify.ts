@@ -1,6 +1,7 @@
 import { MaxRectsPacker, IOption, IBin } from "maxrects-packer";
 import Jimp from "jimp";
 import path from "path";
+import pixelMatch from "pixelmatch";
 import { Sheet } from "./geom/sheet";
 import { Exporter } from "./exporter";
 import { writeFile, readFileSync } from "fs";
@@ -247,7 +248,9 @@ export class Atlasify {
                     s.height === sheet.height &&
                     this.options.searchDummy && // do pHash compare only on same size image
                     s.hash === sheet.hash) {
-                    return; // early exit if no change
+                    // deep pixel compare
+                    let diff = pixelMatch(s.data.bitmap.data, sheet.data.bitmap.data, null, s.width, s.height);
+                    if (diff === 0) return; // early exit if no change
                 }
                 // input image has changed, need process
                 this._sheets[i] = sheet;
@@ -255,6 +258,9 @@ export class Atlasify {
             } else if (this.options.searchDummy && s.width === sheet.width &&
                 s.height === sheet.height &&
                 s.hash === sheet.hash) {
+                // deep pixel compare
+                let diff = pixelMatch(s.data.bitmap.data, sheet.data.bitmap.data, null, s.width, s.height);
+                if (diff !== 0) continue; // different image
                 // This is the dummy sheet with different name
                 isNew = false;
                 s.dummy.push(sheet.name);

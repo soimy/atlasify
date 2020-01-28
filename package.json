@@ -15,7 +15,7 @@
     "doc": "typedoc && touch docs/.nojekyll",
     "doc:json": "typedoc --json docs/typedoc.json",
     "doc:publish": "gh-pages --dotfiles=true -m \"[ci skip] Updates\" -d docs",
-    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js --load ./sprite.atl -astr -p 2 -m 1024,1024 --extrude 1 --trim --debug --save ./atlas/ui/",
+    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js --load ./sprite.atl -astr -p 2 -m 1024,1024 --extrude 1 --trim --search-dummy --debug --save ./atlas/ui/",
     "version": "standard-version",
     "commit": "npx git-cz"
   },
@@ -57,10 +57,12 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
+    "@types/pixelmatch": "^5.0.0",
     "commander": "^2.20.3",
     "jimp": "^0.9.3",
     "maxrects-packer": "^2.5.0",
-    "mustache": "^3.1.0"
+    "mustache": "^3.1.0",
+    "pixelmatch": "^5.1.0"
   },
   "config": {
     "commitizen": {

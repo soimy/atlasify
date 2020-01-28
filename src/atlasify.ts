@@ -577,10 +577,18 @@ export class Atlasify {
         for (let a of this._atlas) {
             const tag = a.tag ? a.tag : "_";
             if (tagCount[tag] < 1 && a.hasOwnProperty("id")) delete a.id;
+            if (a.hasOwnProperty("id")) {
+                a.name = `${a.name}.${a.id}`; // append index to image filename
+            }
         }
         for (let s of this._spritesheets) {
             const tag = s.tag ? s.tag : "_";
             if (tagCount[tag] < 1 && s.hasOwnProperty("id")) delete s.id;
+            if (s.hasOwnProperty("id")) {
+                s.name = `${s.name}.${s.id}`; // append index to spritesheet filename
+                const ext = path.extname(s.imageName);
+                s.imageName = `${s.name}${ext}`;
+            }
         }
     }
 }

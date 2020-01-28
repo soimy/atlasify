@@ -126,7 +126,7 @@ if (opt.load) {
 
 function fileIO(result) {
     for (let a of result.atlas) {
-        const imageName = a.hasOwnProperty("id") ? `${a.name}.${a.id}.${a.ext}` : `${a.name}.${a.ext}`
+        const imageName = `${a.name}.${a.ext}`
         a.image.writeAsync(imageName)
         .then(() => {
             console.log(`Saved atlas: ${imageName}`);
@@ -136,7 +136,7 @@ function fileIO(result) {
         });
     }
     for (let s of result.spritesheets) {
-        const sheetName = s.hasOwnProperty("id") ? `${s.name}.${s.id}.${s.ext}` : `${s.name}.${s.ext}`;
+        const sheetName = `${s.name}.${s.ext}`;
         fs.writeFile(sheetName, result.exporter.compile(s), 'utf-8', err => {
             if(err) console.error(`Failed saving spritesheet ${sheetName}: ${err}`);
             else console.log(`Saved spritesheet: ${sheetName}`);

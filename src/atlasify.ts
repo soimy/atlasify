@@ -260,7 +260,8 @@ export class Atlasify {
                 s.hash === sheet.hash) {
                 // deep pixel compare
                 let diff = pixelMatch(s.data.bitmap.data, sheet.data.bitmap.data, null, s.width, s.height);
-                if (diff !== 0) continue; // different image
+                if (diff !== 0) break; // different image
+                if (s.dummy.includes(sheet.name)) return; // already in dummy list, early exit
                 // This is the dummy sheet with different name
                 isNew = false;
                 s.dummy.push(sheet.name);

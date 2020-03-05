@@ -62,7 +62,8 @@
     "jimp": "^0.9.3",
     "maxrects-packer": "^2.5.0",
     "mustache": "^3.1.0",
-    "pixelmatch": "^5.1.0"
+    "pixelmatch": "^5.1.0",
+    "resource-loader": "^4.0.0-rc3"
   },
   "config": {
     "commitizen": {

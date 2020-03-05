@@ -10,3 +10,5 @@ coverage
 test
 node_modules
 output
+assets
+media

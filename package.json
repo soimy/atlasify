@@ -15,7 +15,7 @@
     "doc": "typedoc && touch docs/.nojekyll",
     "doc:json": "typedoc --json docs/typedoc.json",
     "doc:publish": "gh-pages --dotfiles=true -m \"[ci skip] Updates\" -d docs",
-    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js --load ./sprite.atl -astr -p 2 -m 1024,1024 --extrude 1 --trim --search-dummy --debug --save ./atlas/ui/",
+    "test": "cd ./test && node --inspect-brk=9229 ../bin/cli.js --group-folder -astr -p 2 -m 1024,1024 --extrude 1 --trim --search-dummy --debug ./atlas",
     "version": "standard-version",
     "commit": "npx git-cz"
   },
@@ -44,17 +44,17 @@
     "@types/mustache": "^0.8.32",
     "@types/node": "^12.12.14",
     "cz-conventional-changelog": "^2.1.0",
-    "gh-pages": "^2.1.1",
-    "patch-package": "^6.2.0",
+    "gh-pages": "^2.2.0",
+    "patch-package": "^6.2.2",
     "postinstall-prepare": "^1.0.1",
     "rimraf": "^2.7.1",
     "standard-version": "^6.0.1",
-    "ts-node": "^8.5.4",
-    "tslib": "^1.10.0",
+    "ts-node": "^8.10.2",
+    "tslib": "^1.13.0",
     "tslint": "^5.20.1",
     "tslint-config-standard": "^8.0.1",
-    "typedoc": "^0.15.3",
-    "typescript": "^3.7.2"
+    "typedoc": "^0.15.8",
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "@types/pixelmatch": "^5.0.0",
@@ -63,7 +63,7 @@
     "maxrects-packer": "^2.5.0",
     "mustache": "^3.1.0",
     "pixelmatch": "^5.1.0",
-    "resource-loader": "^4.0.0-rc3"
+    "resource-loader": "^4.0.0-rc4"
   },
   "config": {
     "commitizen": {

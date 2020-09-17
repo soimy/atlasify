@@ -82,6 +82,15 @@ export class Options implements IOption {
     public tag?: boolean;
 
     /**
+     * Group sheets packing based on folder
+     *
+     * @type {boolean}
+     * @memberof Options
+     */
+    public groupFolder: boolean = false;
+    public exclusiveTag?: boolean;
+
+    /**
      * Remove surrounding transparent pixels
      *
      * @type {boolean}
@@ -190,6 +199,10 @@ export class Atlasify {
         this._inputPaths = [];
         this._sheets = [];
         if (options.seperateFolder) options.tag = true;
+        if (options.groupFolder) {
+            options.tag = true;
+            options.exclusiveTag = false;
+        }
         this._packer = new MaxRectsPacker<Sheet>(options.width, options.height, options.padding, options);
         this._exporter = new Exporter();
         this._exporter.setExportFormat(this.options.type);
@@ -232,7 +245,7 @@ export class Atlasify {
         } else if (this.options.trimAlpha) {
             sheet.trimAlpha(this.options.alphaTolerence);
         }
-        if (this.options.seperateFolder) {
+        if (this.options.seperateFolder || this.options.groupFolder) {
             const tag = this.getLeafFolder(imgPath);
             if (tag) sheet.tag = tag;
         }

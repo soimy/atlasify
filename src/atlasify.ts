@@ -11,14 +11,6 @@ let appInfo = require('../package.json');
 /**
  * Options class for atlasify and maxrects-packer
  *
- * @property {boolean} options.square use square size (default is true)
- * @property {boolean} options.pot use power of 2 sizing (default is true)
- * @property {boolean} options.square use square size (default is false)
- * @property {boolean} options.allowRotation allow rotation wihile packing (default is false)
- *
- * @export
- * @interface Option
- * @export
  * @class Options
  * @implements {IOption}
  */

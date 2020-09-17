@@ -128,6 +128,7 @@ Options:
       --debug              draw debug gizmo on atlas (Default: false)
       --instant            instant packing is quicker and skip sorting (Default: false)
       --seperate-folder    Seperate bin based on folder (Default: false)
+      --group-folder       Group bin based on folder (Default: false)
       --save               Save configuration for reuse (Default: false)
   -h, --help               output usage information
 

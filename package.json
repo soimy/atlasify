@@ -60,7 +60,7 @@
     "@types/pixelmatch": "^5.0.0",
     "commander": "^2.20.3",
     "jimp": "^0.9.3",
-    "maxrects-packer": "^2.5.0",
+    "maxrects-packer": "^2.7.1",
     "mustache": "^3.1.0",
     "pixelmatch": "^5.1.0",
     "resource-loader": "^4.0.0-rc4"

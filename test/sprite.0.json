@@ -252,7 +252,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "flagYellow1.png": {
+    "flagGreen1.png": {
       "frame": { "x": 564, "y": 306, "w": 119, "h": 128 },
       "rotated": false,
       "trimmed": true,
@@ -261,7 +261,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "flagGreen1.png": {
+    "flagRed1.png": {
       "frame": { "x": 621, "y": 133, "w": 119, "h": 128 },
       "rotated": false,
       "trimmed": true,
@@ -270,7 +270,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "flagRed1.png": {
+    "flagBlue1.png": {
       "frame": { "x": 622, "y": 1, "w": 119, "h": 128 },
       "rotated": false,
       "trimmed": true,
@@ -279,7 +279,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "flagBlue1.png": {
+    "flagYellow1.png": {
       "frame": { "x": 481, "y": 794, "w": 119, "h": 128 },
       "rotated": false,
       "trimmed": true,
@@ -324,7 +324,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "keyBlue.png": {
+    "keyGreen.png": {
       "frame": { "x": 434, "y": 326, "w": 83, "h": 52 },
       "rotated": false,
       "trimmed": true,
@@ -333,7 +333,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "keyYellow.png": {
+    "keyBlue.png": {
       "frame": { "x": 481, "y": 926, "w": 52, "h": 83 },
       "rotated": true,
       "trimmed": true,
@@ -342,7 +342,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "keyRed.png": {
+    "keyYellow.png": {
       "frame": { "x": 537, "y": 926, "w": 52, "h": 83 },
       "rotated": true,
       "trimmed": true,
@@ -351,7 +351,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "keyGreen.png": {
+    "keyRed.png": {
       "frame": { "x": 593, "y": 926, "w": 52, "h": 83 },
       "rotated": true,
       "trimmed": true,
@@ -360,7 +360,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "gemYellow.png": {
+    "gemRed.png": {
       "frame": { "x": 194, "y": 236, "w": 70, "h": 48 },
       "rotated": false,
       "trimmed": true,
@@ -369,7 +369,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "gemRed.png": {
+    "gemGreen.png": {
       "frame": { "x": 133, "y": 960, "w": 70, "h": 48 },
       "rotated": false,
       "trimmed": true,
@@ -387,7 +387,7 @@
       "pivot": { "x": 64, "y": 64 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 128, "h": 128 }
     },
-    "gemGreen.png": {
+    "gemYellow.png": {
       "frame": { "x": 576, "y": 598, "w": 48, "h": 70 },
       "rotated": true,
       "trimmed": true,
@@ -426,7 +426,7 @@
   },
   "meta": {
     "app": "atlasify https://github.com/soimy/atlasify#readme",
-    "version": "0.3.0",
+    "version": "0.4.1",
     "image": "sprite.0.png",
     "format": "RGBA8888",
     "size": { "w": 1024, "h": 1024 },

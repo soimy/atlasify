@@ -16,6 +16,7 @@
             ],
             "port": 9229,
             "protocol": "inspector",
+            "stopOnEntry": true,
             "preLaunchTask": "build"
         }
     ]

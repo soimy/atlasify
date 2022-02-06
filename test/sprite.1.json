@@ -9,23 +9,23 @@
       "pivot": { "x": 119, "y": 114.5 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 238, "h": 229 }
     },
-    "recycle-icon.png": {
-      "frame": { "x": 1, "y": 243, "w": 224, "h": 231 },
-      "rotated": true,
-      "trimmed": false,
-      "spriteSourceSize": { "x": 0, "y": 0, "w": 231, "h": 224 },
-      "sourceSize": { "w": 224, "h": 231 },
-      "pivot": { "x": 115.5, "y": 112 },
-      "9slicedFrame": { "x": 0, "y": 0, "w": 231, "h": 224 }
-    },
     "poisen-icon.png": {
-      "frame": { "x": 229, "y": 243, "w": 192, "h": 231 },
+      "frame": { "x": 1, "y": 243, "w": 192, "h": 231 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 192, "h": 231 },
       "sourceSize": { "w": 192, "h": 231 },
       "pivot": { "x": 96, "y": 115.5 },
       "9slicedFrame": { "x": 0, "y": 0, "w": 192, "h": 231 }
+    },
+    "recycle-icon.png": {
+      "frame": { "x": 197, "y": 243, "w": 224, "h": 231 },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 231, "h": 224 },
+      "sourceSize": { "w": 224, "h": 231 },
+      "pivot": { "x": 115.5, "y": 112 },
+      "9slicedFrame": { "x": 0, "y": 0, "w": 231, "h": 224 }
     },
     "unrecycle-icon.png": {
       "frame": { "x": 234, "y": 1, "w": 217, "h": 230 },
@@ -147,7 +147,7 @@
   },
   "meta": {
     "app": "atlasify https://github.com/soimy/atlasify#readme",
-    "version": "0.3.0",
+    "version": "0.4.1",
     "image": "sprite.1.png",
     "format": "RGBA8888",
     "size": { "w": 1024, "h": 1024 },

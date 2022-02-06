@@ -600,3 +600,4 @@ export class Atlasify {
 }
 
 export { Sheet } from './geom/sheet';
+export { Exporter } from './exporter';

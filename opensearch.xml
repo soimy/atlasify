@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>Atlasify documentation</ShortName>
+  <Description>Search Atlasify documentation</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">https://soimy.github.io/atlasify/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://soimy.github.io//atlasify/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://soimy.github.io//atlasify/opensearch.xml" />
+  <moz:SearchForm>https://soimy.github.io//atlasify/</moz:SearchForm>
+</OpenSearchDescription>

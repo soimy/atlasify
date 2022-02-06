@@ -68,9 +68,12 @@
     "emitDecoratorMetadata": true,            /* Enables experimental support for emitting type metadata for decorators. */
   },
   "typedocOptions": {
-    "mode": "modules",
-    "out": "docs",
-    "theme": "minimal"
+    // "mode": "modules",
+    "excludeExternals": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    // "out": "docs",
+    // "theme": "minimal"
   },
   "include": [
     "./src/**/*"

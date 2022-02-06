@@ -1,3 +1,12 @@
+---
+id: "index"
+title: "atlasify"
+slug: "/"
+sidebar_label: "Readme"
+sidebar_position: 0
+custom_edit_url: null
+---
+
 # ![Atlasify](https://github.com/soimy/atlasify/blob/master/media/title.png?raw=true)
 
 ![npm version](https://badge.fury.io/js/atlasify.svg)

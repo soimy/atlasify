@@ -7,9 +7,9 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Atlasify documentation',
-  tagline: 'Dinosaurs are cool',
-  url: 'https://soimy.github.io/',
-  baseUrl: '/atlasify/',
+  tagline: 'GPU friendly asset packer using Max-rect algorithm',
+  url: 'https://atlasify.nanoo.app/',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',

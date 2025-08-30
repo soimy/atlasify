@@ -7,7 +7,7 @@
   "bin": "bin/cli.js",
   "ts:main": "src/atlasify.ts",
   "scripts": {
-    "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint": "eslint src/**/*.ts",
     "clean": "rimraf ./lib && rimraf ./dist && rimraf ./test/*.png",
     "prepare": "patch-package",
     "build": "tsc",
@@ -43,17 +43,20 @@
   "devDependencies": {
     "@types/mustache": "^0.8.32",
     "@types/node": "^12.12.14",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
     "cz-conventional-changelog": "^2.1.0",
+    "eslint": "^9.34.0",
+    "eslint-config-love": "^122.0.0",
+    "eslint-config-prettier": "^10.1.8",
     "gh-pages": "^2.2.0",
     "patch-package": "^6.2.2",
     "postinstall-prepare": "^1.0.1",
-    "rimraf": "^2.7.1",
+    "rimraf": "^6.0.1",
     "standard-version": "^9.3.2",
     "ts-node": "^8.10.2",
     "tslib": "^1.13.0",
-    "tslint": "^5.20.1",
-    "tslint-config-standard": "^8.0.1",
-    "typescript": "^4.5.5"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "@types/pixelmatch": "^5.0.0",

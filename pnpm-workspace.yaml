@@ -1,2 +1,1 @@
-onlyBuiltDependencies:
-  - postinstall-prepare
+onlyBuiltDependencies: '["esbuild"]'

@@ -313,6 +313,7 @@ export class Atlasify {
      * @memberof Atlasify
      */
     public async save (humanReadable?: boolean): Promise<string>;
+    public async save (humanReadable?: boolean, pathalike?: string): Promise<boolean | string>;
     /**
      * Asycn save current project & settings to file
      *

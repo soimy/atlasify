@@ -1,75 +1,80 @@
 {
-  "name": "atlasify",
-  "version": "0.4.1",
-  "description": "CLI and core module for atlasify texture packer using maxrects-packer & Jimp",
-  "main": "lib/atlasify.js",
-  "types": "lib/types/atlasify.d.ts",
-  "bin": "bin/cli.js",
-  "ts:main": "src/atlasify.ts",
-  "scripts": {
-    "lint": "eslint src bin eslint.config.js",
-    "clean": "rimraf ./lib && rimraf ./dist && rimraf ./test/*.png",
-    "prepare": "patch-package",
-    "build": "tsc",
-    "build:clean": "npm run clean && npm run build",
-    "doc": "cd ./website && npm install && npm run build",
-    "doc:clean": "rimraf ./website/build && rimraf ./website/docs/*",
-    "doc:publish": "gh-pages --dotfiles=true -m \"[ci skip] Updates\" -d website/build",
-    "test": "cd ./test && node ../bin/cli.js --group-folder -astr -p 2 -m 1024,1024 --extrude 1 --trim --search-dummy --debug ./atlas",
-    "version": "standard-version",
-    "commit": "pnpm cz"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://soimy@github.com/soimy/atlasify.git"
-  },
-  "keywords": [
-    "atlas",
-    "atlasify",
-    "sprite",
-    "spritesheet",
-    "bin",
-    "pack",
-    "packer",
-    "maxrect",
-    "rect"
-  ],
-  "author": "YM Shen <soimy@163.com> (http://github.com/soimy)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/soimy/atlasify/issues"
-  },
-  "homepage": "https://github.com/soimy/atlasify#readme",
-  "devDependencies": {
-    "@types/mustache": "^4.2.6",
-    "@types/node": "^25.0.9",
-    "@typescript-eslint/eslint-plugin": "^8.41.0",
-    "@typescript-eslint/parser": "^8.41.0",
-    "commitizen": "^4.3.1",
-    "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^9.39.2",
-    "eslint-config-love": "^145.0.0",
-    "eslint-config-prettier": "^10.1.8",
-    "gh-pages": "^6.3.0",
-    "patch-package": "^8.0.1",
-    "rimraf": "^6.1.2",
-    "standard-version": "^9.3.2",
-    "ts-node": "^10.9.2",
-    "tslib": "^2.8.1",
-    "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "@types/pixelmatch": "^5.0.0",
-    "commander": "^14.0.0",
-    "jimp": "^1.6.0",
-    "maxrects-packer": "^2.7.3",
-    "mustache": "^4.2.0",
-    "pixelmatch": "^7.1.0",
-    "resource-loader": "^4.0.0-rc4"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
+    "name": "atlasify",
+    "version": "0.4.1",
+    "description": "CLI and core module for atlasify texture packer using maxrects-packer & Jimp",
+    "main": "lib/atlasify.js",
+    "types": "lib/types/atlasify.d.ts",
+    "bin": "bin/cli.js",
+    "ts:main": "src/atlasify.ts",
+    "scripts": {
+        "lint": "eslint src bin eslint.config.js",
+        "clean": "rimraf ./lib && rimraf ./dist && rimraf ./test/*.png",
+        "prepare": "patch-package",
+        "build": "tsc",
+        "build:clean": "pnpm run clean && pnpm run build",
+        "doc": "cd ./website && pnpm install && pnpm run build",
+        "doc:clean": "rimraf ./website/build && rimraf ./website/docs/*",
+        "doc:publish": "gh-pages --dotfiles=true -m \"[ci skip] Updates\" -d website/build",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage",
+        "test:integration": "cd ./test && node ../bin/cli.js --group-folder -astr -p 2 -m 1024,1024 --extrude 1 --trim --search-dummy --debug ./atlas",
+        "version": "standard-version",
+        "commit": "pnpm cz"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://soimy@github.com/soimy/atlasify.git"
+    },
+    "keywords": [
+        "atlas",
+        "atlasify",
+        "sprite",
+        "spritesheet",
+        "bin",
+        "pack",
+        "packer",
+        "maxrect",
+        "rect"
+    ],
+    "author": "YM Shen <soimy@163.com> (http://github.com/soimy)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/soimy/atlasify/issues"
+    },
+    "homepage": "https://github.com/soimy/atlasify#readme",
+    "devDependencies": {
+        "@types/mustache": "^4.2.6",
+        "@types/node": "^25.0.9",
+        "@typescript-eslint/eslint-plugin": "^8.41.0",
+        "@typescript-eslint/parser": "^8.41.0",
+        "@vitest/coverage-v8": "^4.0.17",
+        "commitizen": "^4.3.1",
+        "cz-conventional-changelog": "^3.3.0",
+        "eslint": "^9.39.2",
+        "eslint-config-love": "^145.0.0",
+        "eslint-config-prettier": "^10.1.8",
+        "gh-pages": "^6.3.0",
+        "patch-package": "^8.0.1",
+        "rimraf": "^6.1.2",
+        "standard-version": "^9.3.2",
+        "ts-node": "^10.9.2",
+        "tslib": "^2.8.1",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.17"
+    },
+    "dependencies": {
+        "@types/pixelmatch": "^5.0.0",
+        "commander": "^14.0.0",
+        "jimp": "^1.6.0",
+        "maxrects-packer": "^2.7.3",
+        "mustache": "^4.2.0",
+        "pixelmatch": "^7.1.0",
+        "resource-loader": "^4.0.0-rc4"
+    },
+    "config": {
+        "commitizen": {
+            "path": "cz-conventional-changelog"
+        }
     }
-  }
 }

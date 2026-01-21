@@ -13,3 +13,6 @@ output
 assets
 media
 website
+
+.agent/
+.opencode/

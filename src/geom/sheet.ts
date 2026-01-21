@@ -1,6 +1,6 @@
-import { Rectangle } from "maxrects-packer";
+import { Rectangle } from 'maxrects-packer';
 import { Vec2 } from "./vec2";
-import Jimp from "jimp";
+import { Jimp, type JimpInstance } from 'jimp';
 
 export class Sheet extends Rectangle {
 
@@ -118,7 +118,7 @@ export class Sheet extends Rectangle {
         this.sourceFrame = new Rectangle(width, height);
         this.anchor = new Vec2(width / 2, height / 2);
         this.nineSliceFrame = new Rectangle(width, height);
-        this.data = new Jimp(width, height);
+        this.data = new Jimp({ width: width || 1, height: height || 1 });
     }
 
     /**
@@ -174,14 +174,14 @@ export class Sheet extends Rectangle {
      * @param {object} data
      * @memberof Sheet
      */
-    public parse (data: object, target: object = this): this {
-        // TODO: Need test !
-        Object.keys(data).forEach(key => {
-            if (typeof(data[key]) === "object" && data[key] !== null && this[key]) {
-                this.parse(data[key], this[key]);
+    public parse (data: object, target: any = this): this {
+        const d = data as Record<string, any>;
+        Object.keys(d).forEach(key => {
+            if (typeof (d[key]) === "object" && d[key] !== null && (target as any)[key]) {
+                this.parse(d[key] as object, (target as any)[key]);
             } else {
                 try {
-                    target[key] = data[key];
+                    (target as any)[key] = d[key];
                 } catch (err) {
                     console.error(err);
                 }
@@ -190,7 +190,7 @@ export class Sheet extends Rectangle {
         return this;
     }
 
-    public static Factory (data: any): Sheet {
+    public static Factory (data: { width: number, height: number, [key: string]: any }): Sheet {
         const sheet = new Sheet(data.width, data.height);
         return sheet.parse(data);
     }
@@ -224,7 +224,7 @@ export class Sheet extends Rectangle {
                 this.frame.height = this.height = this.data.bitmap.height - bottom - top;
             }
         }
-        this.data.crop(this.sourceFrame.x, this.sourceFrame.y, this.width, this.height);
+        this.data.crop({ x: this.sourceFrame.x, y: this.sourceFrame.y, w: this.width, h: this.height });
         this._imageDirty ++;
     }
 
@@ -240,30 +240,30 @@ export class Sheet extends Rectangle {
         this.frame.y += border;
         this.width += border * 2;
         this.height += border * 2;
-        const extrudedImage = new Jimp(this.width, this.height);
+        const extrudedImage = new Jimp({ width: this.width, height: this.height });
         // centered original image
         extrudedImage.composite(this.data, border, border);
         this.data = extrudedImage;
 
         // top extruded border
         const topExtrude = this.data.clone()
-            .crop(border, border, this.frame.width, 1)
-            .resize(this.frame.width, border);
+            .crop({ x: border, y: border, w: this.frame.width, h: 1 })
+            .resize({ w: this.frame.width, h: border });
         this.data.composite(topExtrude, border, 0);
         // bottom extruded border
         const bottomExtrude = this.data.clone()
-            .crop(border, border + this.frame.height - 1, this.frame.width, 1)
-            .resize(this.frame.width, border);
+            .crop({ x: border, y: border + this.frame.height - 1, w: this.frame.width, h: 1 })
+            .resize({ w: this.frame.width, h: border });
         this.data.composite(bottomExtrude, border, border + this.frame.height);
         // left extruded border
         const leftExtrude = this.data.clone()
-            .crop(border, border, 1, this.frame.height)
-            .resize(border, this.frame.height);
+            .crop({ x: border, y: border, w: 1, h: this.frame.height })
+            .resize({ w: border, h: this.frame.height });
         this.data.composite(leftExtrude, 0, border);
         // right extruded border
         const rightExtrude = this.data.clone()
-            .crop(border + this.frame.width - 1, border, 1, this.frame.height)
-            .resize(border, this.frame.height);
+            .crop({ x: border + this.frame.width - 1, y: border, w: 1, h: this.frame.height })
+            .resize({ w: border, h: this.frame.height });
         this.data.composite(rightExtrude, border + this.frame.width, border);
         this._imageDirty ++;
     }
@@ -343,13 +343,13 @@ export class Sheet extends Rectangle {
     /**
      * image data object
      *
-     * @type {Jimp}
+     * @type {JimpInstance}
      * @memberof Sheet
      */
 
-    get data (): Jimp { return super.data; }
-    set data (value: Jimp) {
-        super.data = value;
+    get data (): JimpInstance { return this._data; }
+    set data (value: JimpInstance) {
+        this._data = value;
         this._imageDirty ++;
 
         // hash is expensive, so move to manually update hash value

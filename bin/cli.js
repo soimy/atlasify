@@ -14,10 +14,10 @@ const cli = new commander.Command();
 cli
     .version('MaxRectsPacker v' + pjson.version)
     .usage('[options] <image-files/folder>')
-    .arguments('<image-files/folder>')
     .description('CLI tools to packing and compositing image files into atlas using MaxRects packing algorithm')
+    .argument('<image-files/folder...>', 'image files or folder to pack')
     .option('-o, --output <filename>', 'output atlas filename (Default: sprite.png)', 'sprite.png')
-    .option('    --load <filename>', 'load saved project atl file')
+    .option('--load <filename>', 'load saved project atl file')
     .option('-m, --size <w,h>', 'ouput texture atlas size (defaut: 2048,2048)', v => { return v.split(',') }, [2048, 2048])
     .option('-p, --padding <n>', 'padding between images (Default: 0)', 0)
     .option('-b, --border <n>', 'space to atlas edge (Default: 0)', 0)
@@ -25,25 +25,23 @@ cli
     .option('-t, --pot', 'atlas size shall be power of 2 (Default: false)', false)
     .option('-s, --square', 'atlas size shall be square (Default: false)', false)
     .option('-r, --rot', 'allow 90-degree rotation while packing (Default: false)', false)
-    .option('    --trim [n]', 'remove surrounding transparent pixels with optional tolerence [n] (Default: false)', false)
-    .option('    --extrude <n>', 'extrude edge pixels (Default: 0)', 0)
-    .option('    --debug', 'draw debug gizmo on atlas (Default: false)', false)
-    .option('    --instant', 'instant packing is quicker and skip sorting (Default: false)', false)
-    .option('    --seperate-folder', 'Seperate bin based on folder (Default: false)', false)
-    .option('    --group-folder', 'Group bin based on folder (Default: false)', false)
-    .option('    --search-dummy', 'Search duplicate sprites to reduce atlas size (Default: false)', false)
-    .option('    --save', 'Save configuration for reuse (Default: false)', false)
-    
-    cli
-    .command("*")
-    .action((...filesOrFolder) => {
+    .option('--trim [n]', 'remove surrounding transparent pixels with optional tolerence [n] (Default: false)', false)
+    .option('--extrude <n>', 'extrude edge pixels (Default: 0)', 0)
+    .option('--debug', 'draw debug gizmo on atlas (Default: false)', false)
+    .option('--instant', 'instant packing is quicker and skip sorting (Default: false)', false)
+    .option('--seperate-folder', 'Seperate bin based on folder (Default: false)', false)
+    .option('--group-folder', 'Group bin based on folder (Default: false)', false)
+    .option('--search-dummy', 'Search duplicate sprites to reduce atlas size (Default: false)', false)
+    .option('--save', 'Save configuration for reuse (Default: false)', false)
+    .action((filesOrFolders) => {
         let inputFiles = [];
-        filesOrFolder.forEach(filePath => {
+        filesOrFolders.forEach(filePath => {
             if (typeof(filePath) === "object") return;
-            if (fs.statSync(filePath).isDirectory()) {
+            if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
                 inputFiles = inputFiles.concat(utils.getAllFiles(filePath));
-            } else 
+            } else if (fs.existsSync(filePath)) {
                 inputFiles.push(filePath);
+            }
         });
         for (let inputFile of inputFiles) {
             const extname = path.extname(inputFile).slice(1).toLowerCase();
@@ -53,7 +51,7 @@ cli
             }
         }
         console.log("Total " + imageFiles.length + " files added.");
-    })
+    });
 
 cli.parse(process.argv);
 
@@ -86,7 +84,7 @@ opt.save = utils.valueQueue([opt.save, false]);
 //
 // Load images into Rectangle objects
 //
-const atlasifyOptions = new core.Options(opt.output, opt.size[0], opt.size[1], opt.padding);
+const atlasifyOptions = new core.Options(opt.size[0], opt.size[1], opt.padding);
 atlasifyOptions.name = opt.output;
 atlasifyOptions.smart = opt.autoSize;
 atlasifyOptions.pot = opt.pot;
@@ -130,7 +128,7 @@ if (opt.load) {
 function fileIO(result) {
     for (let a of result.atlas) {
         const imageName = `${a.name}.${a.ext}`
-        a.image.writeAsync(imageName)
+        a.image.write(imageName)
         .then(() => {
             console.log(`Saved atlas: ${imageName}`);
         })

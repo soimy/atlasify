@@ -4,6 +4,18 @@ import { existsSync, readFileSync } from "fs";
 
 let list = require('../templates/list.json');
 
+export interface ExporterView {
+    spritesheets: any[];
+    meta: {
+        app: string;
+        version: string;
+        image: string;
+        format: string;
+        size: { w: number, h: number };
+        scale: string;
+    };
+}
+
 export class Exporter {
 
     public setExportFormat (name: string): boolean {
@@ -28,7 +40,7 @@ export class Exporter {
         return this.ext;
     }
 
-    public compile (view: any): string {
+    public compile (view: ExporterView): string {
         if (!this.template) {
             // Apply default template if not set by setExportFormat
             this.template = readFileSync(join(__dirname, "../templates", "JsonHash")).toString();

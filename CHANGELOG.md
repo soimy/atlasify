@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/soimy/atlasify/compare/v0.4.1...v0.5.0) (2026-02-23)
+
+
+### Features
+
+* Add initial agent system infrastructure, including skills, workflows, and agent definitions. ([5178da9](https://github.com/soimy/atlasify/commit/5178da9cf01b0f237b7f884384390f03363ec512))
+* upgrade deps and migrate image pipeline to sharp ([008b190](https://github.com/soimy/atlasify/commit/008b190d487856bd8d2d8ad35a85f2019d75a85d))
+
 ### [0.4.1](https://github.com/soimy/atlasify/compare/v0.4.0...v0.4.1) (2020-09-18)
 
 

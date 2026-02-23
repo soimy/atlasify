@@ -1,6 +1,6 @@
 {
     "name": "atlasify",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "description": "CLI and core module for atlasify texture packer using maxrects-packer & sharp",
     "type": "module",
     "main": "lib/atlasify.js",

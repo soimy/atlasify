@@ -1,6 +1,6 @@
 import { Rectangle } from "maxrects-packer";
 import { Vec2 } from "./vec2.js";
-import Jimp from "jimp";
+import { Image } from "../image.js";
 
 export class Sheet extends Rectangle {
 
@@ -33,7 +33,7 @@ export class Sheet extends Rectangle {
     public frame: Rectangle;
 
     /**
-     * orignal source rectangle
+     * original source rectangle
      *
      * `x` and `y` refer to the negative offset from the frame rectangle
      *
@@ -118,7 +118,7 @@ export class Sheet extends Rectangle {
         this.sourceFrame = new Rectangle(width, height);
         this.anchor = new Vec2(width / 2, height / 2);
         this.nineSliceFrame = new Rectangle(width, height);
-        this.data = new Jimp(width, height);
+        this.data = new Image(width, height);
     }
 
     /**
@@ -240,7 +240,7 @@ export class Sheet extends Rectangle {
         this.frame.y += border;
         this.width += border * 2;
         this.height += border * 2;
-        const extrudedImage = new Jimp(this.width, this.height);
+        const extrudedImage = new Image(this.width, this.height);
         // centered original image
         extrudedImage.composite(this.data, border, border);
         this.data = extrudedImage;
@@ -271,13 +271,13 @@ export class Sheet extends Rectangle {
     /**
      * Rotate image data 90-degree CW, and swap width/height
      *
-     * note: rotate is done automaticly when `Sheet.rot` set to `true`, normally
+     * note: rotate is done automatically when `Sheet.rot` is set to `true`, normally
      * you don't need to do this manually unless you know what you are doing.
      *
      * @memberof Sheet
      */
     public rotate (clockwise: boolean = true): void {
-        // jimp rotate is buggy, avoid it!
+        // Keep manual rotation for deterministic pixel mapping.
         // this.data.rotate(90 * (clockwise ? 1 : -1));
         const bitmap = this.data.bitmap;
         const rotBuffer: Buffer = Buffer.from(bitmap.data);
@@ -323,8 +323,8 @@ export class Sheet extends Rectangle {
     /**
      * Status from packer whether `Sheet` should be rotated.
      *
-     * note: if `rot` set to `true`, image data will be rotated automaticlly,
-     * and `width/height` is swaped.
+     * note: if `rot` is set to `true`, image data will be rotated automatically,
+     * and `width/height` will be swapped.
      *
      * @type {boolean}
      * @memberof Sheet
@@ -343,12 +343,12 @@ export class Sheet extends Rectangle {
     /**
      * image data object
      *
-     * @type {Jimp}
+     * @type {Image}
      * @memberof Sheet
      */
 
-    get data (): Jimp { return super.data; }
-    set data (value: Jimp) {
+    get data (): Image { return super.data; }
+    set data (value: Image) {
         super.data = value;
         this._imageDirty ++;
 
@@ -360,7 +360,7 @@ export class Sheet extends Rectangle {
     }
 
     /**
-     * hash string generated from image, for identifing
+     * hash string generated from image, for identifying
      *
      * @type {string}
      * @memberof Sheet

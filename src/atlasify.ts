@@ -1,11 +1,11 @@
 import { MaxRectsPacker, IOption, IBin } from "maxrects-packer";
-import Jimp from "jimp";
 import path from "path";
 import pixelMatch from "pixelmatch";
 import { Sheet } from "./geom/sheet.js";
 import { Exporter } from "./exporter.js";
 import { writeFile, readFileSync } from "fs";
 import { fileURLToPath } from "url";
+import { Image, MIME_PNG } from "./image.js";
 
 const appInfo = JSON.parse(readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), "../package.json"), "utf-8"));
 
@@ -18,7 +18,7 @@ const appInfo = JSON.parse(readFileSync(path.join(path.dirname(fileURLToPath(imp
 export class Options implements IOption {
 
     /**
-     * Atlas will automaticly shrink to the smallest possible square
+     * Atlas will automatically shrink to the smallest possible square
      *
      * @type {boolean}
      * @memberof Options
@@ -66,7 +66,7 @@ export class Options implements IOption {
     public instant: boolean = false;
 
     /**
-     * Seperate sheets packing based on folder
+     * Separate sheets packing based on folder
      *
      * @type {boolean}
      * @memberof Options
@@ -92,7 +92,7 @@ export class Options implements IOption {
     public trimAlpha: boolean = false;
 
     /**
-     * Trim alpha with tolerence value
+     * Trim alpha with tolerance value
      *
      * @type {number}
      * @memberof Options
@@ -100,7 +100,7 @@ export class Options implements IOption {
     public alphaTolerence: number = 0;
 
     /**
-     * Extrude amount of edge pixels, will automaticly `trimAlpha` first.
+     * Extrude amount of edge pixels, will automatically `trimAlpha` first.
      *
      * @type {number}
      * @memberof Options
@@ -126,8 +126,8 @@ export class Options implements IOption {
    /**
     * Creates an instance of Options.
     * @param {string} [name='sprite'] output filename of atlas/spreadsheet (default is 'sprite.png')
-    * @param {number} [width=2048] ouput texture atlas width (defaut: 2048)
-    * @param {number} [height=2048] ouput texture atlas height (defaut: 2048)
+    * @param {number} [width=2048] output texture atlas width (default: 2048)
+    * @param {number} [height=2048] output texture atlas height (default: 2048)
     * @param {number} [padding=0] padding between images (Default: 0)
     * @memberof Options
     */
@@ -141,7 +141,7 @@ export class Options implements IOption {
 }
 
 export type Atlas = {
-    image: Jimp;
+    image: Image;
     ext: string;
     width: number;
     height: number;
@@ -202,7 +202,7 @@ export class Atlasify {
     }
 
     /**
-     * Add arrays of pathalike images url and do packing
+     * Add an array of image paths/URLs and run packing
      *
      * @param {string[]} paths
      * @param {(atlas: Atlas[], spritesheets: Spritesheet[]) => void} callback
@@ -211,7 +211,7 @@ export class Atlasify {
     public addURLs (paths: string[], callback?: (err?: Error, atlas?: Atlas[], spritesheets?: Spritesheet[]) => void): Promise<Atlasify> {
         this._inputPaths = this._inputPaths.concat(paths);
         let loader: Promise<void>[] = paths.map(async img => {
-            return Jimp.read(img).then(image => this.metricFromImage(image, img));
+            return Image.read(img).then(image => this.metricFromImage(image, img));
         });
 
         return Promise.all(loader)
@@ -225,7 +225,7 @@ export class Atlasify {
             });
     }
 
-    private metricFromImage (image: Jimp, imgPath: string): void {
+    private metricFromImage (image: Image, imgPath: string): void {
         const sheet: Sheet = new Sheet(image.bitmap.width, image.bitmap.height);
         sheet.name = path.basename(imgPath);
         sheet.url = imgPath;
@@ -255,7 +255,7 @@ export class Atlasify {
                     this.options.searchDummy && // do pHash compare only on same size image
                     s.hash === sheet.hash) {
                     // deep pixel compare
-                    let diff = pixelMatch(s.data.bitmap.data, sheet.data.bitmap.data, null, s.width, s.height);
+                    const diff = pixelMatch(s.data.bitmap.data, sheet.data.bitmap.data, undefined, s.width, s.height);
                     if (diff === 0) return; // early exit if no change
                 }
                 // input image has changed, need process
@@ -265,7 +265,7 @@ export class Atlasify {
                 s.height === sheet.height &&
                 s.hash === sheet.hash) {
                 // deep pixel compare
-                let diff = pixelMatch(s.data.bitmap.data, sheet.data.bitmap.data, null, s.width, s.height);
+                const diff = pixelMatch(s.data.bitmap.data, sheet.data.bitmap.data, undefined, s.width, s.height);
                 if (diff !== 0) break; // different image
                 if (s.dummy.includes(sheet.name)) return; // already in dummy list, early exit
                 // This is the dummy sheet with different name
@@ -318,7 +318,7 @@ export class Atlasify {
                 id: tagCount[tag],
                 width: bin.width,
                 height: bin.height,
-                image: new Jimp(bin.width, bin.height, fillColor),
+                image: new Image(bin.width, bin.height, fillColor),
                 name: binName,
                 format: "RGBA8888",
                 ext: ext
@@ -331,11 +331,11 @@ export class Atlasify {
             // Render rects onto atlas
             bin.rects.forEach(rect => {
                 const sheet = rect;
-                const buffer: Jimp = sheet.data;
+                const buffer: Image = sheet.data;
                 // sheet.frame.x += sheet.x;
                 // sheet.frame.y += sheet.y;
                 if (this.options.debug) {
-                    const debugFrame = new Jimp(sheet.frame.width, sheet.frame.height, this._debugColor);
+                    const debugFrame = new Image(sheet.frame.width, sheet.frame.height, this._debugColor);
                     image.blit(debugFrame, sheet.frame.x, sheet.frame.y);
                 }
                 image.composite(buffer, sheet.x, sheet.y);
@@ -399,7 +399,7 @@ export class Atlasify {
      */
     public async save (humanReadable?: boolean): Promise<string>;
     /**
-     * Asycn save current project & settings to file
+     * Async save current project & settings to file
      *
      * @param {boolean} [humanReadable=false]
      * @param {string} [pathalike]
@@ -408,7 +408,7 @@ export class Atlasify {
      */
     public async save (humanReadable?: boolean, pathalike?: string): Promise<boolean>;
     /**
-     * Asycn save current project & settings to file and return serialized string
+     * Async save current project & settings to file and return serialized string
      *
      * @param {boolean} [humanReadable=false]
      * @param {string} [pathalike]
@@ -416,7 +416,7 @@ export class Atlasify {
      * @memberof Atlasify
      */
     public async save (...args: any[]): Promise<any> {
-        const atlasBase64 = await Promise.all(this._atlas.map(async a => a.image.getBase64Async(Jimp.MIME_PNG)));
+        const atlasBase64 = await Promise.all(this._atlas.map(async a => a.image.getBase64Async(MIME_PNG)));
         const atl: IAtl = {
             options: this.options,
             packer: this._packer.save(),
@@ -488,16 +488,16 @@ export class Atlasify {
         this._spritesheets = atl.spritesheets;
         // load atlas
         this._atlas = await Promise.all(atl.atlas.map(async (a, i) => {
-            // async overwrite atlas base64 string image with Jimp object
-            return { ...a, image: await Jimp.read(Buffer.from(a.image.replace(/^data:image\/png;base64,/, ""), 'base64')) };
+            // async overwrite atlas base64 string image with Image object
+            return { ...a, image: await Image.read(Buffer.from(a.image.replace(/^data:image\/png;base64,/, ""), 'base64')) };
         }));
         // Load sheets
-        const loaders: Promise<Jimp>[] = [];
+        const loaders: Promise<Image>[] = [];
         this._spritesheets.forEach((spritesheet, i) => {
             spritesheet.rects.forEach(r => {
                 const sheet = Sheet.Factory(r);
 
-                const loader = Jimp.read(sheet.url);
+                const loader = Image.read(sheet.url);
                 loader
                     .then(image => {
                         const reloaded = new Sheet(image.bitmap.width, image.bitmap.height);
@@ -522,7 +522,7 @@ export class Atlasify {
                     .catch(error => {
                         console.error(error);
                         console.log("Fall back to pre-rendered atlas");
-                        sheet.data = new Jimp(sheet.width, sheet.height)
+                        sheet.data = new Image(sheet.width, sheet.height)
                             .blit(this._atlas[i].image, 0, 0, sheet.x, sheet.y, sheet.width, sheet.height);
                         // unrotate sheets for stable result
                         if (sheet.rot) sheet.rot = false;

@@ -2,8 +2,8 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { cp, mkdtemp, rm, writeFile } from "fs/promises";
 import path from "path";
 import { tmpdir } from "os";
-import Jimp from "jimp";
 import { Atlasify, Options } from "../../src/atlasify.ts";
+import { Image } from "../../src/image.ts";
 
 describe("Atlasify integration", () => {
   let tempDir = "";
@@ -100,7 +100,7 @@ describe("Atlasify integration", () => {
 
   it("covers save overload errors and private helpers", async () => {
     const atlasify = new Atlasify(new Options("helpers.png", 64, 64, 0, "JsonHash"));
-    const onePixel = new Jimp(1, 1, 0xffffffff);
+    const onePixel = new Image(1, 1, 0xffffffff);
 
     const leaf = (atlasify as any).getLeafFolder(path.join("root", "leaf", "x.png"));
     expect(leaf).toBe("leaf");

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import Jimp from "jimp";
+import { Image, rgbaToInt } from "../../src/image.ts";
 import { Sheet } from "../../src/geom/sheet.ts";
 
 describe("Sheet", () => {
@@ -25,9 +25,9 @@ describe("Sheet", () => {
   });
 
   it("trims transparent border and extrudes edge", () => {
-    const image = new Jimp(4, 4, 0x00000000);
-    image.setPixelColor(Jimp.rgbaToInt(255, 0, 0, 255), 1, 1);
-    image.setPixelColor(Jimp.rgbaToInt(0, 255, 0, 255), 2, 2);
+    const image = new Image(4, 4, 0x00000000);
+    image.setPixelColor(rgbaToInt(255, 0, 0, 255), 1, 1);
+    image.setPixelColor(rgbaToInt(0, 255, 0, 255), 2, 2);
 
     const sheet = new Sheet(4, 4);
     sheet.data = image;
@@ -48,7 +48,7 @@ describe("Sheet", () => {
 
   it("rotates bitmap and frame", () => {
     const sheet = new Sheet(2, 3);
-    const image = new Jimp(2, 3, 0xff0000ff);
+    const image = new Image(2, 3, 0xff0000ff);
     sheet.data = image;
 
     sheet.rotate(true);

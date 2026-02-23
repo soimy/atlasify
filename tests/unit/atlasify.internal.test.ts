@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import Jimp from "jimp";
 import path from "path";
 import { Atlasify, Options, Sheet } from "../../src/atlasify.ts";
+import { Image, rgbaToInt } from "../../src/image.ts";
 
 describe("Atlasify internals", () => {
   it("handles metric dedupe and dummy branches", () => {
@@ -9,7 +9,7 @@ describe("Atlasify internals", () => {
     options.searchDummy = true;
     const atlasify = new Atlasify(options);
 
-    const image = new Jimp(2, 2, 0xff00ffff);
+    const image = new Image(2, 2, 0xff00ffff);
     const metric = (atlasify as any).metricFromImage.bind(atlasify);
 
     metric(image.clone(), "a.png");
@@ -37,9 +37,9 @@ describe("Atlasify internals", () => {
     options.groupFolder = true;
     const atlasify = new Atlasify(options);
 
-    const image = new Jimp(4, 4, 0x00000000);
-    image.setPixelColor(Jimp.rgbaToInt(255, 255, 255, 255), 1, 1);
-    image.setPixelColor(Jimp.rgbaToInt(255, 255, 255, 255), 2, 2);
+    const image = new Image(4, 4, 0x00000000);
+    image.setPixelColor(rgbaToInt(255, 255, 255, 255), 1, 1);
+    image.setPixelColor(rgbaToInt(255, 255, 255, 255), 2, 2);
 
     (atlasify as any).metricFromImage(image, `x${path.sep}leaf${path.sep}img.png`);
     const sheet = (atlasify as any)._sheets[0] as Sheet;
@@ -55,7 +55,7 @@ describe("Atlasify internals", () => {
 
   it("covers save overload branches and next()", async () => {
     const atlasify = new Atlasify(new Options("save.png", 32, 32, 0, "JsonHash"));
-    (atlasify as any)._atlas = [{ id: 0, width: 1, height: 1, name: "a", ext: "png", image: new Jimp(1, 1, 0xffffffff) }];
+    (atlasify as any)._atlas = [{ id: 0, width: 1, height: 1, name: "a", ext: "png", image: new Image(1, 1, 0xffffffff) }];
     (atlasify as any)._spritesheets = [];
 
     const compact = await atlasify.save();

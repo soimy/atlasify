@@ -44,9 +44,9 @@ Controllers get input assets and settings from user, and start the whole packing
 
 Reading different input data and generate Array of `Buffer` & `Metric` for the core controller. `Buffer`containing image data and `Metric` containing sizing & spacing of the `Buffer`. Currently scheduled generators:
 
-- PNG/Jpeg image reader Through file I/O & [Jimp](https://github.com/oliver-moran/jimp)
+- PNG/JPEG image reader through file I/O and [sharp](https://github.com/lovell/sharp)
 - Multi-signed distance field font renderer [msdf-bmfont-xml](https://github.com/soimy/msdf-bmfont-xml)
-    > `msdf-bmfont-xml` will be depreciated when Atlasify is finished. I'm planning to rewrite msdf generator as a separate module using Rust.
+    > `msdf-bmfont-xml` will be deprecated when Atlasify is finished. I'm planning to rewrite the MSDF generator as a separate module using Rust.
 
 ### Post-Processor
 
@@ -61,7 +61,7 @@ Store `Buffer` & `Metric` as `Sheet` object and do the following manipulation ba
 
 [Core module](https://github.com/soimy/atlasify) to control the whole pipeline:
 
-1. Aquire settings from front-end(CLI, GUI)
+1. Acquire settings from front-end (CLI, GUI)
 2. Store array of `Buffer` & `Metric` from generator;
 3. Doing `Buffer` post-processing like `TrimAlpha` & `Extrude Edge`;
 4. Calling Packer to process the `Metric` and composing the `Buffer` onto the atlas;
@@ -116,7 +116,7 @@ Options:
   -V, --version            output the version number
   -o, --output <filename>  output atlas filename (Default: sprite.png)
       --load <filename>    load saved project atl file
-  -m, --size <w,h>         ouput texture atlas size (Default: 2048,2048)
+  -m, --size <w,h>         output texture atlas size (Default: 2048,2048)
   -p, --padding <n>        padding between images (Default: 0)
   -b, --border <n>         space to atlas edge (Default: 0)
   -a, --auto-size          shrink atlas to the smallest possible square (Default: false)
@@ -161,7 +161,7 @@ Saved configuration: sprite.atl
 ## Module quick start
 
 ```javascript
-import { Atlasify, Option } from "atlasify";
+import { Atlasify, Options } from "atlasify";
 const opts = new Options("sprite.png", 1024, 1024);
 opts.extrude = 1;
 opts.trimAlpha = true;

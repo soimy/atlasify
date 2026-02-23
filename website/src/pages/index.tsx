@@ -31,7 +31,7 @@ function HomepageHeader () {
             <div className={clsx('col col--6', styles.buttons)}>
               <Link
                 className={clsx("button button--secondary button--lg", styles.button)}
-                to="/docs/modules">
+                to="/docs/classes/Atlasify">
                 API Reference
               </Link>
             </div>
@@ -43,7 +43,7 @@ function HomepageHeader () {
     );
 }
 
-export default function Home (): JSX.Element {
+export default function Home (): React.JSX.Element {
     const { siteConfig } = useDocusaurusContext();
     return (
     <Layout

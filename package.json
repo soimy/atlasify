@@ -17,7 +17,12 @@
     "doc": "cd ./website && npm install && npm run build",
     "doc:clean": "rimraf ./website/build && rimraf ./website/docs/*",
     "doc:publish": "gh-pages --dotfiles=true -m \"[ci skip] Updates\" -d website/build",
-    "test": "cd ./test && node ../bin/cli.js --group-folder -astr -p 2 -m 1024,1024 --extrude 1 --trim --search-dummy --debug ./atlas",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:coverage": "vitest run --coverage",
+    "test:cli": "cd ./test && node ../bin/cli.js --group-folder -astr -p 2 -m 1024,1024 --extrude 1 --trim --search-dummy --debug ../media/atlas",
     "version": "standard-version",
     "commit": "npx git-cz"
   },
@@ -45,6 +50,7 @@
   "devDependencies": {
     "@types/mustache": "^0.8.32",
     "@types/node": "^25.3.0",
+    "@vitest/coverage-v8": "^4.0.18",
     "cz-conventional-changelog": "^2.1.0",
     "gh-pages": "^2.2.0",
     "oxlint": "^0.18.0",
@@ -54,7 +60,8 @@
     "standard-version": "^9.3.2",
     "ts-node": "^8.10.2",
     "tslib": "^1.13.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "@types/pixelmatch": "^5.0.0",

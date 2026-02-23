@@ -15,8 +15,8 @@
         "clean": "rimraf ./lib && rimraf ./dist && rimraf --glob \"./tests/artifacts/*\"",
         "prepare": "patch-package",
         "build": "tsc",
-        "build:clean": "npm run clean && npm run build",
-        "doc": "cd ./website && npm install && npm run build",
+        "build:clean": "pnpm run clean && pnpm run build",
+        "doc": "cd ./website && pnpm install && pnpm run build",
         "doc:clean": "rimraf ./website/build && rimraf ./website/docs/*",
         "doc:publish": "gh-pages --dotfiles=true -m \"[ci skip] Updates\" -d website/build",
         "test": "vitest run",
@@ -26,7 +26,7 @@
         "test:coverage": "vitest run --coverage",
         "test:cli": "cd ./tests/artifacts && node ../../bin/cli.js --group-folder -astr -p 2 -m 1024,1024 --extrude 1 --trim --search-dummy --debug --save ../../assets/atlas",
         "version": "standard-version",
-        "commit": "npx git-cz"
+        "commit": "pnpm exec git-cz"
     },
     "repository": {
         "type": "git",
@@ -74,6 +74,7 @@
         "resource-loader": "^4.0.0-rc4",
         "sharp": "^0.34.5"
     },
+    "packageManager": "pnpm@10.30.1",
     "config": {
         "commitizen": {
             "path": "cz-conventional-changelog"

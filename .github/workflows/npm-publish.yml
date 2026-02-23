@@ -1,79 +1,89 @@
-﻿name: Publish to npm
+name: Publish to npm
 
 on:
-  push:
-    tags:
-      - v*
+    push:
+        tags:
+            - "*"
 
 permissions:
-  id-token: write
-  contents: read
+    id-token: write
+    contents: read
 
 concurrency:
-  group: npm-publish-${{ github.ref }}
-  cancel-in-progress: false
+    group: npm-publish-${{ github.ref }}
+    cancel-in-progress: false
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    permissions:
-      id-token: write
-      contents: read
+    publish:
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        permissions:
+            id-token: write
+            contents: read
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          registry-url: 'https://registry.npmjs.org'
-          cache: npm
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 10
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: pnpm
 
-      - name: Resolve publish mode and verify version
-        id: release
-        shell: bash
-        run: |
-          set -euo pipefail
-          TAG="${GITHUB_REF_NAME}"
-          RAW_VERSION="${TAG#v}"
-          NPM_TAG="latest"
-          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
 
-          if [[ "$RAW_VERSION" != "$PACKAGE_VERSION" ]]; then
-            echo "Tag version and package version are not synchronized."
-            echo "tag: ${TAG}"
-            echo "expected package.json version: ${RAW_VERSION}"
-            echo "actual package.json version: ${PACKAGE_VERSION}"
-            exit 1
-          fi
+            - name: Resolve publish mode and verify version
+              id: release
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  TAG="${GITHUB_REF_NAME}"
+                  RAW_VERSION="${TAG#v}"
+                  NPM_TAG="latest"
+                  PACKAGE_VERSION="$(node -p "require('./package.json').version")"
 
-          if [[ "$RAW_VERSION" =~ -beta(\.|$) ]]; then
-            NPM_TAG="beta"
-          fi
+                  if [[ "$RAW_VERSION" != "$PACKAGE_VERSION" ]]; then
+                    echo "Tag version and package version are not synchronized."
+                    echo "tag: ${TAG}"
+                    echo "expected package.json version: ${RAW_VERSION}"
+                    echo "actual package.json version: ${PACKAGE_VERSION}"
+                    exit 1
+                  fi
 
-          echo "Version check passed: ${TAG} -> ${PACKAGE_VERSION} (npm tag: ${NPM_TAG})"
-          echo "npm_tag=${NPM_TAG}" >> "$GITHUB_OUTPUT"
+                  if [[ "$RAW_VERSION" =~ -beta(\.|$) ]]; then
+                    NPM_TAG="beta"
+                  fi
 
-      - name: Lint
-        run: npm run lint
+                  echo "Version check passed: ${TAG} -> ${PACKAGE_VERSION} (npm tag: ${NPM_TAG})"
+                  echo "npm_tag=${NPM_TAG}" >> "$GITHUB_OUTPUT"
 
-      - name: Build
-        run: npm run build
+            - name: Lint
+              run: pnpm run lint
+            
+            - name: Build
+              run: pnpm run build
 
-      - name: Run tests
-        run: npm test
+            - name: Run tests
+              run: pnpm test
 
-      - name: Publish package to npm
-        shell: bash
-        run: |
-          if [[ "${{ steps.release.outputs.npm_tag }}" == "beta" ]]; then
-            npm publish --provenance --tag beta
-          else
-            npm publish --provenance
-          fi
+            - name: Publish package to npm
+              run: |
+                  # Force trusted publishing path: remove any legacy token auth context.
+                  if [[ -n "${NPM_CONFIG_USERCONFIG:-}" && -f "${NPM_CONFIG_USERCONFIG}" ]]; then
+                    rm -f "${NPM_CONFIG_USERCONFIG}"
+                  fi
+                  unset NODE_AUTH_TOKEN
+                  unset NPM_TOKEN
+
+                  if [[ "${{ steps.release.outputs.npm_tag }}" == "beta" ]]; then
+                    npm publish --access public --tag beta
+                  else
+                    npm publish --access public
+                  fi

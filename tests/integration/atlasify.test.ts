@@ -20,9 +20,9 @@ describe("Atlasify integration", () => {
 
   it("packs fixture images and emits spritesheet data", async () => {
     const fixturePaths = [
-      path.resolve("media/atlas/ui/circle.png"),
-      path.resolve("media/atlas/items/coinGold.png"),
-      path.resolve("media/atlas/actor/k-bone.png")
+      path.resolve("assets/atlas/ui/circle.png"),
+      path.resolve("assets/atlas/items/coinGold.png"),
+      path.resolve("assets/atlas/actor/k-bone.png")
     ];
 
     const options = new Options("atlas.png", 256, 256, 2, "JsonHash");
@@ -42,7 +42,7 @@ describe("Atlasify integration", () => {
   });
 
   it("supports duplicate search and save/load cycle", async () => {
-    const srcImage = path.resolve("media/atlas/ui/circle.png");
+    const srcImage = path.resolve("assets/atlas/ui/circle.png");
     const imageA = path.join(tempDir, "same-a.png");
     const imageB = path.join(tempDir, "same-b.png");
     const projectFile = path.join(tempDir, "project.atl.json");

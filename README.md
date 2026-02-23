@@ -1,4 +1,4 @@
-# ![Atlasify](https://github.com/soimy/atlasify/blob/master/media/title.png?raw=true)
+# ![Atlasify](https://github.com/soimy/atlasify/blob/master/assets/title.png?raw=true)
 
 ![npm version](https://badge.fury.io/js/atlasify.svg)
 ![npm type definitions](https://shields-staging.herokuapp.com/npm/types/atlasify.svg)

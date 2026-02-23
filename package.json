@@ -5,7 +5,9 @@
     "type": "module",
     "main": "lib/atlasify.js",
     "types": "lib/types/atlasify.d.ts",
-    "bin": "bin/cli.js",
+    "bin": {
+        "atlasify": "bin/cli.js"
+    },
     "ts:main": "src/atlasify.ts",
     "scripts": {
         "lint": "oxlint \"src/**/*.ts\" \"bin/**/*.js\" \"bin/**/*.cjs\"",

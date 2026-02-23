@@ -46,7 +46,7 @@
     "bugs": {
         "url": "https://github.com/soimy/atlasify/issues"
     },
-    "homepage": "https://github.com/soimy/atlasify#readme",
+    "homepage": "https://atlasify.nanoo.app/",
     "devDependencies": {
         "@types/mustache": "^4.2.6",
         "@types/node": "^25.3.0",

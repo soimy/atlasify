@@ -116,7 +116,7 @@ Options:
   -V, --version            output the version number
   -o, --output <filename>  output atlas filename (Default: sprite.png)
       --load <filename>    load saved project atl file
-  -m, --size <w,h>         output texture atlas size (Default: 2048,2048)
+  -m, --size <w,h>         ouput texture atlas size (defaut: 2048,2048)
   -p, --padding <n>        padding between images (Default: 0)
   -b, --border <n>         space to atlas edge (Default: 0)
   -a, --auto-size          shrink atlas to the smallest possible square (Default: false)
@@ -129,6 +129,7 @@ Options:
       --instant            instant packing is quicker and skip sorting (Default: false)
       --seperate-folder    Seperate bin based on folder (Default: false)
       --group-folder       Group bin based on folder (Default: false)
+      --search-dummy       Search duplicate sprites to reduce atlas size (Default: false)
       --save               Save configuration for reuse (Default: false)
   -h, --help               output usage information
 

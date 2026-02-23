@@ -43,7 +43,7 @@ jobs:
           TAG="${GITHUB_REF_NAME}"
           RAW_VERSION="${TAG#v}"
           NPM_TAG="latest"
-          PACKAGE_VERSION="$(node -p \"require('./package.json').version\")"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
 
           if [[ "$RAW_VERSION" != "$PACKAGE_VERSION" ]]; then
             echo "Tag version and package version are not synchronized."

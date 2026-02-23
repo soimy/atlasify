@@ -71,7 +71,7 @@ export class Options implements IOption {
      * @type {boolean}
      * @memberof Options
      */
-    public seperateFolder: boolean = false;
+    public separateFolder: boolean = false;
     public tag?: boolean;
 
     /**
@@ -97,7 +97,7 @@ export class Options implements IOption {
      * @type {number}
      * @memberof Options
      */
-    public alphaTolerence: number = 0;
+    public alphaTolerance: number = 0;
 
     /**
      * Extrude amount of edge pixels, will automatically `trimAlpha` first.
@@ -191,7 +191,7 @@ export class Atlasify {
     constructor (public options: Options) {
         this._inputPaths = [];
         this._sheets = [];
-        if (options.seperateFolder) options.tag = true;
+        if (options.separateFolder) options.tag = true;
         if (options.groupFolder) {
             options.tag = true;
             options.exclusiveTag = false;
@@ -233,12 +233,12 @@ export class Atlasify {
 
         // post-processing
         if (this.options.extrude > 0) {
-            sheet.trimAlpha(this.options.alphaTolerence); // need to trim before extrude
+            sheet.trimAlpha(this.options.alphaTolerance); // need to trim before extrude
             sheet.extrude(this.options.extrude);
         } else if (this.options.trimAlpha) {
-            sheet.trimAlpha(this.options.alphaTolerence);
+            sheet.trimAlpha(this.options.alphaTolerance);
         }
-        if (this.options.seperateFolder || this.options.groupFolder) {
+        if (this.options.separateFolder || this.options.groupFolder) {
             const tag = this.getLeafFolder(imgPath);
             if (tag) sheet.tag = tag;
         }
@@ -402,16 +402,16 @@ export class Atlasify {
      * Async save current project & settings to file
      *
      * @param {boolean} [humanReadable=false]
-     * @param {string} [pathalike]
+     * @param {string} [pathLike]
      * @returns {Promise<boolean>}
      * @memberof Atlasify
      */
-    public async save (humanReadable?: boolean, pathalike?: string): Promise<boolean>;
+    public async save (humanReadable?: boolean, pathLike?: string): Promise<boolean>;
     /**
      * Async save current project & settings to file and return serialized string
      *
      * @param {boolean} [humanReadable=false]
-     * @param {string} [pathalike]
+     * @param {string} [pathLike]
      * @returns {Promise<string}>}
      * @memberof Atlasify
      */
@@ -435,33 +435,33 @@ export class Atlasify {
             imagePaths: this._inputPaths
         };
         let humanReadable: boolean = false;
-        let pathalike: string | undefined;
+        let pathLike: string | undefined;
         if (args.length === 0) {
             humanReadable = false;
         } else if (args.length === 1) {
             if (typeof(args[0]) === "boolean") {
                 humanReadable = args[0];
             } else if (typeof(args[0] === "string")) {
-                pathalike = args[0];
+                pathLike = args[0];
             } else {
                 throw new Error("Atlasify.save(): wrong argument type");
             }
         } else if (args.length > 1) {
             if (typeof(args[0]) === "boolean" && typeof(args[1]) === "string") {
                 humanReadable = args[0];
-                pathalike = args[1];
+                pathLike = args[1];
             } else {
                 throw new Error("Atlasify.save(): wrong argument type");
             }
         }
         const result = humanReadable ? JSON.stringify(atl, null, 2) : JSON.stringify(atl);
-        if (pathalike) {
-            writeFile(pathalike, result, err => {
+        if (pathLike) {
+            writeFile(pathLike, result, err => {
                 if (err) {
                     console.error(`Saving atl file encountered error: ${err}`);
                     return false;
                 } else {
-                    console.log(`Saved configuration: ${pathalike}`);
+                    console.log(`Saved configuration: ${pathLike}`);
                     return true;
                 }
             });
@@ -469,13 +469,13 @@ export class Atlasify {
         return result;
     }
 
-    public static async Load (pathalike: string, overrides: any = null): Promise<Atlasify> {
+    public static async Load (pathLike: string, overrides: any = null): Promise<Atlasify> {
         const factory = new Atlasify(new Options());
-        return factory.load(pathalike, overrides);
+        return factory.load(pathLike, overrides);
     }
 
-    public async load (pathalike: string, overrides: any = null): Promise<Atlasify> {
-        const atl: IAtl = JSON.parse(readFileSync(pathalike, 'utf-8'));
+    public async load (pathLike: string, overrides: any = null): Promise<Atlasify> {
+        const atl: IAtl = JSON.parse(readFileSync(pathLike, 'utf-8'));
         this._sheets = [];
         this.options = { ...atl.options, ...overrides }; // combining saved options and cli options
         this._packer = new MaxRectsPacker<Sheet>(this.options.width, this.options.height, this.options.padding, this.options);
@@ -506,10 +506,10 @@ export class Atlasify {
                         // Note: only use saved options which sync saved sheet metrics
                         // option overriding will be done in deep repack using inputPath
                         if (atl.options.extrude > 0) {
-                            reloaded.trimAlpha(atl.options.alphaTolerence); // need to trim before extrude
+                            reloaded.trimAlpha(atl.options.alphaTolerance); // need to trim before extrude
                             reloaded.extrude(atl.options.extrude);
                         } else if (atl.options.trimAlpha) {
-                            reloaded.trimAlpha(atl.options.alphaTolerence);
+                            reloaded.trimAlpha(atl.options.alphaTolerance);
                         }
                         // unrotate sheets for stable result
                         if (sheet.rot) sheet.rot = false;
@@ -517,7 +517,7 @@ export class Atlasify {
                         sheet.data = reloaded.data;
 
                         // manage option overrides
-                        if (!this.options.seperateFolder && sheet.tag) delete sheet.tag;
+                        if (!this.options.separateFolder && sheet.tag) delete sheet.tag;
                     })
                     .catch(error => {
                         console.error(error);
@@ -575,8 +575,8 @@ export class Atlasify {
     private _exporter: Exporter;
     get exporter (): Exporter { return this._exporter; }
 
-    private getLeafFolder (pathalike: string): string | undefined {
-        const leafFolder = path.dirname(pathalike).split(path.sep).pop();
+    private getLeafFolder (pathLike: string): string | undefined {
+        const leafFolder = path.dirname(pathLike).split(path.sep).pop();
         return leafFolder;
     }
 

@@ -70,7 +70,7 @@ describe("Atlasify integration", () => {
 
   it("covers constructor flags and early pack return", async () => {
     const separated = new Options("a.png", 64, 64, 0, "JsonHash");
-    separated.seperateFolder = true;
+    separated.separateFolder = true;
     const a = new Atlasify(separated);
     expect(a.options.tag).toBe(true);
 

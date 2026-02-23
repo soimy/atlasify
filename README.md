@@ -110,47 +110,61 @@ $ atlasify --help
 
 Usage: cli [options] <image-files/folder>
 
-CLI tools to packing and compositing image files into atlas using MaxRects packing algorithm
+CLI tools to packing and compositing image files into atlas using MaxRects
+packing algorithm
 
 Options:
   -V, --version            output the version number
-  -o, --output <filename>  output atlas filename (Default: sprite.png)
-      --load <filename>    load saved project atl file
-  -m, --size <w,h>         ouput texture atlas size (defaut: 2048,2048)
-  -p, --padding <n>        padding between images (Default: 0)
-  -b, --border <n>         space to atlas edge (Default: 0)
-  -a, --auto-size          shrink atlas to the smallest possible square (Default: false)
+  -o, --output <filename>  output atlas filename (Default: sprite.png) (default:
+                           "sprite.png")
+  --load <filename>        load saved project atl file
+  -m, --size <w,h>         output texture atlas size (default: 2048,2048)
+                           (default: [2048,2048])
+  -p, --padding <n>        padding between images (Default: 0) (default: 0)
+  -b, --border <n>         space to atlas edge (Default: 0) (default: 0)
+  -a, --auto-size          shrink atlas to the smallest possible square
+                           (Default: false) (default: false)
   -t, --pot                atlas size shall be power of 2 (Default: false)
-  -s, --square             atlas size shall be square (Default: false)
-  -r, --rot                allow 90-degree rotation while packing (Default: false)
-      --trim [n]           remove surrounding transparent pixels with optional tolerence [n] (Default: false)
-      --extrude <n>        extrude edge pixels (Default: 0)
-      --debug              draw debug gizmo on atlas (Default: false)
-      --instant            instant packing is quicker and skip sorting (Default: false)
-      --seperate-folder    Seperate bin based on folder (Default: false)
-      --group-folder       Group bin based on folder (Default: false)
-      --search-dummy       Search duplicate sprites to reduce atlas size (Default: false)
-      --save               Save configuration for reuse (Default: false)
-  -h, --help               output usage information
+                           (default: false)
+  -s, --square             atlas size shall be square (Default: false) (default:
+                           false)
+  -r, --rot                allow 90-degree rotation while packing (Default:
+                           false) (default: false)
+  --trim [n]               remove surrounding transparent pixels with optional
+                           tolerance [n] (Default: false) (default: false)
+  --extrude <n>            extrude edge pixels (Default: 0) (default: 0)
+  --debug                  draw debug gizmo on atlas (Default: false) (default:
+                           false)
+  --instant                instant packing is quicker and skip sorting (Default:
+                           false) (default: false)
+  --separate-folder        Separate bin based on folder (Default: false)
+                           (default: false)
+  --group-folder           Group bin based on folder (Default: false) (default:
+                           false)
+  --search-dummy           Search duplicate sprites to reduce atlas size
+                           (Default: false) (default: false)
+  --save                   Save configuration for reuse (Default: false)
+                           (default: false)
+  -h, --help               display help for command
 
 ```
 
 > Important: Atlasify is in **VERY EARLY STAGE**, any interface or API might change
 
-Examples: Packing all assets inside `./assets/actor` folder into an autosize atlas with max-size 1024x1024, trim image alpha and extrude 1px on edge pixels, 2px padding and save to `sprite.png` & save project file for later reuse.
+Examples: Packing all assets inside `./assets/atlas/actor` folder into an autosize atlas with max-size 1024x1024, trim image alpha and extrude 1px on edge pixels, 2px padding and save to `sprite.png` & save project file for later reuse.
 
 ```console
-$ atlasify -o sprite.png -ast -p 2 -m 1024,1024 --extrude 1 --trim --save ./assets/actor
+$ atlasify -o sprite.png -ast -p 2 -m 1024,1024 --extrude 1 --trim --save ./assets/atlas/actor
 
 Saved atlas: sprite.png
 Saved spritesheet: sprite.json
 Saved configuration: sprite.atl
 ```
 
-Examples: Load previous project files and add all assets inside `./assets/ui` folder into the same atlas with same settings except no edge pixel extrude and no trim alpha.
+Examples: Load previous project files and add all assets inside `./assets/atlas/ui` folder into the same atlas with same settings except no edge pixel extrude and no trim alpha.
 
 ```console
-$ atlasify --load ./sprite.atl --extrude 0 --no-trim ./assets/ui
+$ atlasify --load ./sprite.atl --extrude 0 --no-trim ./assets/atlas/ui
 
 Loading project file: ./sprite.atl
 Load completed

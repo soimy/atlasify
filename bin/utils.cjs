@@ -77,19 +77,19 @@ function toJSON(data) {
 }
 
 /**
- * Stringify the given array, seperated by seperator
+ * Stringify the given array, separated by separator
  * 
  * @param {any} array 
- * @param {string} [seperator=""] 
+ * @param {string} [separator=""] 
  * @returns {string} 
  */
-function stringifyArray(array, seperator = "") {
+function stringifyArray(array, separator = "") {
   let result = "";
   let lastIndex = array.length - 1;
   array.forEach((element, index) => {
     result += element;
     if (index !== lastIndex){
-      result += seperator;
+      result += separator;
     }
   });
   return result;
@@ -401,8 +401,8 @@ const getAllFiles = (dir, recursive = true) =>
 exports.getAllFiles = getAllFiles;
 
 
-function getLeafFolder (pathalike) {
-  const leafFolder = path.dirname(pathalike).split(path.sep).pop();
+function getLeafFolder (pathLike) {
+  const leafFolder = path.dirname(pathLike).split(path.sep).pop();
   return leafFolder ? leafFolder : "";
 }
 exports.getLeafFolder = getLeafFolder;

@@ -141,6 +141,16 @@ export class Image {
         return this.getBase64(mime);
     }
 
+    public async writeAsync(path: string): Promise<void> {
+        await sharp(this.bitmap.data, {
+            raw: {
+                width: this.bitmap.width,
+                height: this.bitmap.height,
+                channels: 4
+            }
+        }).toFile(path);
+    }
+
     private inside(x: number, y: number): boolean {
         return x >= 0 && y >= 0 && x < this.bitmap.width && y < this.bitmap.height;
     }

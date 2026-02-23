@@ -20,7 +20,7 @@ const FeatureList: FeatureItem[] = [
       )
     },
     {
-        title: 'Effecient asset packing',
+        title: 'Efficient asset packing',
         image: '/img/fr-packing.png',
         description: (
         <>

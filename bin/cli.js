@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createRequire } from "module";
-import commander from "commander";
+import { Command } from "commander";
 import fs from "fs";
 import path from "path";
 import * as core from "../lib/atlasify.js";
@@ -13,54 +13,50 @@ const ext = ["jpg", "jpeg", "png"];
 
 let imageFiles = [];
 
-const cli = new commander.Command();
+const cli = new Command();
 cli
     .version(`MaxRectsPacker v${pjson.version}`)
     .usage("[options] <image-files/folder>")
-    .arguments("<image-files/folder>")
+    .argument("<image-files/folder...>")
     .description("CLI tools to packing and compositing image files into atlas using MaxRects packing algorithm")
     .option("-o, --output <filename>", "output atlas filename (Default: sprite.png)", "sprite.png")
-    .option("    --load <filename>", "load saved project atl file")
-    .option("-m, --size <w,h>", "ouput texture atlas size (defaut: 2048,2048)", v => v.split(","), [2048, 2048])
+    .option("--load <filename>", "load saved project atl file")
+    .option("-m, --size <w,h>", "output texture atlas size (default: 2048,2048)", v => v.split(","), [2048, 2048])
     .option("-p, --padding <n>", "padding between images (Default: 0)", 0)
     .option("-b, --border <n>", "space to atlas edge (Default: 0)", 0)
     .option("-a, --auto-size", "shrink atlas to the smallest possible square (Default: false)", false)
     .option("-t, --pot", "atlas size shall be power of 2 (Default: false)", false)
     .option("-s, --square", "atlas size shall be square (Default: false)", false)
     .option("-r, --rot", "allow 90-degree rotation while packing (Default: false)", false)
-    .option("    --trim [n]", "remove surrounding transparent pixels with optional tolerence [n] (Default: false)", false)
-    .option("    --extrude <n>", "extrude edge pixels (Default: 0)", 0)
-    .option("    --debug", "draw debug gizmo on atlas (Default: false)", false)
-    .option("    --instant", "instant packing is quicker and skip sorting (Default: false)", false)
-    .option("    --seperate-folder", "Seperate bin based on folder (Default: false)", false)
-    .option("    --group-folder", "Group bin based on folder (Default: false)", false)
-    .option("    --search-dummy", "Search duplicate sprites to reduce atlas size (Default: false)", false)
-    .option("    --save", "Save configuration for reuse (Default: false)", false);
-
-cli
-    .command("*")
-    .action((...filesOrFolder) => {
-        let inputFiles = [];
-        filesOrFolder.forEach(filePath => {
-            if (typeof filePath === "object") return;
-            if (fs.statSync(filePath).isDirectory()) {
-                inputFiles = inputFiles.concat(utils.getAllFiles(filePath));
-            } else {
-                inputFiles.push(filePath);
-            }
-        });
-
-        for (const inputFile of inputFiles) {
-            const extname = path.extname(inputFile).slice(1).toLowerCase();
-            if (fs.existsSync(inputFile) && ext.includes(extname)) {
-                console.log(`+${extname} : ${inputFile}`);
-                imageFiles.push(inputFile);
-            }
-        }
-        console.log(`Total ${imageFiles.length} files added.`);
-    });
+    .option("--trim [n]", "remove surrounding transparent pixels with optional tolerance [n] (Default: false)", false)
+    .option("--extrude <n>", "extrude edge pixels (Default: 0)", 0)
+    .option("--debug", "draw debug gizmo on atlas (Default: false)", false)
+    .option("--instant", "instant packing is quicker and skip sorting (Default: false)", false)
+    .option("--separate-folder", "Separate bin based on folder (Default: false)", false)
+    .option("--group-folder", "Group bin based on folder (Default: false)", false)
+    .option("--search-dummy", "Search duplicate sprites to reduce atlas size (Default: false)", false)
+    .option("--save", "Save configuration for reuse (Default: false)", false);
 
 cli.parse(process.argv);
+const filesOrFolder = cli.args;
+let inputFiles = [];
+filesOrFolder.forEach(filePath => {
+    if (typeof filePath === "object") return;
+    if (fs.statSync(filePath).isDirectory()) {
+        inputFiles = inputFiles.concat(utils.getAllFiles(filePath));
+    } else {
+        inputFiles.push(filePath);
+    }
+});
+
+for (const inputFile of inputFiles) {
+    const extname = path.extname(inputFile).slice(1).toLowerCase();
+    if (fs.existsSync(inputFile) && ext.includes(extname)) {
+        console.log(`+${extname} : ${inputFile}`);
+        imageFiles.push(inputFile);
+    }
+}
+console.log(`Total ${imageFiles.length} files added.`);
 
 //
 //  Initialize options
@@ -83,7 +79,7 @@ opt.rot = utils.valueQueue([opt.rot, false]);
 opt.trim = utils.valueQueue([opt.trim, false]);
 opt.debug = utils.valueQueue([opt.debug, false]);
 opt.instant = utils.valueQueue([opt.instant, false]);
-opt.seperateFolder = utils.valueQueue([opt.seperateFolder, false]);
+opt.separateFolder = utils.valueQueue([opt.separateFolder, false]);
 opt.groupFolder = utils.valueQueue([opt.groupFolder, false]);
 opt.searchDummy = utils.valueQueue([opt.searchDummy, false]);
 opt.save = utils.valueQueue([opt.save, false]);
@@ -99,11 +95,11 @@ atlasifyOptions.square = opt.square;
 atlasifyOptions.allowRotation = opt.rot;
 atlasifyOptions.border = opt.border;
 atlasifyOptions.trimAlpha = opt.extrude > 0 ? true : opt.trim !== false ? true : false;
-atlasifyOptions.alphaTolerence = utils.isNumeric(opt.trim) ? opt.trim : 0;
+atlasifyOptions.alphaTolerance = utils.isNumeric(opt.trim) ? opt.trim : 0;
 atlasifyOptions.debug = opt.debug;
 atlasifyOptions.extrude = opt.extrude;
 atlasifyOptions.instant = opt.instant;
-atlasifyOptions.seperateFolder = opt.seperateFolder;
+atlasifyOptions.separateFolder = opt.separateFolder;
 atlasifyOptions.groupFolder = opt.groupFolder;
 atlasifyOptions.searchDummy = opt.searchDummy;
 

@@ -2,12 +2,14 @@
   "name": "atlasify",
   "version": "0.4.1",
   "description": "CLI and core module for atlasify texture packer using maxrects-packer & Jimp",
+  "type": "module",
   "main": "lib/atlasify.js",
   "types": "lib/types/atlasify.d.ts",
   "bin": "bin/cli.js",
   "ts:main": "src/atlasify.ts",
   "scripts": {
-    "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint": "oxlint \"src/**/*.ts\" \"bin/**/*.js\" \"bin/**/*.cjs\"",
+    "lint:fix": "oxlint --fix \"src/**/*.ts\" \"bin/**/*.js\" \"bin/**/*.cjs\"",
     "clean": "rimraf ./lib && rimraf ./dist && rimraf ./test/*.png",
     "prepare": "patch-package",
     "build": "tsc",
@@ -42,18 +44,17 @@
   "homepage": "https://github.com/soimy/atlasify#readme",
   "devDependencies": {
     "@types/mustache": "^0.8.32",
-    "@types/node": "^12.12.14",
+    "@types/node": "^25.3.0",
     "cz-conventional-changelog": "^2.1.0",
     "gh-pages": "^2.2.0",
+    "oxlint": "^0.18.0",
     "patch-package": "^6.2.2",
     "postinstall-prepare": "^1.0.1",
     "rimraf": "^2.7.1",
     "standard-version": "^9.3.2",
     "ts-node": "^8.10.2",
     "tslib": "^1.13.0",
-    "tslint": "^5.20.1",
-    "tslint-config-standard": "^8.0.1",
-    "typescript": "^4.5.5"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@types/pixelmatch": "^5.0.0",

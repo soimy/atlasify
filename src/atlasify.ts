@@ -2,11 +2,12 @@ import { MaxRectsPacker, IOption, IBin } from "maxrects-packer";
 import Jimp from "jimp";
 import path from "path";
 import pixelMatch from "pixelmatch";
-import { Sheet } from "./geom/sheet";
-import { Exporter } from "./exporter";
+import { Sheet } from "./geom/sheet.js";
+import { Exporter } from "./exporter.js";
 import { writeFile, readFileSync } from "fs";
+import { fileURLToPath } from "url";
 
-let appInfo = require('../package.json');
+const appInfo = JSON.parse(readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), "../package.json"), "utf-8"));
 
 /**
  * Options class for atlasify and maxrects-packer
@@ -599,5 +600,5 @@ export class Atlasify {
     }
 }
 
-export { Sheet } from './geom/sheet';
-export { Exporter } from './exporter';
+export { Sheet } from "./geom/sheet.js";
+export { Exporter } from "./exporter.js";

@@ -1,69 +1,74 @@
 #!/usr/bin/env node
 
-const pjson = require('../package.json');
-const commander = require('commander');
-const fs = require('fs');
-const path = require('path');
-const utils = require('./utils');
-const core = require('../lib/atlasify');
+import { createRequire } from "module";
+import commander from "commander";
+import fs from "fs";
+import path from "path";
+import * as core from "../lib/atlasify.js";
+
+const require = createRequire(import.meta.url);
+const pjson = require("../package.json");
+const utils = require("./utils.cjs");
 const ext = ["jpg", "jpeg", "png"];
 
 let imageFiles = [];
 
 const cli = new commander.Command();
 cli
-    .version('MaxRectsPacker v' + pjson.version)
-    .usage('[options] <image-files/folder>')
-    .arguments('<image-files/folder>')
-    .description('CLI tools to packing and compositing image files into atlas using MaxRects packing algorithm')
-    .option('-o, --output <filename>', 'output atlas filename (Default: sprite.png)', 'sprite.png')
-    .option('    --load <filename>', 'load saved project atl file')
-    .option('-m, --size <w,h>', 'ouput texture atlas size (defaut: 2048,2048)', v => { return v.split(',') }, [2048, 2048])
-    .option('-p, --padding <n>', 'padding between images (Default: 0)', 0)
-    .option('-b, --border <n>', 'space to atlas edge (Default: 0)', 0)
-    .option('-a, --auto-size', 'shrink atlas to the smallest possible square (Default: false)', false)
-    .option('-t, --pot', 'atlas size shall be power of 2 (Default: false)', false)
-    .option('-s, --square', 'atlas size shall be square (Default: false)', false)
-    .option('-r, --rot', 'allow 90-degree rotation while packing (Default: false)', false)
-    .option('    --trim [n]', 'remove surrounding transparent pixels with optional tolerence [n] (Default: false)', false)
-    .option('    --extrude <n>', 'extrude edge pixels (Default: 0)', 0)
-    .option('    --debug', 'draw debug gizmo on atlas (Default: false)', false)
-    .option('    --instant', 'instant packing is quicker and skip sorting (Default: false)', false)
-    .option('    --seperate-folder', 'Seperate bin based on folder (Default: false)', false)
-    .option('    --group-folder', 'Group bin based on folder (Default: false)', false)
-    .option('    --search-dummy', 'Search duplicate sprites to reduce atlas size (Default: false)', false)
-    .option('    --save', 'Save configuration for reuse (Default: false)', false)
-    
-    cli
+    .version(`MaxRectsPacker v${pjson.version}`)
+    .usage("[options] <image-files/folder>")
+    .arguments("<image-files/folder>")
+    .description("CLI tools to packing and compositing image files into atlas using MaxRects packing algorithm")
+    .option("-o, --output <filename>", "output atlas filename (Default: sprite.png)", "sprite.png")
+    .option("    --load <filename>", "load saved project atl file")
+    .option("-m, --size <w,h>", "ouput texture atlas size (defaut: 2048,2048)", v => v.split(","), [2048, 2048])
+    .option("-p, --padding <n>", "padding between images (Default: 0)", 0)
+    .option("-b, --border <n>", "space to atlas edge (Default: 0)", 0)
+    .option("-a, --auto-size", "shrink atlas to the smallest possible square (Default: false)", false)
+    .option("-t, --pot", "atlas size shall be power of 2 (Default: false)", false)
+    .option("-s, --square", "atlas size shall be square (Default: false)", false)
+    .option("-r, --rot", "allow 90-degree rotation while packing (Default: false)", false)
+    .option("    --trim [n]", "remove surrounding transparent pixels with optional tolerence [n] (Default: false)", false)
+    .option("    --extrude <n>", "extrude edge pixels (Default: 0)", 0)
+    .option("    --debug", "draw debug gizmo on atlas (Default: false)", false)
+    .option("    --instant", "instant packing is quicker and skip sorting (Default: false)", false)
+    .option("    --seperate-folder", "Seperate bin based on folder (Default: false)", false)
+    .option("    --group-folder", "Group bin based on folder (Default: false)", false)
+    .option("    --search-dummy", "Search duplicate sprites to reduce atlas size (Default: false)", false)
+    .option("    --save", "Save configuration for reuse (Default: false)", false);
+
+cli
     .command("*")
     .action((...filesOrFolder) => {
         let inputFiles = [];
         filesOrFolder.forEach(filePath => {
-            if (typeof(filePath) === "object") return;
+            if (typeof filePath === "object") return;
             if (fs.statSync(filePath).isDirectory()) {
                 inputFiles = inputFiles.concat(utils.getAllFiles(filePath));
-            } else 
+            } else {
                 inputFiles.push(filePath);
+            }
         });
-        for (let inputFile of inputFiles) {
+
+        for (const inputFile of inputFiles) {
             const extname = path.extname(inputFile).slice(1).toLowerCase();
             if (fs.existsSync(inputFile) && ext.includes(extname)) {
-                console.log("+" + extname + " : " + inputFile);
+                console.log(`+${extname} : ${inputFile}`);
                 imageFiles.push(inputFile);
             }
         }
-        console.log("Total " + imageFiles.length + " files added.");
-    })
+        console.log(`Total ${imageFiles.length} files added.`);
+    });
 
 cli.parse(process.argv);
 
 //
 //  Initialize options
 //
-let opt = cli.opts();
+const opt = cli.opts();
 utils.roundAllValue(opt); // Cast string parameters to number
-if (!imageFiles) {
-    args.outputHelp();
+if (imageFiles.length === 0) {
+    cli.outputHelp();
     process.exit(1);
 }
 
@@ -110,7 +115,7 @@ const padding = utils.longestLength(keys) + 2;
 console.log("\nUsing following settings");
 console.log("========================================");
 keys.forEach(key => {
-    console.log(utils.pad(key, padding) + ": " + atlasifyOptions[key]);
+    console.log(`${utils.pad(key, padding)}: ${atlasifyOptions[key]}`);
 });
 console.log("========================================");
 
@@ -123,39 +128,49 @@ imageFiles.sort((a, b) => {
 
 if (opt.load) {
     console.log(`Loading project file: ${opt.load}`);
-    atlas.load(opt.load, atlasifyOptions)
-        .then(atlas => atlas.addURLs(imageFiles).then(result => fileIO(result)));
-} else atlas.addURLs(imageFiles).then(result => fileIO(result));
+    atlas.load(opt.load, atlasifyOptions).then(v => v.addURLs(imageFiles).then(result => fileIO(result)));
+} else {
+    atlas.addURLs(imageFiles).then(result => fileIO(result));
+}
 
-function fileIO(result) {
-    for (let a of result.atlas) {
-        const imageName = `${a.name}.${a.ext}`
+function fileIO (result) {
+    for (const a of result.atlas) {
+        const imageName = `${a.name}.${a.ext}`;
         a.image.writeAsync(imageName)
-        .then(() => {
-            console.log(`Saved atlas: ${imageName}`);
-        })
-        .catch(err => {
-            console.error(`Failed saving atlas ${imageName}: ${err}`);
-        });
+            .then(() => {
+                console.log(`Saved atlas: ${imageName}`);
+            })
+            .catch(err => {
+                console.error(`Failed saving atlas ${imageName}: ${err}`);
+            });
     }
-    for (let s of result.spritesheets) {
+
+    for (const s of result.spritesheets) {
         const sheetName = `${s.name}.${s.ext}`;
-        fs.writeFile(sheetName, result.exporter.compile(s), 'utf-8', err => {
-            if(err) console.error(`Failed saving spritesheet ${sheetName}: ${err}`);
-            else console.log(`Saved spritesheet: ${sheetName}`);
+        fs.writeFile(sheetName, result.exporter.compile(s), "utf-8", err => {
+            if (err) {
+                console.error(`Failed saving spritesheet ${sheetName}: ${err}`);
+            } else {
+                console.log(`Saved spritesheet: ${sheetName}`);
+            }
         });
     }
+
     if (opt.save) {
         let atlPath = result.options.name;
         const dir = path.dirname(atlPath);
-        atlPath = path.basename(atlPath, path.extname(atlPath)) + ".atl";
+        atlPath = `${path.basename(atlPath, path.extname(atlPath))}.atl`;
         atlPath = path.join(dir, atlPath);
-        result.save(true).then(atl => {
-            fs.writeFile(atlPath, atl, 'utf-8', err => {
-                if(err) console.error(`Failed saving configuration ${atlPath}: ${err}`);
-                else console.log(`Saved configuration: ${atlPath}`);
-            });
-        })
-        .catch(console.error);
+        result.save(true)
+            .then(atl => {
+                fs.writeFile(atlPath, atl, "utf-8", err => {
+                    if (err) {
+                        console.error(`Failed saving configuration ${atlPath}: ${err}`);
+                    } else {
+                        console.log(`Saved configuration: ${atlPath}`);
+                    }
+                });
+            })
+            .catch(console.error);
     }
 }

@@ -1,8 +1,10 @@
 import Mustache from "mustache";
-import { join } from "path";
+import { dirname, join } from "path";
 import { existsSync, readFileSync } from "fs";
+import { fileURLToPath } from "url";
 
-let list = require('../templates/list.json');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const list = JSON.parse(readFileSync(join(__dirname, "../templates/list.json"), "utf-8"));
 
 export class Exporter {
 

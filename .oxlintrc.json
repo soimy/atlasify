@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    "lib/**",
+    "dist/**",
+    "node_modules/**",
+    "website/**"
+  ],
+  "rules": {}
+}

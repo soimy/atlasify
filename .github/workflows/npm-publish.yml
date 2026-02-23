@@ -29,6 +29,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          registry-url: 'https://registry.npmjs.org'
           cache: npm
 
       - name: Install dependencies
@@ -71,16 +72,8 @@ jobs:
       - name: Publish package to npm
         shell: bash
         run: |
-          # Remove setup-node token config if present so npm can use trusted publishing.
-          NPMRC_FILE="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
-          if [[ -f "$NPMRC_FILE" ]]; then
-            sed -i '/_authToken/d' "$NPMRC_FILE"
-          fi
-          unset NODE_AUTH_TOKEN
-          unset NPM_TOKEN
-
           if [[ "${{ steps.release.outputs.npm_tag }}" == "beta" ]]; then
-            npm publish --provenance --tag beta --registry https://registry.npmjs.org
+            npm publish --provenance --tag beta
           else
-            npm publish --provenance --registry https://registry.npmjs.org
+            npm publish --provenance
           fi
